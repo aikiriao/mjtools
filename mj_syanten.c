@@ -1,5 +1,6 @@
 #include "mj_syanten.h"
 
+#include <string.h>
 #include <assert.h>
 
 /* 面子を含めた向聴数計算 */
