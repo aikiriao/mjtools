@@ -3,7 +3,7 @@ CFLAGS 	  = -std=c99 -O0 -g3 -Wall -Wextra -Wpedantic -Wformat=2 -Wstrict-aliasi
 CPPFLAGS	= -DDEBUG
 LDFLAGS		= -O0
 LDLIBS    = -lm
-SRC				= test_main.c test.c test_mj_tile.c test_mj_syanten.c
+SRC				= test_main.c test.c test_mj_tile.c test_mj_shanten.c
 INCLUDE   = 
 OBJS	 		= $(SRC:%.c=%.o) 
 TARGET    = test 

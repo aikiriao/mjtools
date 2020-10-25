@@ -1,7 +1,7 @@
 #include "test.h"
 
 /* 各テストスイートのセットアップ関数宣言 */
-void MJSyantenTest_Setup(void);
+void MJShantenTest_Setup(void);
 void MJTileTest_Setup(void);
 
 /* テスト実行 */
@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
   Test_Initialize();
 
-  MJSyantenTest_Setup();
+  MJShantenTest_Setup();
   MJTileTest_Setup();
 
   ret = Test_RunAllTestSuite();
