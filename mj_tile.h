@@ -53,11 +53,13 @@
   (   (((t) >= MJTILE_1MAN) && ((t) <= MJTILE_9MAN))  \
    || (((t) >= MJTILE_1PIN) && ((t) <= MJTILE_9PIN))  \
    || (((t) >= MJTILE_1SOU) && ((t) <= MJTILE_9SOU)))
-/* 牌は老頭（一九）牌か？ */
-#define MJTILE_IS_ROUTOU(t) \
-  (MJTILE_IS_SUHAI(t) && ((((t) % 10) == 1) || (((t) % 10) == 9)))
 /* 牌は中張牌か？ */
-#define MJTILE_IS_CHUNCHAN(t) (MJTILE_IS_SUHAI(t) && !MJTILE_IS_ROUTOU(t))
+#define MJTILE_IS_CHUNCHAN(t)                         \
+  (   (((t) >= MJTILE_2MAN) && ((t) <= MJTILE_8MAN))  \
+   || (((t) >= MJTILE_2PIN) && ((t) <= MJTILE_8PIN))  \
+   || (((t) >= MJTILE_2SOU) && ((t) <= MJTILE_8SOU)))
+/* 牌は老頭（一九）牌か？ */
+#define MJTILE_IS_ROUTOU(t) (MJTILE_IS_SUHAI(t) && !MJTILE_IS_CHUNCHAN(t))
 /* 牌は么九牌か？ */
 #define MJTILE_IS_YAOCHU(t) (MJTILE_IS_ROUTOU(t) || MJTILE_IS_JIHAI(t))
 
