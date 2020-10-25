@@ -37,33 +37,6 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(uint32_t key);
 static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *tehai);
 #endif
 
-/* ライブラリ初期化カウント */
-static int32_t st_mjshanten_initialize_count = 0;
-
-/* ライブラリ初期化 */
-void MJShanten_Initialize(void)
-{
-  /* 初期化済みの場合は何もしない */
-  if (st_mjshanten_initialize_count > 0) {
-    return;
-  }
-
-  /* カウントを更新 */
-  st_mjshanten_initialize_count++;
-}
-
-/* ライブラリ終了 */
-void MJShanten_Finalize(void)
-{
-  /* ライブラリ初期化が行われてないときは何もしない */
-  if (st_mjshanten_initialize_count <= 0) {
-    return;
-  }
-
-  /* カウントを更新 */
-  st_mjshanten_initialize_count--;
-}
-
 /* 七対子の向聴数を計算 */
 int32_t MJShanten_CalculateChitoitsuSyanten(const struct Tehai *tehai)
 {
