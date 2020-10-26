@@ -68,7 +68,7 @@ static void MJShantenTest_ConvertTestCaseToTehai(const struct MJShantenTestCase 
 }
 
 /* 七対子の向聴数計算テスト */
-static void MJShantenTest_CalculateChitoitsuSyantenTest(void *obj)
+static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
@@ -206,7 +206,7 @@ static void MJShantenTest_CalculateChitoitsuSyantenTest(void *obj)
       struct Tehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      shanten = MJShanten_CalculateChitoitsuSyanten(&tehai);
+      shanten = MJShanten_CalculateChitoitsuShanten(&tehai);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n",
             i, shanten, pcase->answer);
@@ -218,7 +218,7 @@ static void MJShantenTest_CalculateChitoitsuSyantenTest(void *obj)
 }
 
 /* 国士無双の向聴数計算テスト */
-static void MJShantenTest_CalculateKokushimusouSyantenTest(void *obj)
+static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
@@ -275,7 +275,7 @@ static void MJShantenTest_CalculateKokushimusouSyantenTest(void *obj)
       struct Tehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      shanten = MJShanten_CalculateKokushimusouSyanten(&tehai);
+      shanten = MJShanten_CalculateKokushimusouShanten(&tehai);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
@@ -287,7 +287,7 @@ static void MJShantenTest_CalculateKokushimusouSyantenTest(void *obj)
 }
 
 /* 通常手の向聴数計算テスト */
-static void MJShantenTest_CalculateNormalSyantenTest(void *obj)
+static void MJShantenTest_CalculateNormalShantenTest(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
@@ -364,13 +364,13 @@ static void MJShantenTest_CalculateNormalSyantenTest(void *obj)
       struct Tehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      shanten = MJShanten_CalculateNormalSyanten(&tehai);
+      shanten = MJShanten_CalculateNormalShanten(&tehai);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
         break;
       }
-      shanten = MJShanten_CalculateNormalSyantenUseTable(&tehai);
+      shanten = MJShanten_CalculateNormalShantenUseTable(&tehai);
       if (shanten != pcase->answer) {
         printf("NG(UseTable) at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
@@ -439,7 +439,7 @@ static void MJShantenTest_PrintShantenMissCase(const struct Tehai *tehai, uint32
 }
 
 /* 問題集のファイル名指定でテスト実行 */
-static int32_t MJShantenTest_CalculateSyantenForProblemFile(const char *filename)
+static int32_t MJShantenTest_CalculateShantenForProblemFile(const char *filename)
 {
   FILE *fp;
   char linebuf[256];
@@ -456,10 +456,10 @@ static int32_t MJShantenTest_CalculateSyantenForProblemFile(const char *filename
   normal_ok = normal_usetable_ok = kokusi_ok = chitoi_ok = 0;
   while (fgets(linebuf, sizeof(linebuf), fp) != NULL) {
     MJShantenTest_ParseLine(linebuf, &tehai, &normal_answer, &kokushi_answer, &chitoi_answer);
-    normal_shanten  = MJShanten_CalculateNormalSyanten(&tehai);
-    normal_usetable_shanten = MJShanten_CalculateNormalSyantenUseTable(&tehai);
-    chitoi_shanten  = MJShanten_CalculateChitoitsuSyanten(&tehai);
-    kokushi_shanten = MJShanten_CalculateKokushimusouSyanten(&tehai);
+    normal_shanten  = MJShanten_CalculateNormalShanten(&tehai);
+    normal_usetable_shanten = MJShanten_CalculateNormalShantenUseTable(&tehai);
+    chitoi_shanten  = MJShanten_CalculateChitoitsuShanten(&tehai);
+    kokushi_shanten = MJShanten_CalculateKokushimusouShanten(&tehai);
     if (normal_shanten == normal_answer) { 
       normal_ok++;
     } else {
@@ -496,30 +496,30 @@ static int32_t MJShantenTest_CalculateSyantenForProblemFile(const char *filename
 }
 
 /* 問題集の向聴数計算テスト */
-static void MJShantenTest_CalculateSyantenForProblems(void *obj)
+static void MJShantenTest_CalculateShantenForProblems(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
   {
     /* 通常手 */
-    Test_AssertEqual(MJShantenTest_CalculateSyantenForProblemFile("./problems/p_normal_10000.txt"), 1);
+    Test_AssertEqual(MJShantenTest_CalculateShantenForProblemFile("./problems/p_normal_10000.txt"), 1);
     /* 国士無双手 */
-    Test_AssertEqual(MJShantenTest_CalculateSyantenForProblemFile("./problems/p_koku_10000.txt"), 1);
+    Test_AssertEqual(MJShantenTest_CalculateShantenForProblemFile("./problems/p_koku_10000.txt"), 1);
     /* 混一手 */
-    Test_AssertEqual(MJShantenTest_CalculateSyantenForProblemFile("./problems/p_hon_10000.txt"), 1);
+    Test_AssertEqual(MJShantenTest_CalculateShantenForProblemFile("./problems/p_hon_10000.txt"), 1);
     /* 清一手 */
-    Test_AssertEqual(MJShantenTest_CalculateSyantenForProblemFile("./problems/p_tin_10000.txt"), 1);
+    Test_AssertEqual(MJShantenTest_CalculateShantenForProblemFile("./problems/p_tin_10000.txt"), 1);
   }
 }
 
 void MJShantenTest_Setup(void)
 {
   struct TestSuite *suite
-    = Test_AddTestSuite("MJ Syanten Test Suite",
+    = Test_AddTestSuite("MJ Shanten Test Suite",
         NULL, MJShantenTest_Initialize, MJShantenTest_Finalize);
 
-  Test_AddTest(suite, MJShantenTest_CalculateChitoitsuSyantenTest);
-  Test_AddTest(suite, MJShantenTest_CalculateKokushimusouSyantenTest);
-  Test_AddTest(suite, MJShantenTest_CalculateNormalSyantenTest);
-  Test_AddTest(suite, MJShantenTest_CalculateSyantenForProblems);
+  Test_AddTest(suite, MJShantenTest_CalculateChitoitsuShantenTest);
+  Test_AddTest(suite, MJShantenTest_CalculateKokushimusouShantenTest);
+  Test_AddTest(suite, MJShantenTest_CalculateNormalShantenTest);
+  Test_AddTest(suite, MJShantenTest_CalculateShantenForProblems);
 }

@@ -20,7 +20,7 @@ struct ShantenTableEntry {
 /* 数牌の並びを頼りにテーブル探索 */
 static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai);
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *tehai);
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct Tehai *tehai);
 
 /* 数牌の並びに対応した面子/塔子テーブル */
 static const struct ShantenTableEntry st_shanten_table[] = {
@@ -28,7 +28,7 @@ static const struct ShantenTableEntry st_shanten_table[] = {
 };
 
 /* 向聴数計算 テーブル使用版 */
-int32_t MJShanten_CalculateNormalSyantenUseTable(const struct Tehai *tehai)
+int32_t MJShanten_CalculateNormalShantenUseTable(const struct Tehai *tehai)
 {
   struct Tehai tmp;
   int32_t i, shanten, min_shanten;
@@ -45,7 +45,7 @@ int32_t MJShanten_CalculateNormalSyantenUseTable(const struct Tehai *tehai)
 		if (tmp.tehai[i] >= 2) {            
 			tmp.tehai[i] -= 2;
       /* 向聴数計算 頭を抜くので-1 */
-      shanten = MJShanten_CalculateNormalSyantenUseTableCore(&tmp) - 1;
+      shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp) - 1;
       if (shanten < min_shanten) { min_shanten = shanten; }
 			tmp.tehai[i] += 2;
 		}
@@ -53,7 +53,7 @@ int32_t MJShanten_CalculateNormalSyantenUseTable(const struct Tehai *tehai)
 
   /* 副露なしなら頭なしとして計算 */
   if (tehai->num_fuuro == 0) {
-    shanten = MJShanten_CalculateNormalSyantenUseTableCore(&tmp);
+    shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp);
     if (shanten < min_shanten) { min_shanten = shanten; }
   }
 
@@ -89,7 +89,7 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t 
 }
 
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *tehai)
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct Tehai *tehai)
 {
   int32_t pos, type;
   int32_t num_mentsu, num_tatsu;
