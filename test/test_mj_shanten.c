@@ -5,6 +5,7 @@
 
 /* テスト対象のモジュール */
 #include "../mj_shanten.c"
+#include "../mj_shanten_use_table.c"
 
 /* 1枚の牌情報 */
 struct TileInfo {
@@ -201,14 +202,14 @@ static void MJShantenTest_CalculateChitoitsuSyantenTest(void *obj)
     /* 全ケースで確認 */
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
-      int32_t syanten;
+      int32_t shanten;
       struct Tehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      syanten = MJShanten_CalculateChitoitsuSyanten(&tehai);
-      if (syanten != pcase->answer) {
+      shanten = MJShanten_CalculateChitoitsuSyanten(&tehai);
+      if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n",
-            i, syanten, pcase->answer);
+            i, shanten, pcase->answer);
         is_ok = 0;
       }
     }
@@ -270,13 +271,13 @@ static void MJShantenTest_CalculateKokushimusouSyantenTest(void *obj)
     /* 全ケースで確認 */
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
-      int32_t syanten;
+      int32_t shanten;
       struct Tehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      syanten = MJShanten_CalculateKokushimusouSyanten(&tehai);
-      if (syanten != pcase->answer) {
-        printf("NG at test case index:%d get:%d answer:%d \n", i, syanten, pcase->answer);
+      shanten = MJShanten_CalculateKokushimusouSyanten(&tehai);
+      if (shanten != pcase->answer) {
+        printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
         break;
       }
@@ -359,13 +360,19 @@ static void MJShantenTest_CalculateNormalSyantenTest(void *obj)
     /* 全ケースで確認 */
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
-      int32_t syanten;
+      int32_t shanten;
       struct Tehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      syanten = MJShanten_CalculateNormalSyanten(&tehai);
-      if (syanten != pcase->answer) {
-        printf("NG at test case index:%d get:%d answer:%d \n", i, syanten, pcase->answer);
+      shanten = MJShanten_CalculateNormalSyanten(&tehai);
+      if (shanten != pcase->answer) {
+        printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
+        is_ok = 0;
+        break;
+      }
+      shanten = MJShanten_CalculateNormalSyantenUseTable(&tehai);
+      if (shanten != pcase->answer) {
+        printf("NG(UseTable) at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
         break;
       }
@@ -418,44 +425,65 @@ static void MJShantenTest_ParseLine(
   (*chitoi_answer)  = buf[16];
 }
 
+/* 失敗したケースを表示 */
+static void MJShantenTest_PrintShantenMissCase(const struct Tehai *tehai, uint32_t get, uint32_t answer)
+{
+  int i, j;
+  printf("get:%d ans:%d \n", get, answer);
+  for (i = 0; i < MJTILE_MAX; i++) {
+    for (j = 0; j < tehai->tehai[i]; j++) {
+      printf("%s ", tile_string_table[i]);
+    }
+  }
+  puts("");
+}
+
 /* 問題集のファイル名指定でテスト実行 */
 static int32_t MJShantenTest_CalculateSyantenForProblemFile(const char *filename)
 {
   FILE *fp;
   char linebuf[256];
   struct Tehai tehai;
-  uint32_t total, normal_ok, kokusi_ok, chitoi_ok;
+  uint32_t total, normal_ok, normal_usetable_ok, kokusi_ok, chitoi_ok;
   int32_t normal_answer, kokushi_answer, chitoi_answer;
-  int32_t normal_syanten, kokushi_syanten, chitoi_syanten;
+  int32_t normal_shanten, normal_usetable_shanten, kokushi_shanten, chitoi_shanten;
 
   /* ファイルオープン */
   fp = fopen(filename, "r");
   assert(fp != NULL);
 
   total = 0;
-  normal_ok = kokusi_ok = chitoi_ok = 0;
+  normal_ok = normal_usetable_ok = kokusi_ok = chitoi_ok = 0;
   while (fgets(linebuf, sizeof(linebuf), fp) != NULL) {
     MJShantenTest_ParseLine(linebuf, &tehai, &normal_answer, &kokushi_answer, &chitoi_answer);
-    normal_syanten  = MJShanten_CalculateNormalSyanten(&tehai);
-    chitoi_syanten  = MJShanten_CalculateChitoitsuSyanten(&tehai);
-    kokushi_syanten = MJShanten_CalculateKokushimusouSyanten(&tehai);
-    if (normal_syanten == normal_answer)   { normal_ok++; };
-    if (chitoi_syanten == chitoi_answer)   { chitoi_ok++; };
-    if (kokushi_syanten == kokushi_answer) { kokusi_ok++; };
-    if (normal_syanten != normal_answer) {
-      int i, j;
-      printf("get:%d ans:%d \n", normal_syanten, normal_answer);
-      for (i = 0; i < MJTILE_MAX; i++) {
-        for (j = 0; j < tehai.tehai[i]; j++) {
-          printf("%s ", tile_string_table[i]);
-        }
-      }
-      puts("");
+    normal_shanten  = MJShanten_CalculateNormalSyanten(&tehai);
+    normal_usetable_shanten = MJShanten_CalculateNormalSyantenUseTable(&tehai);
+    chitoi_shanten  = MJShanten_CalculateChitoitsuSyanten(&tehai);
+    kokushi_shanten = MJShanten_CalculateKokushimusouSyanten(&tehai);
+    if (normal_shanten == normal_answer) { 
+      normal_ok++;
+    } else {
+      MJShantenTest_PrintShantenMissCase(&tehai, normal_shanten, normal_answer);
+    }
+    if (normal_usetable_shanten == normal_answer) {
+      normal_usetable_ok++; 
+    } else {
+      MJShantenTest_PrintShantenMissCase(&tehai, normal_usetable_shanten, normal_answer);
+    }
+    if (chitoi_shanten == chitoi_answer) {
+      chitoi_ok++; 
+    } else {
+      MJShantenTest_PrintShantenMissCase(&tehai, chitoi_shanten, chitoi_answer);
+    }
+    if (kokushi_shanten == kokushi_answer) {
+      kokusi_ok++; 
+    } else {
+      MJShantenTest_PrintShantenMissCase(&tehai, kokushi_shanten, kokushi_answer);
     }
     total++;
   }
-  printf("[%30s] Total:%d Normal: %d, Chitoi: %d, Kokushi: %d \n", 
-      filename, total, normal_ok, chitoi_ok, kokusi_ok);
+  printf("[%30s] Total: %d Normal: %d, Normal(UseTable): %d, Chitoi: %d, Kokushi: %d \n", 
+      filename, total, normal_ok, normal_usetable_ok, chitoi_ok, kokusi_ok);
 
   fclose(fp);
 

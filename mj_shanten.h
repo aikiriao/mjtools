@@ -13,6 +13,9 @@ struct Tehai {
 /* 通常手の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateNormalSyanten(const struct Tehai *tehai);
 
+/* 通常手の向聴数を計算(テーブルを使用した高速実装) 1で一向聴, 0で聴牌, -1で和了 */
+int32_t MJShanten_CalculateNormalSyantenUseTable(const struct Tehai *tehai);
+
 /* 七対子の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateChitoitsuSyanten(const struct Tehai *tehai);
 
