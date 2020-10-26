@@ -8,6 +8,7 @@
 #include <assert.h>
 
 #if !defined(MJSHANTEN_USE_TABLE)
+
 /* テーブルを使用しないナイーブな実装 */
 static int32_t MJShanten_CalculateNormalSyantenNaive(const struct Tehai *tehai);
 /* 面子を含めた向聴数計算 */
@@ -18,24 +19,34 @@ static void MJShanten_CalculateNormalSyantenMentsu(
 static void MJShanten_CalculateNormalSyantenTatsu(
     struct Tehai *tehai, int32_t pos, int32_t head,
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten);
-#else
+
+#else /* MJSHANTEN_USE_TABLE */
+
+/* 2**19 shanten.datのエントリ数を超える最小の2の冪数 */
+#define MJSHANTEN_TABLE_SIZE        524288
+/* Knuthの乗法ハッシュ */
+#define MJSHANTEN_MAKE_HASH(val)    ((val) * 2654435769UL)
+
 /* 向聴テーブルのエントリ */
 struct ShantenTableEntry {
-  uint32_t key;         /* 牌の所持数を10進数表記したキー */
+  uint32_t value;       /* 数牌の所持数の整数表記 */
   uint8_t  num_mentsu;  /* 面子数 */
   uint8_t  num_tatsu;   /* 塔子数 */
 };
-/* 数牌の並びに対応した面子/塔子テーブル */
-static const struct ShantenTableEntry st_shanten_table[] = {
-#include "mj_shanten_dat.c"
-};
+
 /* 向聴数計算 テーブル使用版 */
 static int32_t MJShanten_CalculateNormalSyantenUseTable(const struct Tehai *tehai);
-/* キーを頼りにテーブル探索 */
-static const struct ShantenTableEntry *MJShanten_SearchTableEntry(uint32_t key);
+/* 数牌の並びを頼りにテーブル探索 */
+static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai);
 /* テーブル使用時のコア処理 */
 static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *tehai);
-#endif
+
+/* 数牌の並びに対応した面子/塔子テーブル */
+static const struct ShantenTableEntry st_shanten_table[] = {
+#include "mj_shanten_table.c"
+};
+
+#endif /* MJSHANTEN_USE_TABLE */
 
 /* 七対子の向聴数を計算 */
 int32_t MJShanten_CalculateChitoitsuSyanten(const struct Tehai *tehai)
@@ -107,7 +118,7 @@ int32_t MJShanten_CalculateNormalSyanten(const struct Tehai *tehai)
   /* 関数の呼び分け */
 #if !defined(MJSHANTEN_USE_TABLE)
   return MJShanten_CalculateNormalSyantenNaive(tehai);
-#else
+#else /* MJSHANTEN_USE_TABLE */
   return MJShanten_CalculateNormalSyantenUseTable(tehai);
 #endif
 }
@@ -268,40 +279,40 @@ static int32_t MJShanten_CalculateNormalSyantenUseTable(const struct Tehai *teha
   return min_shanten - 2 * tehai->num_fuuro;
 }
 
-/* キーを頼りにテーブル探索 */
-static const struct ShantenTableEntry *MJShanten_SearchTableEntry(uint32_t key)
+/* 数牌の並びを頼りにテーブル探索 */
+static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai)
 {
-  uint32_t mid;
-  uint32_t left = 0, right = (sizeof(st_shanten_table) / sizeof(st_shanten_table[0]) - 1);
-
-  /* 2分探索 */
-  while (left < right) {
-    mid = (left + right) >> 1;
-    if (st_shanten_table[mid].key < key) {
-      left = mid + 1;
-    } else {
-      right = mid;
-    }
-  }
-
-  /* 必ず見つかるはず */
-  assert(st_shanten_table[left].key == key);
-  return &st_shanten_table[left];
-}
-
-/* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *tehai)
-{
-  int32_t pos, type, number;
-  int32_t num_mentsu, num_tatsu;
-  uint32_t key;
-  const struct ShantenTableEntry *ptable;
-  const uint8_t *hai;
+  uint32_t key, value, number;
   /* 10の冪数テーブル（左側に一番若い数牌が置かれるため、降順） */
   static const uint32_t exp10_table[10] = {
     0, /* ダミー(インデックスアクセス側で-1するのを防ぐ) */
     1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 1e2, 1e1, 1e0, 
   };
+
+  assert(suhai != NULL);
+
+  /* 牌を10進数に変換 */
+  value = 0;
+  for (number = 1; number <= 9; number++) {
+    value += suhai[number] * exp10_table[number];
+  }
+
+  /* 開番地法: 空きエントリ探索 */
+  key = MJSHANTEN_MAKE_HASH(value) & (MJSHANTEN_TABLE_SIZE - 1);
+  while (st_shanten_table[key].value != value) {
+    key = (key + 1) & (MJSHANTEN_TABLE_SIZE - 1);
+  }
+
+  return &st_shanten_table[key];
+}
+
+/* テーブル使用時のコア処理 */
+static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *tehai)
+{
+  int32_t pos, type;
+  int32_t num_mentsu, num_tatsu;
+  const struct ShantenTableEntry *ptable;
+  const uint8_t *hai;
 
   assert(tehai != NULL);
 
@@ -318,19 +329,8 @@ static int32_t MJShanten_CalculateNormalSyantenUseTableCore(const struct Tehai *
 
   /* 萬子, 筒子, 索子の3種類について、数牌の並びを元に面子,塔子をカウント */
   for (type = 0; type < 3; type++) {
-    /* 牌を10進数のキーに変換 */
-    key = 0;
-    for (number = 1; number <= 9; number++) {
-      /* アクセスする牌種 */
-      pos = 10 * type + number;
-      if (hai[pos] > 0) { 
-        key += hai[pos] * exp10_table[number];
-      }
-    }
-
     /* テーブルエントリの探索・取得 */
-    ptable = MJShanten_SearchTableEntry(key);
-
+    ptable = MJShanten_SearchTableEntry(&hai[10 * type]);
     /* 面子/塔子数の更新 */
     num_mentsu += ptable->num_mentsu;
     num_tatsu  += ptable->num_tatsu;
