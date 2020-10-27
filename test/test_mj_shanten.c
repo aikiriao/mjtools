@@ -48,14 +48,14 @@ static int MJShantenTest_Finalize(void *obj)
 }
 
 /* テストケースを手牌に変換 */
-static void MJShantenTest_ConvertTestCaseToTehai(const struct MJShantenTestCase *test_case, struct Tehai *tehai)
+static void MJShantenTest_ConvertTestCaseToTehai(const struct MJShantenTestCase *test_case, struct MJTehai *tehai)
 {
   int32_t i;
 
   assert((test_case != NULL) && (tehai != NULL));
 
   /* 手牌を一旦クリア */
-  memset(tehai, 0, sizeof(struct Tehai));
+  memset(tehai, 0, sizeof(struct MJTehai));
 
   /* テストケースから変換 */
   for (i = 0; i < 14; i++) {
@@ -203,7 +203,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
       int32_t shanten;
-      struct Tehai tehai;
+      struct MJTehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
       shanten = MJShanten_CalculateChitoitsuShanten(&tehai);
@@ -272,7 +272,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
       int32_t shanten;
-      struct Tehai tehai;
+      struct MJTehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
       shanten = MJShanten_CalculateKokushimusouShanten(&tehai);
@@ -361,7 +361,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
       int32_t shanten;
-      struct Tehai tehai;
+      struct MJTehai tehai;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
       shanten = MJShanten_CalculateNormalShanten(&tehai);
@@ -383,7 +383,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
 
 /* 問題集の1行をパースし、牌情報と回答を取得 */
 static void MJShantenTest_ParseLine(
-    const char *string, struct Tehai *tehai,
+    const char *string, struct MJTehai *tehai,
     int32_t *normal_answer, int32_t *kokushi_answer, int32_t *chitoi_answer)
 {
   int32_t i;
@@ -412,7 +412,7 @@ static void MJShantenTest_ParseLine(
       &buf[8], &buf[9], &buf[10], &buf[11], &buf[12], &buf[13], &buf[14], &buf[15], &buf[16]);
 
   /* 牌情報を一旦クリア */
-  memset(tehai, 0, sizeof(struct Tehai));
+  memset(tehai, 0, sizeof(struct MJTehai));
 
   /* 牌情報をセット */
   for (i = 0; i < 14; i++) {
@@ -426,7 +426,7 @@ static void MJShantenTest_ParseLine(
 }
 
 /* 失敗したケースを表示 */
-static void MJShantenTest_PrintShantenMissCase(const struct Tehai *tehai, uint32_t get, uint32_t answer)
+static void MJShantenTest_PrintShantenMissCase(const struct MJTehai *tehai, uint32_t get, uint32_t answer)
 {
   int i, j;
   printf("get:%d ans:%d \n", get, answer);
@@ -443,7 +443,7 @@ static int32_t MJShantenTest_CalculateShantenForProblemFile(const char *filename
 {
   FILE *fp;
   char linebuf[256];
-  struct Tehai tehai;
+  struct MJTehai tehai;
   uint32_t total, normal_ok, normal_usetable_ok, kokusi_ok, chitoi_ok;
   int32_t normal_answer, kokushi_answer, chitoi_answer;
   int32_t normal_shanten, normal_usetable_shanten, kokushi_shanten, chitoi_shanten;
