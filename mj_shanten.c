@@ -4,13 +4,15 @@
 #include <string.h>
 #include <assert.h>
 
+/* ナイーブな向聴数の計算コア処理 */
+static int32_t MJShanten_CalculateNormalShantenNaive(struct Tehai *tehai);
 /* 面子を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenMentsu(
-    struct Tehai *tehai, int32_t pos, int32_t head, 
+    struct Tehai *tehai, int32_t pos, 
     int32_t num_mentsu, int32_t *min_shanten);
 /* 搭子（面子候補）を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenTatsu(
-    struct Tehai *tehai, int32_t pos, int32_t head,
+    struct Tehai *tehai, int32_t pos,
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten);
 
 /* 七対子の向聴数を計算 */
@@ -81,36 +83,51 @@ int32_t MJShanten_CalculateKokushimusouShanten(const struct Tehai *tehai)
 int32_t MJShanten_CalculateNormalShanten(const struct Tehai *tehai)
 {
   struct Tehai tmp;
-  int32_t i, min_shanten;
+  int32_t i, shanten, min_shanten;
 
   /* 引数チェック */
   assert(tehai != NULL);
 
   /* 作業用に手牌をコピー */
-  memcpy(&tmp, tehai, sizeof(struct Tehai));
+  tmp = (*tehai);
 
   min_shanten = 8;
 	for (i = 0; i < MJTILE_MAX; i++) {
 		/* 頭を抜いて調べる */
 		if (tmp.tehai[i] >= 2) {            
 			tmp.tehai[i] -= 2;
-      MJShanten_CalculateNormalShantenMentsu(&tmp, 0, 1, 0, &min_shanten);
+      /* 頭を抜いている分1減らす */
+      shanten = MJShanten_CalculateNormalShantenNaive(&tmp) - 1;
+      if (shanten < min_shanten) { min_shanten = shanten; }
 			tmp.tehai[i] += 2;
 		}
 	}
 
   /* 副露なしなら頭なしとして計算 */
   if (tehai->num_fuuro == 0) {
-    MJShanten_CalculateNormalShantenMentsu(&tmp, 0, 0, 0, &min_shanten);
+      shanten = MJShanten_CalculateNormalShantenNaive(&tmp);
+      if (shanten < min_shanten) { min_shanten = shanten; }
   }
 
   /* 最終結果 */
   return min_shanten - 2 * tehai->num_fuuro;
 }
 
+/* ナイーブな向聴数の計算処理 */
+static int32_t MJShanten_CalculateNormalShantenNaive(struct Tehai *tehai)
+{
+  int32_t min_shanten;
+
+  /* 向聴数の最大値をセットして再帰計算開始 */
+  min_shanten = 8;
+  MJShanten_CalculateNormalShantenMentsu(tehai, 0, 0, &min_shanten);
+
+  return min_shanten;
+}
+
 /* 面子を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenMentsu(
-    struct Tehai *tehai, int32_t pos, int32_t head, 
+    struct Tehai *tehai, int32_t pos,
     int32_t num_mentsu, int32_t *min_shanten)
 {
   uint8_t *hai;
@@ -127,24 +144,24 @@ static void MJShanten_CalculateNormalShantenMentsu(
     /* 刻子を抜いて調べる */
     if (hai[pos] >= 3) {
       hai[pos] -= 3;
-      MJShanten_CalculateNormalShantenMentsu(tehai, pos, head, num_mentsu + 1, min_shanten);
+      MJShanten_CalculateNormalShantenMentsu(tehai, pos, num_mentsu + 1, min_shanten);
       hai[pos] += 3;
     }
     /* 順子を抜いて調べる */
     if (MJTILE_IS_SUHAI(pos) && (hai[pos + 1] > 0) && (hai[pos + 2] > 0)) {
       hai[pos]--; hai[pos + 1]--; hai[pos + 2]--;
-      MJShanten_CalculateNormalShantenMentsu(tehai, pos, head, num_mentsu + 1, min_shanten);
+      MJShanten_CalculateNormalShantenMentsu(tehai, pos, num_mentsu + 1, min_shanten);
       hai[pos]++; hai[pos + 1]++; hai[pos + 2]++;
     }
   }
 
   /* 面子を抜き終わった（これ以上抜けない）ので搭子を抜いて調べる */
-  MJShanten_CalculateNormalShantenTatsu(tehai, 0, head, num_mentsu, 0, min_shanten);
+  MJShanten_CalculateNormalShantenTatsu(tehai, 0, num_mentsu, 0, min_shanten);
 }
 
 /* 搭子（面子候補）を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenTatsu(
-    struct Tehai *tehai, int32_t pos, int32_t head,
+    struct Tehai *tehai, int32_t pos,
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten)
 {
   int32_t shanten;
@@ -168,28 +185,28 @@ static void MJShanten_CalculateNormalShantenTatsu(
     if (hai[pos] == 2) {
       hai[pos] -= 2;
       MJShanten_CalculateNormalShantenTatsu(
-          tehai, pos, head, num_mentsu, num_tatsu + 1, min_shanten);
+          tehai, pos, num_mentsu, num_tatsu + 1, min_shanten);
       hai[pos] += 2;
     }
     /* 辺張or両面を抜いて調べる */
     if (MJTILE_IS_SUHAI(pos) && (hai[pos + 1] > 0)) {
       hai[pos]--; hai[pos + 1]--;
       MJShanten_CalculateNormalShantenTatsu(
-          tehai, pos, head, num_mentsu, num_tatsu + 1, min_shanten);
+          tehai, pos, num_mentsu, num_tatsu + 1, min_shanten);
       hai[pos]++; hai[pos + 1]++;
     }
     /* 嵌張を抜いて調べる */
     if (MJTILE_IS_CHUNCHAN(pos + 1) && (hai[pos + 2] > 0)) {
       hai[pos]--; hai[pos + 2]--;
       MJShanten_CalculateNormalShantenTatsu(
-          tehai, pos, head, num_mentsu, num_tatsu + 1, min_shanten);
+          tehai, pos, num_mentsu, num_tatsu + 1, min_shanten);
       hai[pos]++; hai[pos + 2]++;
     }
   }
 
 EXIT:
   /* 向聴数計算 */
-  shanten = 8 - 2 * num_mentsu - num_tatsu - head;
+  shanten = 8 - 2 * num_mentsu - num_tatsu;
   /* 最小向聴数更新 */
   if (shanten < (*min_shanten)) {
     (*min_shanten) = shanten;
