@@ -5,18 +5,18 @@
 #include <assert.h>
 
 /* ナイーブな向聴数の計算コア処理 */
-static int32_t MJShanten_CalculateNormalShantenNaive(struct Tehai *tehai);
+static int32_t MJShanten_CalculateNormalShantenNaive(struct MJTehai *tehai);
 /* 面子を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenMentsu(
-    struct Tehai *tehai, int32_t pos, 
+    struct MJTehai *tehai, int32_t pos, 
     int32_t num_mentsu, int32_t *min_shanten);
 /* 搭子（面子候補）を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenTatsu(
-    struct Tehai *tehai, int32_t pos,
+    struct MJTehai *tehai, int32_t pos,
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten);
 
 /* 七対子の向聴数を計算 */
-int32_t MJShanten_CalculateChitoitsuShanten(const struct Tehai *tehai)
+int32_t MJShanten_CalculateChitoitsuShanten(const struct MJTehai *tehai)
 {
   int32_t i, shanten, num_toitu, num_types;
   const uint8_t *hai;
@@ -51,7 +51,7 @@ int32_t MJShanten_CalculateChitoitsuShanten(const struct Tehai *tehai)
 }
 
 /* 国士無双の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
-int32_t MJShanten_CalculateKokushimusouShanten(const struct Tehai *tehai)
+int32_t MJShanten_CalculateKokushimusouShanten(const struct MJTehai *tehai)
 {
   int32_t i, shanten, head;
   const uint8_t *hai;
@@ -80,9 +80,9 @@ int32_t MJShanten_CalculateKokushimusouShanten(const struct Tehai *tehai)
 }
 
 /* 通常手の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
-int32_t MJShanten_CalculateNormalShanten(const struct Tehai *tehai)
+int32_t MJShanten_CalculateNormalShanten(const struct MJTehai *tehai)
 {
-  struct Tehai tmp;
+  struct MJTehai tmp;
   int32_t i, shanten, min_shanten;
 
   /* 引数チェック */
@@ -114,7 +114,7 @@ int32_t MJShanten_CalculateNormalShanten(const struct Tehai *tehai)
 }
 
 /* ナイーブな向聴数の計算処理 */
-static int32_t MJShanten_CalculateNormalShantenNaive(struct Tehai *tehai)
+static int32_t MJShanten_CalculateNormalShantenNaive(struct MJTehai *tehai)
 {
   int32_t min_shanten;
 
@@ -127,7 +127,7 @@ static int32_t MJShanten_CalculateNormalShantenNaive(struct Tehai *tehai)
 
 /* 面子を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenMentsu(
-    struct Tehai *tehai, int32_t pos,
+    struct MJTehai *tehai, int32_t pos,
     int32_t num_mentsu, int32_t *min_shanten)
 {
   uint8_t *hai;
@@ -161,7 +161,7 @@ static void MJShanten_CalculateNormalShantenMentsu(
 
 /* 搭子（面子候補）を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenTatsu(
-    struct Tehai *tehai, int32_t pos,
+    struct MJTehai *tehai, int32_t pos,
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten)
 {
   int32_t shanten;

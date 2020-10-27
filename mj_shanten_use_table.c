@@ -20,7 +20,7 @@ struct ShantenTableEntry {
 /* 数牌の並びを頼りにテーブル探索 */
 static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai);
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct Tehai *tehai);
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTehai *tehai);
 
 /* 数牌の並びに対応した面子/塔子テーブル */
 static const struct ShantenTableEntry st_shanten_table[] = {
@@ -28,16 +28,16 @@ static const struct ShantenTableEntry st_shanten_table[] = {
 };
 
 /* 向聴数計算 テーブル使用版 */
-int32_t MJShanten_CalculateNormalShantenUseTable(const struct Tehai *tehai)
+int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJTehai *tehai)
 {
-  struct Tehai tmp;
+  struct MJTehai tmp;
   int32_t i, shanten, min_shanten;
 
   /* 引数チェック */
   assert(tehai != NULL);
 
   /* 作業用に手牌をコピー */
-  memcpy(&tmp, tehai, sizeof(struct Tehai));
+  memcpy(&tmp, tehai, sizeof(struct MJTehai));
 
   min_shanten = 8;
 	for (i = 0; i < MJTILE_MAX; i++) {
@@ -89,7 +89,7 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t 
 }
 
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct Tehai *tehai)
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTehai *tehai)
 {
   int32_t pos, type;
   int32_t num_mentsu, num_tatsu;
