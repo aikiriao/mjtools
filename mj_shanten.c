@@ -103,14 +103,12 @@ int32_t MJShanten_CalculateNormalShanten(const struct MJTehai *tehai)
 		}
 	}
 
-  /* 副露なしなら頭なしとして計算 */
-  if (tehai->num_fuuro == 0) {
-      shanten = MJShanten_CalculateNormalShantenNaive(&tmp);
-      if (shanten < min_shanten) { min_shanten = shanten; }
-  }
+  /* 雀頭がない場合を含めるため、頭を抜かずに調べる */
+  shanten = MJShanten_CalculateNormalShantenNaive(&tmp);
+  if (shanten < min_shanten) { min_shanten = shanten; }
 
   /* 最終結果 */
-  return min_shanten - 2 * tehai->num_fuuro;
+  return min_shanten;
 }
 
 /* ナイーブな向聴数の計算処理 */

@@ -7,8 +7,11 @@
 /* 手牌の状態 */
 struct MJTehai {
   uint8_t tehai[MJTILE_MAX];  /* 各牌の所持数が並んだ配列 */
-  uint8_t num_fuuro;          /* 副露数 */
 };
+
+#ifdef __cplusplus
+extern "C"
+#endif /* __cplusplus */
 
 /* 通常手の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateNormalShanten(const struct MJTehai *tehai);
@@ -21,5 +24,9 @@ int32_t MJShanten_CalculateChitoitsuShanten(const struct MJTehai *tehai);
 
 /* 国士無双の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateKokushimusouShanten(const struct MJTehai *tehai);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* MJSHANTEN_H_INCLUDED */
