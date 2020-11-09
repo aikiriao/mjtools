@@ -1064,6 +1064,9 @@ static void MJScoreTest_CalculateForEasycases(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
+  /* 確認した役のフラグをクリア */
+  st_established_yaku_flags = 0;
+
   {
     MJScoreTest_CalculateTestForList(normal_test_cases, sizeof(normal_test_cases) / sizeof(normal_test_cases[0]));
     MJScoreTest_CalculateTestForList(yakuman_test_cases, sizeof(yakuman_test_cases) / sizeof(yakuman_test_cases[0]));
