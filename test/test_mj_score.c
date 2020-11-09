@@ -31,6 +31,9 @@ struct MJScoreTestCase {
 /* テストのセットアップ関数 */
 void MJScoreTest_Setup(void);
 
+/* 成立確認した役フラグ（カバレージの簡易評価用） */
+static uint64_t st_established_yaku_flags = 0;
+
 /* 牌の文字列変換テーブル */
 static const char *tile_string_table[MJTILE_MAX] = {
   "invalid",
@@ -1048,6 +1051,8 @@ static void MJScoreTest_CalculateTestForList(const struct MJScoreTestCase *test_
       is_ok = 0;
       break;
     }
+    /* 確認した役のフラグを立てる */
+    st_established_yaku_flags |= get.yaku_flags;
   }
 
   /* 全正解を期待 */
@@ -1062,6 +1067,22 @@ static void MJScoreTest_CalculateForEasycases(void *obj)
   {
     MJScoreTest_CalculateTestForList(normal_test_cases, sizeof(normal_test_cases) / sizeof(normal_test_cases[0]));
     MJScoreTest_CalculateTestForList(yakuman_test_cases, sizeof(yakuman_test_cases) / sizeof(yakuman_test_cases[0]));
+  }
+
+  /* 確認していない役を表示 */
+  {
+    uint32_t yaku, num_established;
+    uint32_t num_yakus = sizeof(yaku_name_table) / sizeof(yaku_name_table[0]);
+
+    printf("Non-established yaku list: \n");
+    num_established = 0;
+    for (yaku = 0; yaku < num_yakus; yaku++) {
+      if (!MJSCORE_GET_YAKUFLAG(st_established_yaku_flags, (1ULL << yaku))) {
+        printf("%s, ", yaku_name_table[yaku]);
+        num_established++;
+      }
+    }
+    printf("(rest:%d/total:%d) \n", num_established, num_yakus);
   }
 }
 
