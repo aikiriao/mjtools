@@ -6,7 +6,7 @@ LDFLAGS		= -Wall -Wextra -Wpedantic -O0
 LDLIBS		= -lm
 ARFLAGS		= r
 
-SRCS      = mj_shanten.c
+SRCS      = mj_shanten.c mj_score.c
 OBJS			= $(SRCS:%.c=%.o)
 TARGETS   = libmjtools.a
 
