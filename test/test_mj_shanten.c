@@ -16,7 +16,6 @@ struct TileInfo {
 /* テストケース */
 struct MJShantenTestCase {
   struct TileInfo tiles[14];  /* 手牌情報（最大14エントリ） */
-  uint8_t num_fuuro;          /* 副露数   */
   int32_t answer;             /* 正解     */
 };
 
@@ -48,14 +47,14 @@ static int MJShantenTest_Finalize(void *obj)
 }
 
 /* テストケースを手牌に変換 */
-static void MJShantenTest_ConvertTestCaseToTehai(const struct MJShantenTestCase *test_case, struct MJTehai *tehai)
+static void MJShantenTest_ConvertTestCaseToHand(const struct MJShantenTestCase *test_case, struct MJHand *hand)
 {
   int32_t i;
 
-  assert((test_case != NULL) && (tehai != NULL));
+  assert((test_case != NULL) && (hand != NULL));
 
   /* 手牌を一旦クリア */
-  memset(tehai, 0, sizeof(struct MJTehai));
+  memset(hand, 0, sizeof(struct MJHand));
 
   /* テストケースから変換 */
   for (i = 0; i < 14; i++) {
@@ -63,7 +62,7 @@ static void MJShantenTest_ConvertTestCaseToTehai(const struct MJShantenTestCase 
     if (info->type < 0) {
       break;
     }
-    tehai->tehai[info->type] = info->maisu;
+    hand->hand[info->type] = info->maisu;
   }
 }
 
@@ -84,7 +83,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 },
           { MJTILE_7MAN, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       {
         {
@@ -92,7 +91,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4PIN, 2 }, { MJTILE_5PIN, 2 }, { MJTILE_6PIN, 2 },
           { MJTILE_7PIN, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       {
         {
@@ -100,7 +99,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4SOU, 2 }, { MJTILE_5SOU, 2 }, { MJTILE_6SOU, 2 },
           { MJTILE_7SOU, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       {
         /* 本当は字一色も複合する */
@@ -109,7 +108,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_PEE,  2 }, { MJTILE_HAKU, 2 }, { MJTILE_HATU, 2 },
           { MJTILE_CHUN, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       /* 聴牌ケース(向牌数0) */
       {
@@ -118,7 +117,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 },
           { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { -1, 0 },
         },
-        0, 0,
+        0,
       },
       {
         {
@@ -126,7 +125,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 },
           { MJTILE_7MAN, 1 }, { -1, 0 },
         },
-        0, 0,
+        0,
       },
       /* 一向聴ケース(向牌数1) */
       {
@@ -136,7 +135,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 },
           { -1, 0 },
         },
-        0, 1,
+        1,
       },
       {
         {
@@ -144,7 +143,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 1 },
           { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { -1, 0 },
         },
-        0, 1,
+        1,
       },
       {
         {
@@ -152,7 +151,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 },
           { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { -1, 0 },
         },
-        0, 2,
+        2,
       },
       /* 4枚含むケース */
       {
@@ -161,21 +160,21 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 },
           { -1, 0 },
         },
-        0, 1,
+        1,
       },
       {
         {
           { MJTILE_1MAN, 4 }, { MJTILE_2MAN, 4 }, { MJTILE_3MAN, 2 },
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { -1, 0 },
         },
-        0, 3,
+        3,
       },
       {
         {
           { MJTILE_1MAN, 4 }, { MJTILE_2MAN, 4 }, { MJTILE_3MAN, 4 },
           { MJTILE_5MAN, 2 }, { -1, 0 },
         },
-        0, 5,
+        5,
       },
       {
         {
@@ -183,7 +182,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 1 },
           { MJTILE_7MAN, 1 }, { -1, 0 },
         },
-        0, 1,
+        1,
       },
       /* 六向聴ケース */
       {
@@ -194,7 +193,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
           { MJTILE_1PIN, 1 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 },
           { MJTILE_4PIN, 1 }, { MJTILE_5PIN, 1 }, 
         },
-        0, 6,
+        6,
       },
     };
     const uint32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
@@ -203,10 +202,10 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
       int32_t shanten;
-      struct MJTehai tehai;
+      struct MJHand hand;
       const struct MJShantenTestCase *pcase = &test_cases[i];
-      MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      shanten = MJShanten_CalculateChitoitsuShanten(&tehai);
+      MJShantenTest_ConvertTestCaseToHand(pcase, &hand);
+      shanten = MJShanten_CalculateChitoitsuShanten(&hand);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n",
             i, shanten, pcase->answer);
@@ -235,7 +234,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
           { MJTILE_SHA,  1 }, { MJTILE_PEE,  1 }, { MJTILE_HAKU, 1 }, { MJTILE_HATU, 1 },
           { MJTILE_CHUN, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       /* 一向聴ケース */
       {
@@ -246,7 +245,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
           { MJTILE_CHUN, 1 }, 
           { MJTILE_2MAN, 1 },
         },
-        0, 0,
+        0,
       },
       {
         {
@@ -255,7 +254,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
           { MJTILE_SHA,  1 }, { MJTILE_PEE,  1 }, { MJTILE_HAKU, 1 }, { MJTILE_HATU, 1 },
           { MJTILE_2MAN, 1 },
         },
-        0, 0,
+        0,
       },
       /* 一三向聴ケース */
       {
@@ -263,7 +262,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
           { MJTILE_2MAN, 4 }, { MJTILE_3MAN, 4 }, { MJTILE_4MAN, 4 }, { MJTILE_5MAN, 2 },
           { -1, 0 },
         },
-        0, 13,
+        13,
       },
     };
     const uint32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
@@ -272,10 +271,10 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
       int32_t shanten;
-      struct MJTehai tehai;
+      struct MJHand hand;
       const struct MJShantenTestCase *pcase = &test_cases[i];
-      MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      shanten = MJShanten_CalculateKokushimusouShanten(&tehai);
+      MJShantenTest_ConvertTestCaseToHand(pcase, &hand);
+      shanten = MJShanten_CalculateKokushimusouShanten(&hand);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
@@ -303,7 +302,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
           { MJTILE_1MAN, 4 }, { MJTILE_2MAN, 4 }, { MJTILE_3MAN, 4 },
           { MJTILE_5MAN, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       /* 四暗刻 */
       {
@@ -311,7 +310,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
           { MJTILE_1MAN, 3 }, { MJTILE_2MAN, 3 }, { MJTILE_3MAN, 3 }, { MJTILE_4MAN, 3 },
           { MJTILE_5MAN, 2 }, { -1, 0 },
         },
-        0, -1,
+        -1,
       },
       /* 大三元(2副露) */
       {
@@ -320,7 +319,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
           { MJTILE_1PIN, 1 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 },
           { MJTILE_TON,  2 }, { -1, 0 },
         },
-        2, -1,
+        -1,
       },
       /* 一気通貫(1副露) */
       {
@@ -330,7 +329,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
           { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 },
           { MJTILE_CHUN, 3 }, { MJTILE_HATU, 2 }, { -1, 0 },
         },
-        1, -1,
+        -1,
       },
       /* 聴牌ケース */
       /* 九蓮宝燈9面待ち */
@@ -341,7 +340,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
           { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 3 },
           { MJTILE_CHUN, 1 },
         },
-        0, 0,
+        0,
       },
       /* 一向聴ケース */
       /* 中のみ（のつもり） */
@@ -352,7 +351,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
           { MJTILE_1SOU, 2 }, { MJTILE_2SOU, 1 },
           { MJTILE_SHA,  1 }, { MJTILE_PEE,  1 }, { MJTILE_CHUN, 3 },
         },
-        0, 1,
+        1,
       },
     };
     const uint32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
@@ -361,16 +360,16 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
     is_ok = 1;
     for (i = 0; i < num_test; i++) {
       int32_t shanten;
-      struct MJTehai tehai;
+      struct MJHand hand;
       const struct MJShantenTestCase *pcase = &test_cases[i];
-      MJShantenTest_ConvertTestCaseToTehai(pcase, &tehai);
-      shanten = MJShanten_CalculateNormalShanten(&tehai);
+      MJShantenTest_ConvertTestCaseToHand(pcase, &hand);
+      shanten = MJShanten_CalculateNormalShanten(&hand);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
         break;
       }
-      shanten = MJShanten_CalculateNormalShantenUseTable(&tehai);
+      shanten = MJShanten_CalculateNormalShantenUseTable(&hand);
       if (shanten != pcase->answer) {
         printf("NG(UseTable) at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
@@ -383,7 +382,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
 
 /* 問題集の1行をパースし、牌情報と回答を取得 */
 static void MJShantenTest_ParseLine(
-    const char *string, struct MJTehai *tehai,
+    const char *string, struct MJHand *hand,
     int32_t *normal_answer, int32_t *kokushi_answer, int32_t *chitoi_answer)
 {
   int32_t i;
@@ -403,7 +402,7 @@ static void MJShantenTest_ParseLine(
     MJTILE_HAKU, MJTILE_HATU, MJTILE_CHUN,
   };
 
-  assert((string != NULL) && (tehai != NULL));
+  assert((string != NULL) && (hand != NULL));
   assert((normal_answer != NULL) && (kokushi_answer != NULL) && (chitoi_answer != NULL));
 
   /* 17数字を一気に読み取り */
@@ -412,11 +411,11 @@ static void MJShantenTest_ParseLine(
       &buf[8], &buf[9], &buf[10], &buf[11], &buf[12], &buf[13], &buf[14], &buf[15], &buf[16]);
 
   /* 牌情報を一旦クリア */
-  memset(tehai, 0, sizeof(struct MJTehai));
+  memset(hand, 0, sizeof(struct MJHand));
 
   /* 牌情報をセット */
   for (i = 0; i < 14; i++) {
-    tehai->tehai[tiletype_convert_table[buf[i]]]++;
+    hand->hand[tiletype_convert_table[buf[i]]]++;
   }
 
   /* 回答をセット */
@@ -426,12 +425,12 @@ static void MJShantenTest_ParseLine(
 }
 
 /* 失敗したケースを表示 */
-static void MJShantenTest_PrintShantenMissCase(const struct MJTehai *tehai, uint32_t get, uint32_t answer)
+static void MJShantenTest_PrintShantenMissCase(const struct MJHand *hand, uint32_t get, uint32_t answer)
 {
   int i, j;
   printf("get:%d ans:%d \n", get, answer);
   for (i = 0; i < MJTILE_MAX; i++) {
-    for (j = 0; j < tehai->tehai[i]; j++) {
+    for (j = 0; j < hand->hand[i]; j++) {
       printf("%s ", tile_string_table[i]);
     }
   }
@@ -443,7 +442,7 @@ static int32_t MJShantenTest_CalculateShantenForProblemFile(const char *filename
 {
   FILE *fp;
   char linebuf[256];
-  struct MJTehai tehai;
+  struct MJHand hand;
   uint32_t total, normal_ok, normal_usetable_ok, kokusi_ok, chitoi_ok;
   int32_t normal_answer, kokushi_answer, chitoi_answer;
   int32_t normal_shanten, normal_usetable_shanten, kokushi_shanten, chitoi_shanten;
@@ -455,30 +454,30 @@ static int32_t MJShantenTest_CalculateShantenForProblemFile(const char *filename
   total = 0;
   normal_ok = normal_usetable_ok = kokusi_ok = chitoi_ok = 0;
   while (fgets(linebuf, sizeof(linebuf), fp) != NULL) {
-    MJShantenTest_ParseLine(linebuf, &tehai, &normal_answer, &kokushi_answer, &chitoi_answer);
-    normal_shanten  = MJShanten_CalculateNormalShanten(&tehai);
-    normal_usetable_shanten = MJShanten_CalculateNormalShantenUseTable(&tehai);
-    chitoi_shanten  = MJShanten_CalculateChitoitsuShanten(&tehai);
-    kokushi_shanten = MJShanten_CalculateKokushimusouShanten(&tehai);
+    MJShantenTest_ParseLine(linebuf, &hand, &normal_answer, &kokushi_answer, &chitoi_answer);
+    normal_shanten  = MJShanten_CalculateNormalShanten(&hand);
+    normal_usetable_shanten = MJShanten_CalculateNormalShantenUseTable(&hand);
+    chitoi_shanten  = MJShanten_CalculateChitoitsuShanten(&hand);
+    kokushi_shanten = MJShanten_CalculateKokushimusouShanten(&hand);
     if (normal_shanten == normal_answer) { 
       normal_ok++;
     } else {
-      MJShantenTest_PrintShantenMissCase(&tehai, normal_shanten, normal_answer);
+      MJShantenTest_PrintShantenMissCase(&hand, normal_shanten, normal_answer);
     }
     if (normal_usetable_shanten == normal_answer) {
       normal_usetable_ok++; 
     } else {
-      MJShantenTest_PrintShantenMissCase(&tehai, normal_usetable_shanten, normal_answer);
+      MJShantenTest_PrintShantenMissCase(&hand, normal_usetable_shanten, normal_answer);
     }
     if (chitoi_shanten == chitoi_answer) {
       chitoi_ok++; 
     } else {
-      MJShantenTest_PrintShantenMissCase(&tehai, chitoi_shanten, chitoi_answer);
+      MJShantenTest_PrintShantenMissCase(&hand, chitoi_shanten, chitoi_answer);
     }
     if (kokushi_shanten == kokushi_answer) {
       kokusi_ok++; 
     } else {
-      MJShantenTest_PrintShantenMissCase(&tehai, kokushi_shanten, kokushi_answer);
+      MJShantenTest_PrintShantenMissCase(&hand, kokushi_shanten, kokushi_answer);
     }
     total++;
   }
