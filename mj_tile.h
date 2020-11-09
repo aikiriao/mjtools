@@ -1,6 +1,11 @@
 #ifndef MJMJTILE_H_INCLUDED
 #define MJMJTILE_H_INCLUDED
 
+/* 数牌の種類 */
+#define MJTILETYPE_MANZU  0 /* 萬子 */
+#define MJTILETYPE_PINZU  1 /* 筒子 */
+#define MJTILETYPE_SOUZU  2 /* 索子 */
+
 /* 牌の識別整数を定義 とつげき東北氏作のMJexeIO.DLLに準拠
  * 格納先の変数がenum(int)より小さい場合に備えてdefine */
 
@@ -40,7 +45,7 @@
 #define MJTILE_SHA   33  /* 西 */
 #define MJTILE_PEE   34  /* 北 */
 #define MJTILE_HAKU  35  /* 白 */
-#define MJTILE_HATU  36  /* 発 */
+#define MJTILE_HATU  36  /* 發 */
 #define MJTILE_CHUN  37  /* 中 */
 /* 最大値 */
 #define MJTILE_MAX   38
@@ -62,5 +67,13 @@
 #define MJTILE_IS_ROUTOU(t) (MJTILE_IS_SUHAI(t) && !MJTILE_IS_CHUNCHAN(t))
 /* 牌は么九牌か？ */
 #define MJTILE_IS_YAOCHU(t) (MJTILE_IS_ROUTOU(t) || MJTILE_IS_JIHAI(t))
+/* 牌は三元牌か？ */
+#define MJTILE_IS_SANGEN(t) (((t) == MJTILE_HAKU) || ((t) == MJTILE_HATU) || ((t) == MJTILE_CHUN))
+/* 数牌の種類判定 */
+#define MJTILE_TYPE_IS(t, type) (MJTILE_IS_SUHAI(t) && ((t) >= (10 * (type))) && ((t) <= (10 * ((type) + 1))))
+/* 種類を無視した数牌判定 */
+#define MJTILE_NUMBER_IS(t, number) (MJTILE_IS_SUHAI(t) && (((t) % 10) == (number)))
+/* 2つの数牌が同じ数字か？ */
+#define MJTILE_IS_SAME_NUMBER(t1, t2) (MJTILE_IS_SUHAI(t1) && MJTILE_IS_SUHAI(t2) && (((t1) % 10) == ((t2) % 10)))
 
 #endif /* MJMJTILE_H_INCLUDED */
