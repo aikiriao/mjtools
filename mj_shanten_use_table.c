@@ -20,7 +20,7 @@ struct ShantenTableEntry {
 /* 数牌の並びを頼りにテーブル探索 */
 static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai);
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTehai *tehai);
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand *hand);
 
 /* 数牌の並びに対応した面子/塔子テーブル */
 static const struct ShantenTableEntry st_shanten_table[] = {
@@ -28,26 +28,26 @@ static const struct ShantenTableEntry st_shanten_table[] = {
 };
 
 /* 向聴数計算 テーブル使用版 */
-int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJTehai *tehai)
+int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJHand *hand)
 {
-  struct MJTehai tmp;
+  struct MJHand tmp;
   int32_t i, shanten, min_shanten;
 
   /* 引数チェック */
-  assert(tehai != NULL);
+  assert(hand != NULL);
 
   /* 作業用に手牌をコピー */
-  memcpy(&tmp, tehai, sizeof(struct MJTehai));
+  memcpy(&tmp, hand, sizeof(struct MJHand));
 
   min_shanten = 8;
 	for (i = 0; i < MJTILE_MAX; i++) {
 		/* 頭を抜いて調べる */
-		if (tmp.tehai[i] >= 2) {            
-			tmp.tehai[i] -= 2;
+		if (tmp.hand[i] >= 2) {            
+			tmp.hand[i] -= 2;
       /* 向聴数計算 頭を抜くので-1 */
       shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp) - 1;
       if (shanten < min_shanten) { min_shanten = shanten; }
-			tmp.tehai[i] += 2;
+			tmp.hand[i] += 2;
 		}
 	}
 
@@ -86,14 +86,14 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t 
 }
 
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTehai *tehai)
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand *hand)
 {
   int32_t pos, type;
   int32_t num_mentsu, num_tatsu;
   const struct ShantenTableEntry *ptable;
   const uint8_t *hai;
 
-  assert(tehai != NULL);
+  assert(hand != NULL);
 
   /* 数牌の並びに関してチェック */
   MJUTILITY_STATIC_ASSERT(
@@ -102,7 +102,7 @@ static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTehai
       && (MJTILE_1SOU == 21) && (MJTILE_9SOU == 29));
 
   /* 配列を頻繁に参照するので一旦オート変数に受ける */
-  hai = &tehai->tehai[0];
+  hai = &hand->hand[0];
   /* 面子/塔子数のリセット */
   num_mentsu = num_tatsu = 0;
 
