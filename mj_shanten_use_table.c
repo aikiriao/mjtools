@@ -76,7 +76,7 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t 
     value += suhai[number] * exp10_table[number];
   }
 
-  /* 開番地法: 空きエントリ探索 */
+  /* 開番地法: エントリ探索 */
   key = MJSHANTEN_MAKE_HASH(value) & (MJSHANTEN_TABLE_SIZE - 1);
   while (st_shanten_table[key].value != value) {
     key = (key + 1) & (MJSHANTEN_TABLE_SIZE - 1);
@@ -107,9 +107,9 @@ static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand 
   num_mentsu = num_tatsu = 0;
 
   /* 萬子, 筒子, 索子の3種類について、数牌の並びを元に面子,塔子をカウント */
-  for (type = 0; type < 3; type++) {
+  for (type = 0; type < 30; type += 10) {
     /* テーブルエントリの探索・取得 */
-    ptable = MJShanten_SearchTableEntry(&hai[10 * type]);
+    ptable = MJShanten_SearchTableEntry(&hai[type]);
     /* 面子/塔子数の更新 */
     num_mentsu += ptable->num_mentsu;
     num_tatsu  += ptable->num_tatsu;
