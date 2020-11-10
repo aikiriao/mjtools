@@ -75,6 +75,8 @@ static void MJScore_CalculateFu(
 static int32_t MJScore_CountNumPeko(const struct MJDividedHand *hand);
 /* 手牌から九蓮宝燈が成立しているかチェック */
 static bool MJScore_IsChurenpoutonCore(const struct MJHand *hand);
+/* 全帯幺が成立しているか？のコア判定処理 */
+static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const struct MJDividedHand *hand);
 
 /* 各役が成立しているかチェックする関数 */
 /* 面子の切り分けが必要な役 */
@@ -1184,26 +1186,23 @@ static bool MJScore_IsIkkitsukan(
   return false;
 }
 
-/* 全帯幺が成立しているか？ */
-static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+/* 全帯幺が成立しているか？のコア判定処理 */
+static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
 {
   int32_t i;
   const struct MJMentsu *pmentsu;
-  bool jihai, syuntsu;
+  bool syuntsu;
 
   assert((info != NULL) && (hand != NULL));
 
-  jihai = false;
   syuntsu = false;
 
   /* 頭牌は么九牌か？ */
   if (!MJTILE_IS_YAOCHU(hand->atama)) {
     return false;
-  } else if (MJTILE_IS_JIHAI(hand->atama)) {
-    jihai = true;
-  }
+  } 
 
-  /* 全ての面子に対してチェック */
+  /* 全ての面子に対して么九牌が絡んでいるかチェック */
   for (i = 0; i < 4; i++) {
     pmentsu = &(hand->mentsu[i]);
     if ((pmentsu->type == MJMENTSU_TYPE_PUNG) || (pmentsu->type == MJMENTSU_TYPE_ANKAN)
@@ -1222,13 +1221,37 @@ static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct
       /* 順子の出現をマーク（混老頭との複合防止） */
       syuntsu = true;
     }
-    /* 字牌の出現をマーク */
-    if (MJTILE_IS_JIHAI(pmentsu->minhai)) {
+  }
+
+  return syuntsu;
+}
+
+/* 全帯幺が成立しているか？ */
+static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+{
+  int32_t i;
+  bool jihai;
+
+  assert((info != NULL) && (hand != NULL));
+
+  jihai = false;
+
+  /* 頭牌は么九牌か？ */
+  if (!MJTILE_IS_YAOCHU(hand->atama)) {
+    return false;
+  } else if (MJTILE_IS_JIHAI(hand->atama)) {
+    jihai = true;
+  }
+
+  /* 字牌の出現をチェック */
+  for (i = 0; i < 4; i++) {
+    if (MJTILE_IS_JIHAI(hand->mentsu[i].minhai)) {
       jihai = true;
     }
   }
 
-  return (jihai && syuntsu);
+  /* 数牌はコア処理で判定 */
+  return (jihai && MJScore_IsChantaCore(info, hand));
 }
 
 /* 対々和が成立しているか？ */
@@ -1303,8 +1326,6 @@ static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, con
 static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
 {
   int32_t i;
-  const struct MJMentsu *pmentsu;
-  bool syuntsu;
 
   assert((info != NULL) && (hand != NULL));
 
@@ -1313,34 +1334,15 @@ static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const st
     return false;
   }
 
-  /* 全ての面子に対してチェック */
-  syuntsu = false;
+  /* 字牌が出現していないか確認 */
   for (i = 0; i < 4; i++) {
-    pmentsu = &(hand->mentsu[i]);
-    if ((pmentsu->type == MJMENTSU_TYPE_PUNG) || (pmentsu->type == MJMENTSU_TYPE_ANKAN)
-        || (pmentsu->type == MJMENTSU_TYPE_MINKAN) || (pmentsu->type == MJMENTSU_TYPE_ANKO)
-        || (pmentsu->type == MJMENTSU_TYPE_TOITSU)) {
-      /* 構成牌が老頭牌でない */
-      if (!MJTILE_IS_ROUTOU(pmentsu->minhai)) {
-        return false;
-      }
-    } else {
-      /* チー/順子の構成牌が么九牌に絡んでいない */
-      assert((pmentsu->type == MJMENTSU_TYPE_CHOW) || (pmentsu->type == MJMENTSU_TYPE_SYUNTSU));
-      if (!MJTILE_NUMBER_IS(pmentsu->minhai, 1) && !MJTILE_NUMBER_IS(pmentsu->minhai, 7)) {
-        return false;
-      }
-      /* 順子の出現をマーク（混老頭との複合防止） */
-      syuntsu = true;
-    }
-    /* 字牌が出現したら不成立 */
-    if (MJTILE_IS_JIHAI(pmentsu->minhai)) {
+    if (MJTILE_IS_JIHAI(hand->mentsu[i].minhai)) {
       return false;
     }
   }
 
-  /* 順子が出現したかどうかで判定 */
-  return syuntsu;
+  /* 残りはコア判定処理に任せる */
+  return MJScore_IsChantaCore(info, hand);
 }
 
 /* 二盃口が成立しているか？ */
