@@ -780,6 +780,99 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       .yaku_flags = MJSCORE_FLAG_HATU | MJSCORE_FLAG_CHUN | MJSCORE_FLAG_SYOSANGEN | MJSCORE_FLAG_SANANKO,
     }
   },
+  {
+    .agarihai = MJTILE_3MAN,
+    .tiles = {
+      { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
+      { MJTILE_1PIN, 2 }, { -1, 0 },
+    },
+    .meld = {
+      { MJFURO_TYPE_ANKAN,  MJTILE_HATU, MJTILE_HATU, MJTACHA_TYPE_INVALID  },
+      { MJFURO_TYPE_KAKAN,  MJTILE_8MAN, MJTILE_8MAN, MJTACHA_TYPE_TOIMEN   },
+      { MJFURO_TYPE_MINKAN, MJTILE_2SOU, MJTILE_2SOU, MJTACHA_TYPE_SHIMOCHA },
+      { MJFURO_TYPE_INVALID, 0, 0, 0 }
+    },
+    .num_dora = 0,
+    .num_honba = 0, .num_riichibo = 0,
+    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .tsumo = false, .riichi = false, .ippatsu = false,
+    .answer = {
+      .han = 3, .fu = 70,
+      .point = {
+        .point = 12000,
+        .feed.point = 12000,
+      },
+      .yaku_flags = MJSCORE_FLAG_HATU | MJSCORE_FLAG_SANKANTSU,
+    }
+  },
+  {
+    .agarihai = MJTILE_5MAN,
+    .tiles = {
+      { MJTILE_3MAN, 4 }, { MJTILE_4MAN, 4 }, { MJTILE_5MAN, 4 },
+      { MJTILE_2PIN, 2 }, { -1, 0 },
+    },
+    .meld = {
+      { MJFURO_TYPE_INVALID, 0, 0, 0 }
+    },
+    .num_dora = 0,
+    .num_honba = 0, .num_riichibo = 0,
+    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .tsumo = true, .riichi = false, .ippatsu = false,
+    .answer = {
+      .han = 6, .fu = 20,
+      .point = {
+        .point = 12000,
+        .feed.tsumo.oya = 6000,
+        .feed.tsumo.ko = 3000,
+      },
+      .yaku_flags = MJSCORE_FLAG_TSUMO | MJSCORE_FLAG_TANYAO | MJSCORE_FLAG_PINFU | MJSCORE_FLAG_RYANPEKO,
+    }
+  },
+  {
+    .agarihai = MJTILE_9SOU,
+    .tiles = {
+      { MJTILE_1SOU, 2 }, { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 },
+      { MJTILE_7SOU, 2 }, { MJTILE_8SOU, 2 }, { MJTILE_9SOU, 4 },
+      { -1, 0 },
+    },
+    .meld = {
+      { MJFURO_TYPE_INVALID, 0, 0, 0 }
+    },
+    .num_dora = 0,
+    .num_honba = 0, .num_riichibo = 0,
+    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .tsumo = false, .riichi = false, .ippatsu = false,
+    .answer = {
+      .han = 13, .fu = 30,
+      .point = {
+        .point = 32000,
+        .feed.point = 32000,
+      },
+      .yaku_flags = MJSCORE_FLAG_CHINITSU | MJSCORE_FLAG_JYUNCHANTA | MJSCORE_FLAG_PINFU | MJSCORE_FLAG_RYANPEKO,
+    }
+  },
+  {
+    .agarihai = MJTILE_9PIN,
+    .tiles = {
+      { MJTILE_1PIN, 3 }, { MJTILE_9PIN, 3 }, { MJTILE_HAKU, 3 },
+      { MJTILE_HATU, 2 }, { MJTILE_CHUN, 3 }, { -1, 0 },
+    },
+    .meld = {
+      { MJFURO_TYPE_INVALID, 0, 0, 0 }
+    },
+    .num_dora = 0,
+    .num_honba = 0, .num_riichibo = 0,
+    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .tsumo = false, .riichi = false, .ippatsu = false,
+    .answer = {
+      .han = 13, .fu = 60,
+      .point = {
+        .point = 32000,
+        .feed.point = 32000,
+      },
+      .yaku_flags = MJSCORE_FLAG_HONROUTO | MJSCORE_FLAG_TOITOIHO | MJSCORE_FLAG_SANANKO | MJSCORE_FLAG_HONITSU | MJSCORE_FLAG_SYOSANGEN | MJSCORE_FLAG_CHUN | MJSCORE_FLAG_HAKU,
+    }
+  },
 };
 
 /* 役満手のテストケース */
