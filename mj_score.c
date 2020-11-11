@@ -712,7 +712,7 @@ static void MJScore_CalculateFu(
       /* 辺張/嵌張待ち */
       if (pmentsu->type == MJMENTSU_TYPE_SYUNTSU) {
         if ((MJTILE_NUMBER_IS(info->agarihai, 3) && (info->agarihai == (pmentsu->minhai + 2)))
-            || (MJTILE_NUMBER_IS(info->agarihai, 1) && (info->agarihai == (pmentsu->minhai)))
+            || (MJTILE_NUMBER_IS(info->agarihai, 7) && (info->agarihai == pmentsu->minhai))
             || (info->agarihai == (pmentsu->minhai + 1))) {
           tmp_fu += 2;
           break;
