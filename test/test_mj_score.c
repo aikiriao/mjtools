@@ -1743,10 +1743,10 @@ static void MJScoreTest_CalculateTestForList(const struct MJScoreTestCase *test_
   for (i = 0; i < num_test; i++) {
     struct MJScore get;
     struct MJAgariInformation agari_info;
-    MJScoreApiResult ret;
+    MJScoreCalculationResult ret;
     const struct MJScoreTestCase *pcase = &test_cases[i];
     MJScoreTest_ConvertTestCaseToAgariInformation(pcase, &agari_info);
-    if ((ret = MJScore_CalculateScore(&agari_info, &get)) != MJSCORE_APIRESULT_OK) {
+    if ((ret = MJScore_CalculateScore(&agari_info, &get)) != MJSCORE_CALCRESULT_OK) {
       printf("NG at test case index:%d api result:%d \n", i, ret);
       is_ok = 0;
       break;

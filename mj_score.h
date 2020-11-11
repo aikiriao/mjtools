@@ -57,18 +57,18 @@
 /* 役の成立フラグが立っているか確認するマクロ 0で不成立, 0以外で成立 */
 #define MJSCORE_GET_YAKUFLAG(flag, yaku) ((flag) & (yaku))
 
-/* API結果型 */
-typedef enum MJScoreApiResultTag {
-  MJSCORE_APIRESULT_OK = 0,
-  MJSCORE_APIRESULT_INVALID_ARGUMENT, /* 引数が不正 */
-  MJSCORE_APIRESULT_INVALID_AGARIHAI, /* 和了牌が異常 */
-  MJSCORE_APIRESULT_INVALID_KAZE,     /* 風情報が無効 */
-  MJSCORE_APIRESULT_FURO_RIICHI,      /* 鳴いてリーチしている */
-  MJSCORE_APIRESULT_ABNORMAL_NUM_HAI, /* 牌数が14枚でない */
-  MJSCORE_APIRESULT_NOT_AGARI,        /* 和了っていない */
-  MJSCORE_APIRESULT_NOT_YAKU,         /* 役がつかなかった */
-  MJSCORE_APIRESULT_NG, 
-} MJScoreApiResult;
+/* 計算結果型 */
+typedef enum MJScoreCalculationResultTag {
+  MJSCORE_CALCRESULT_OK = 0,
+  MJSCORE_CALCRESULT_INVALID_ARGUMENT, /* 引数が不正 */
+  MJSCORE_CALCRESULT_INVALID_AGARIHAI, /* 和了牌が異常 */
+  MJSCORE_CALCRESULT_INVALID_KAZE,     /* 風情報が無効 */
+  MJSCORE_CALCRESULT_FURO_RIICHI,      /* 鳴いてリーチしている */
+  MJSCORE_CALCRESULT_ABNORMAL_NUM_HAI, /* 牌数が14枚でない */
+  MJSCORE_CALCRESULT_NOT_AGARI,        /* 和了っていない */
+  MJSCORE_CALCRESULT_NOT_YAKU,         /* 役がつかなかった */
+  MJSCORE_CALCRESULT_NG, 
+} MJScoreCalculationResult;
 
 /* 副露の識別型 */
 typedef enum MJMeldTypeTag {
@@ -162,13 +162,13 @@ extern "C"
 #endif /* __cplusplus */
 
 /* ルールコンフィグの取得 */
-MJScoreApiResult MJScore_GetRuleConfig(struct MJScoreRuleConfig *rule_config);
+void MJScore_GetRuleConfig(struct MJScoreRuleConfig *rule_config);
 
 /* ルールコンフィグの設定 */
-MJScoreApiResult MJScore_SetRuleConfig(const struct MJScoreRuleConfig *rule_config);
+void MJScore_SetRuleConfig(const struct MJScoreRuleConfig *rule_config);
 
 /* 得点計算 */
-MJScoreApiResult MJScore_CalculateScore(const struct MJAgariInformation *info, struct MJScore *score);
+MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation *info, struct MJScore *score);
 
 #ifdef __cplusplus
 }

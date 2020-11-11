@@ -120,31 +120,29 @@ static struct MJScoreRuleConfig st_rule_config = {
 };
 
 /* ルールコンフィグの取得 */
-MJScoreApiResult MJScore_GetRuleConfig(struct MJScoreRuleConfig *rule_config)
+void MJScore_GetRuleConfig(struct MJScoreRuleConfig *rule_config)
 {
   /* 引数チェック */
   if (rule_config == NULL) {
-    return MJSCORE_APIRESULT_INVALID_ARGUMENT;
+    return;
   }
 
   (*rule_config) = st_rule_config;
-  return MJSCORE_APIRESULT_OK;
 }
 
 /* ルールコンフィグの設定 */
-MJScoreApiResult MJScore_SetRuleConfig(const struct MJScoreRuleConfig *rule_config)
+void MJScore_SetRuleConfig(const struct MJScoreRuleConfig *rule_config)
 {
   /* 引数チェック */
   if (rule_config == NULL) {
-    return MJSCORE_APIRESULT_INVALID_ARGUMENT;
+    return;
   }
 
   st_rule_config = (*rule_config);
-  return MJSCORE_APIRESULT_OK;
 }
 
 /* 得点計算 */
-MJScoreApiResult MJScore_CalculateScore(const struct MJAgariInformation *info, struct MJScore *score)
+MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation *info, struct MJScore *score)
 {
   struct MJScore tmp_score;
   struct MJHand merged_hand;
@@ -152,22 +150,22 @@ MJScoreApiResult MJScore_CalculateScore(const struct MJAgariInformation *info, s
 
   /* 引数チェック */
   if ((info == NULL) || (score == NULL)) {
-    return MJSCORE_APIRESULT_INVALID_ARGUMENT;
+    return MJSCORE_CALCRESULT_INVALID_ARGUMENT;
   }
 
   /* 和了牌が異常 */
   if (!MJTILE_IS_SUHAI(info->agarihai) && !MJTILE_IS_JIHAI(info->agarihai)) {
-    return MJSCORE_APIRESULT_INVALID_AGARIHAI;
+    return MJSCORE_CALCRESULT_INVALID_AGARIHAI;
   }
 
   /* 風情報が無効 */
   if ((info->jikaze == MJKAZE_INVALID) || (info->bakaze == MJKAZE_INVALID)) {
-    return MJSCORE_APIRESULT_INVALID_KAZE;
+    return MJSCORE_CALCRESULT_INVALID_KAZE;
   }
 
   /* 鳴いてリーチしている */
   if ((info->num_meld > 0) && (info->riichi || info->double_riichi)) {
-    return MJSCORE_APIRESULT_INVALID_KAZE;
+    return MJSCORE_CALCRESULT_INVALID_KAZE;
   }
 
   /* 牌数が14枚あるかチェック */
@@ -179,7 +177,7 @@ MJScoreApiResult MJScore_CalculateScore(const struct MJAgariInformation *info, s
     }
     num_hai += 3 * info->num_meld;
     if (num_hai != 14) {
-      return MJSCORE_APIRESULT_ABNORMAL_NUM_HAI;
+      return MJSCORE_CALCRESULT_ABNORMAL_NUM_HAI;
     }
   }
 
@@ -190,7 +188,7 @@ MJScoreApiResult MJScore_CalculateScore(const struct MJAgariInformation *info, s
   /* 和了ってない */
   if ((normal_syanten != -1)
       && (chitoi_syanten != -1) && (kokusi_syanten != -1)) {
-    return MJSCORE_APIRESULT_NOT_AGARI;
+    return MJSCORE_CALCRESULT_NOT_AGARI;
   }
 
   /* 副露牌を手牌にマージ */
@@ -350,7 +348,7 @@ CALCULATE_SCORE:
 
   /* 役がついていない（おそらく実装ミス） */
   if (tmp_score.han == 0) {
-    return MJSCORE_APIRESULT_NOT_YAKU;
+    return MJSCORE_CALCRESULT_NOT_YAKU;
   }
 
   /* 得点計算 */
@@ -359,7 +357,7 @@ CALCULATE_SCORE:
   /* 成功 */
   (*score) = tmp_score;
 
-  return MJSCORE_APIRESULT_OK;
+  return MJSCORE_CALCRESULT_OK;
 }
 
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */
