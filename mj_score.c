@@ -165,7 +165,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
 
   /* 鳴いてリーチしている */
   if ((info->num_meld > 0) && (info->riichi || info->double_riichi)) {
-    return MJSCORE_CALCRESULT_INVALID_KAZE;
+    return MJSCORE_CALCRESULT_FURO_RIICHI;
   }
 
   /* 牌数が14枚あるかチェック */
