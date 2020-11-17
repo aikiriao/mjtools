@@ -12,13 +12,13 @@
 #define MJSCORE_ROUND_UP(val, n)          ((((val) + ((n) - 1)) / (n)) * (n))
 
 /* 役満の翻数 */
-#define MJSCORE_FAN_YAKUMAN    13
-#define MJSCORE_FAN_2YAKUMAN   26
-#define MJSCORE_FAN_3YAKUMAN   39
-#define MJSCORE_FAN_4YAKUMAN   52
-#define MJSCORE_FAN_5YAKUMAN   65
-#define MJSCORE_FAN_6YAKUMAN   78
-#define MJSCORE_FAN_7YAKUMAN   91
+#define MJSCORE_HAN_YAKUMAN    13
+#define MJSCORE_HAN_2YAKUMAN   26
+#define MJSCORE_HAN_3YAKUMAN   39
+#define MJSCORE_HAN_4YAKUMAN   52
+#define MJSCORE_HAN_5YAKUMAN   65
+#define MJSCORE_HAN_6YAKUMAN   78
+#define MJSCORE_HAN_7YAKUMAN   91
 
 /* 手牌を構成する面子の種類 */
 typedef enum MJMentsuTypeTag {
@@ -232,20 +232,20 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
 
   /* 国士無双判定 */
   if (kokusi_syanten == -1) {
-    tmp_score.han = MJSCORE_FAN_YAKUMAN;
+    tmp_score.han = MJSCORE_HAN_YAKUMAN;
     /* 天和/地和判定 */
     if (info->tenho) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_TENHO);
-      tmp_score.han = MJSCORE_FAN_2YAKUMAN;
+      tmp_score.han = MJSCORE_HAN_2YAKUMAN;
     } else if (info->chiho) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_CHIHO);
-      tmp_score.han = MJSCORE_FAN_2YAKUMAN;
+      tmp_score.han = MJSCORE_HAN_2YAKUMAN;
     }
     /* 13面待ち */
     if (MJScore_IsKokushimusou13(info, &merged_hand)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_KOKUSHIMUSOU13);
       if (st_rule_config.kokushi13_as_double) {
-        tmp_score.han = MJSCORE_FAN_2YAKUMAN;
+        tmp_score.han = MJSCORE_HAN_2YAKUMAN;
       }
     } else {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_KOKUSHIMUSOU);
@@ -259,18 +259,18 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
     /* 天和/地和判定 */
     if (info->tenho) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_TENHO);
-      tmp_score.han = MJSCORE_FAN_YAKUMAN;
+      tmp_score.han = MJSCORE_HAN_YAKUMAN;
     } else if (info->chiho) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_CHIHO);
-      tmp_score.han = MJSCORE_FAN_YAKUMAN;
+      tmp_score.han = MJSCORE_HAN_YAKUMAN;
     }
     /* 字一色 */
     if (MJScore_IsTsuiso(info, &merged_hand)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_FLAG_TSUISO);
-      tmp_score.han = (tmp_score.han == MJSCORE_FAN_YAKUMAN) ? MJSCORE_FAN_2YAKUMAN : MJSCORE_FAN_YAKUMAN;
+      tmp_score.han = (tmp_score.han == MJSCORE_HAN_YAKUMAN) ? MJSCORE_HAN_2YAKUMAN : MJSCORE_HAN_YAKUMAN;
     }
     /* 役満成立時は終わり */
-    if (tmp_score.han >= MJSCORE_FAN_YAKUMAN) {
+    if (tmp_score.han >= MJSCORE_HAN_YAKUMAN) {
       goto CALCULATE_SCORE;
     }
     /* 七対子の基本翻/符をセット */
@@ -374,78 +374,78 @@ static bool MJScore_CalculateYakuman(
   /* 天和 */
   if (info->tenho) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_TENHO);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 地和 */
   if (info->chiho) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_CHIHO);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 九蓮宝燈 */
   if (MJScore_IsChurenpouton(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_CHURENPOUTON);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
     goto YAKUMAN_EXIT;
   }
   /* 九蓮宝燈9面待ち */
   if (MJScore_IsChurenpouton9(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_CHURENPOUTON9);
-    tmp.han += MJSCORE_FAN_2YAKUMAN;
+    tmp.han += MJSCORE_HAN_2YAKUMAN;
     goto YAKUMAN_EXIT;
   }
   /* 四暗刻単騎待ち */
   if (MJScore_IsSuankoTanki(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_SUANKOTANKI);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
     /* 四暗刻単騎をダブル役満にする場合 */
     if (st_rule_config.suankotanki_as_double) {
-      tmp.han += MJSCORE_FAN_YAKUMAN;
+      tmp.han += MJSCORE_HAN_YAKUMAN;
     }
   }
   /* 四暗刻 */
   if (MJScore_IsSuanko(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_SUANKO);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 緑一色 */
   if (MJScore_IsRyuiso(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_RYUISO);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 清老頭 */
   if (MJScore_IsChinroto(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_CHINROTO);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 大四喜 */
   if (MJScore_IsDaisushi(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_DAISUSHI);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 小四喜 */
   if (MJScore_IsSyosushi(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_SYOSUSHI);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 字一色 */
   if (MJScore_IsTsuiso(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_TSUISO);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 四槓子 */
   if (MJScore_IsSukantsu(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_SUKANTSU);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 大三元 */
   if (MJScore_IsDaisangen(info, merged_hand)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_DAISANGEN);
-    tmp.han += MJSCORE_FAN_YAKUMAN;
+    tmp.han += MJSCORE_HAN_YAKUMAN;
   }
 
 YAKUMAN_EXIT:
   /* 役満成立 */
-  if (tmp.han >= MJSCORE_FAN_YAKUMAN) {
+  if (tmp.han >= MJSCORE_HAN_YAKUMAN) {
     (*score) = tmp;
     return true;
   }
@@ -867,7 +867,7 @@ static void MJScore_AppendMergedHandHan(
     tmp.han += 2;
   }
   /* 槍槓 */
-  if (info->rinsyan) {
+  if (info->cyankan) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_FLAG_CHANKAN);
     tmp.han += 1;
   }
@@ -956,21 +956,27 @@ static void MJScore_CalculatePointFromHanFu(
     /* 3倍満 */
     case 11: case 12:          basic_point =     6000; break;
     /* 役満 */
-    case MJSCORE_FAN_YAKUMAN:  basic_point =     8000; break;
+    case MJSCORE_HAN_YAKUMAN:  basic_point =     8000; break;
     /* ダブル役満 */
-    case MJSCORE_FAN_2YAKUMAN: basic_point = 2 * 8000; break;
+    case MJSCORE_HAN_2YAKUMAN: basic_point = 2 * 8000; break;
     /* トリプル役満 */
-    case MJSCORE_FAN_3YAKUMAN: basic_point = 3 * 8000; break;
+    case MJSCORE_HAN_3YAKUMAN: basic_point = 3 * 8000; break;
     /* 4倍役満 */
-    case MJSCORE_FAN_4YAKUMAN: basic_point = 4 * 8000; break;
+    case MJSCORE_HAN_4YAKUMAN: basic_point = 4 * 8000; break;
     /* 5倍役満 */
-    case MJSCORE_FAN_5YAKUMAN: basic_point = 5 * 8000; break;
+    case MJSCORE_HAN_5YAKUMAN: basic_point = 5 * 8000; break;
     /* 6倍役満 */
-    case MJSCORE_FAN_6YAKUMAN: basic_point = 6 * 8000; break;
+    case MJSCORE_HAN_6YAKUMAN: basic_point = 6 * 8000; break;
     /* 7倍役満 */
-    case MJSCORE_FAN_7YAKUMAN: basic_point = 7 * 8000; break;
-    /* 実装ミス */
-    default: assert(0);
+    case MJSCORE_HAN_7YAKUMAN: basic_point = 7 * 8000; break;
+    default: 
+      /* 数え役満 */
+      if (han >= MJSCORE_HAN_YAKUMAN) {
+        basic_point = 8000;
+        break;
+      }
+      /* それ以外は実装ミス */
+      assert(0);
   }
 
   /* 満貫切り上げ */
