@@ -40,16 +40,16 @@ int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJHand *hand)
   memcpy(&tmp, hand, sizeof(struct MJHand));
 
   min_shanten = 8;
-	for (i = 0; i < MJTILE_MAX; i++) {
-		/* 頭を抜いて調べる */
-		if (tmp.hand[i] >= 2) {            
-			tmp.hand[i] -= 2;
+  for (i = 0; i < MJTILE_MAX; i++) {
+    /* 頭を抜いて調べる */
+    if (tmp.hand[i] >= 2) {            
+      tmp.hand[i] -= 2;
       /* 向聴数計算 頭を抜くので-1 */
       shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp) - 1;
       if (shanten < min_shanten) { min_shanten = shanten; }
-			tmp.hand[i] += 2;
-		}
-	}
+      tmp.hand[i] += 2;
+    }
+  }
 
   /* 雀頭がない場合を含めるため、頭を抜かずに調べる */
   shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp);
