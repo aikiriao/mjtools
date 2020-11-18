@@ -85,14 +85,6 @@ typedef enum MJMeldTypeTag {
   MJFURO_TYPE_KAKAN,       /* 加槓   */
 } MJMeldType;
 
-/* 他家の識別型 */
-typedef enum MJTachaTypeTag {
-  MJTACHA_TYPE_INVALID = 0,  /* 無効値 */
-  MJTACHA_TYPE_SHIMOCHA,     /* 下家   */
-  MJTACHA_TYPE_TOIMEN,       /* 対面   */
-  MJTACHA_TYPE_KAMICHA,      /* 上家   */
-} MJTachaType;
-
 /* 風 */
 typedef enum MJKazeTag {
   MJKAZE_INVALID = 0,  /* 無効値 */
@@ -106,8 +98,6 @@ typedef enum MJKazeTag {
 struct MJMeld {
   MJMeldType  type;     /* 種類 */
   uint8_t     minhai;   /* 副露を構成する牌で最小の識別整数を持つ牌 */
-  uint8_t     nakihai;  /* 副露を構成する牌で鳴いた牌 */ /* TODO: もしかしたらいらない？ */
-  MJTachaType tacha;    /* 上がった人から見た、鳴いた他家 */ /* TODO: もしかしたらいらない？ */
 };
 
 /* 和了時の状態 */
