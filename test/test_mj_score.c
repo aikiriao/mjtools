@@ -6,6 +6,55 @@
 /* テスト対象のモジュール */
 #include "../mj_score.c"
 
+/* 役をフラグ化したもの */
+#define MJSCORE_FLAG_RIICHI           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_RIICHI)
+#define MJSCORE_FLAG_DOUBLERIICHI     MJSCORE_YAKU_FLAG(MJSCORE_YAKU_DOUBLERIICHI)
+#define MJSCORE_FLAG_IPPATSU          MJSCORE_YAKU_FLAG(MJSCORE_YAKU_IPPATSU)
+#define MJSCORE_FLAG_TSUMO            MJSCORE_YAKU_FLAG(MJSCORE_YAKU_TSUMO)
+#define MJSCORE_FLAG_TANYAO           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_TANYAO)
+#define MJSCORE_FLAG_PINFU            MJSCORE_YAKU_FLAG(MJSCORE_YAKU_PINFU)
+#define MJSCORE_FLAG_IPEKO            MJSCORE_YAKU_FLAG(MJSCORE_YAKU_IPEKO)
+#define MJSCORE_FLAG_BAKAZE           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_BAKAZE)
+#define MJSCORE_FLAG_JIKAZE           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_JIKAZE)
+#define MJSCORE_FLAG_HAKU             MJSCORE_YAKU_FLAG(MJSCORE_YAKU_HAKU)
+#define MJSCORE_FLAG_HATU             MJSCORE_YAKU_FLAG(MJSCORE_YAKU_HATU)
+#define MJSCORE_FLAG_CHUN             MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHUN)
+#define MJSCORE_FLAG_RINSHAN          MJSCORE_YAKU_FLAG(MJSCORE_YAKU_RINSHAN)
+#define MJSCORE_FLAG_CHANKAN          MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHANKAN)
+#define MJSCORE_FLAG_HAITEITSUMO      MJSCORE_YAKU_FLAG(MJSCORE_YAKU_HAITEITSUMO)
+#define MJSCORE_FLAG_HOUTEIRON        MJSCORE_YAKU_FLAG(MJSCORE_YAKU_HOUTEIRON)
+#define MJSCORE_FLAG_SANSYOKUDOUJYUN  MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SANSYOKUDOUJYUN)
+#define MJSCORE_FLAG_IKKITSUKAN       MJSCORE_YAKU_FLAG(MJSCORE_YAKU_IKKITSUKAN)
+#define MJSCORE_FLAG_CHANTA           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHANTA)
+#define MJSCORE_FLAG_CHITOITSU        MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHITOITSU)
+#define MJSCORE_FLAG_TOITOIHO         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_TOITOIHO)
+#define MJSCORE_FLAG_SANANKO          MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SANANKO)
+#define MJSCORE_FLAG_HONROUTO         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_HONROUTO)
+#define MJSCORE_FLAG_SANSYOKUDOUKOKU  MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SANSYOKUDOUKOKU)
+#define MJSCORE_FLAG_SANKANTSU        MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SANKANTSU)
+#define MJSCORE_FLAG_SYOSANGEN        MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SYOSANGEN)
+#define MJSCORE_FLAG_HONITSU          MJSCORE_YAKU_FLAG(MJSCORE_YAKU_HONITSU)
+#define MJSCORE_FLAG_JYUNCHANTA       MJSCORE_YAKU_FLAG(MJSCORE_YAKU_JYUNCHANTA)
+#define MJSCORE_FLAG_RYANPEKO         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_RYANPEKO)
+#define MJSCORE_FLAG_CHINITSU         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHINITSU)
+#define MJSCORE_FLAG_TENHO            MJSCORE_YAKU_FLAG(MJSCORE_YAKU_TENHO)
+#define MJSCORE_FLAG_CHIHO            MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHIHO)
+#define MJSCORE_FLAG_KOKUSHIMUSOU     MJSCORE_YAKU_FLAG(MJSCORE_YAKU_KOKUSHIMUSOU)
+#define MJSCORE_FLAG_KOKUSHIMUSOU13   MJSCORE_YAKU_FLAG(MJSCORE_YAKU_KOKUSHIMUSOU13)
+#define MJSCORE_FLAG_CHURENPOUTON     MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHURENPOUTON)
+#define MJSCORE_FLAG_CHURENPOUTON9    MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHURENPOUTON9)
+#define MJSCORE_FLAG_SUANKO           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SUANKO)
+#define MJSCORE_FLAG_SUANKOTANKI      MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SUANKOTANKI)
+#define MJSCORE_FLAG_DAISUSHI         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_DAISUSHI)
+#define MJSCORE_FLAG_SYOSUSHI         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SYOSUSHI)
+#define MJSCORE_FLAG_DAISANGEN        MJSCORE_YAKU_FLAG(MJSCORE_YAKU_DAISANGEN)
+#define MJSCORE_FLAG_TSUISO           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_TSUISO)
+#define MJSCORE_FLAG_CHINROTO         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_CHINROTO)
+#define MJSCORE_FLAG_RYUISO           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_RYUISO)
+#define MJSCORE_FLAG_SUKANTSU         MJSCORE_YAKU_FLAG(MJSCORE_YAKU_SUKANTSU)
+#define MJSCORE_FLAG_DORA             MJSCORE_YAKU_FLAG(MJSCORE_YAKU_DORA)
+#define MJSCORE_FLAG_NAGASHIMANGAN    MJSCORE_YAKU_FLAG(MJSCORE_YAKU_NAGASHIMANGAN)
+
 /* 1枚の牌情報 */
 struct TileInfo {
   int8_t  type;   /* 牌の種類(-1で終わり) */
@@ -34,6 +83,25 @@ void MJScoreTest_Setup(void);
 /* 成立確認した役フラグ（カバレージの簡易評価用） */
 static uint64_t st_established_yaku_flags = 0;
 
+/* 計算関数のラッパー */
+static MJScoreCalculationResult MJScoreTest_CalculateScoreWrapper(const struct MJAgariInformation *info, struct MJScore *score)
+{
+  MJScoreCalculationResult ret;
+
+  /* 計算API実行 */
+  ret = MJScore_CalculateScore(info, score);
+
+  /* 役確認フラグを立てる */
+  if (ret == MJSCORE_CALCRESULT_OK) {
+    st_established_yaku_flags |= score->yaku_flags;
+  }
+
+  return ret;
+}
+
+/* テスト内での呼び出しをラッパーに差し替える */
+#define MJScore_CalculateScore(info, score) MJScoreTest_CalculateScoreWrapper(info, score)
+
 /* 牌の文字列変換テーブル */
 static const char *tile_string_table[MJTILE_MAX] = {
   "invalid",
@@ -46,7 +114,7 @@ static const char *tile_string_table[MJTILE_MAX] = {
   "TON", "NAN", "SHA", "PEE", "HAKU", "HATU", "CHUN",
 };
 
-/* 役名テーブル（フラグの左シフト量が対応するインデックスになっている） */
+/* 役名テーブル（IDに対応する文字列が並ぶ） */
 static const char *yaku_name_table[] = {
   "RIICHI",           "DOUBLERIICHI",   "IPPATSU",      "TSUMO",
   "TANYAO",           "PINFU",          "IPEKO",        "BAKAZE",
@@ -1771,6 +1839,22 @@ static int MJScoreTest_Initialize(void *obj)
 static int MJScoreTest_Finalize(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
+
+  /* 確認していない役を表示 */
+  {
+    uint32_t yaku, num_established;
+    uint32_t num_yakus = sizeof(yaku_name_table) / sizeof(yaku_name_table[0]);
+
+    printf("Non-established yaku list: \n");
+    num_established = 0;
+    for (yaku = 0; yaku < num_yakus; yaku++) {
+      if (!MJSCORE_IS_YAKU_ESTABLISHED(st_established_yaku_flags, yaku)) {
+        printf("%s, ", yaku_name_table[yaku]);
+        num_established++;
+      }
+    }
+    printf("(rest:%d/total:%d) \n", num_established, num_yakus);
+  }
   return 0;
 }
 
@@ -1817,8 +1901,8 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
   /* 未対応フラグはfalseをセット */
   agari_info->double_riichi = false;
   agari_info->haitei = false;
-  agari_info->rinsyan = false;
-  agari_info->cyankan = false;
+  agari_info->rinshan = false;
+  agari_info->chankan = false;
   agari_info->nagashimangan = false;
   agari_info->tenho = false;
   agari_info->chiho = false;
@@ -1832,8 +1916,7 @@ static void MJScoreTest_PrintEstablishedYakus(uint64_t yaku_flags)
 
   /* フラグが立っている役を全て表示 */
   for (index = 0; index < sizeof(yaku_name_table) / sizeof(yaku_name_table[0]); index++) {
-    uint64_t flag = (1ULL << index);
-    if (MJSCORE_GET_YAKUFLAG(yaku_flags, flag)) {
+    if (MJSCORE_IS_YAKU_ESTABLISHED(yaku_flags, index)) {
       printf("%s", yaku_name_table[index]);
       printf("%s", SEPARATOR);
     }
@@ -1892,25 +1975,23 @@ static void MJScoreTest_CalculateTestForList(const struct MJScoreTestCase *test_
   /* 全ケースで確認 */
   is_ok = 1;
   for (i = 0; i < num_test; i++) {
-    struct MJScore get;
+    struct MJScore score;
     struct MJAgariInformation agari_info;
     MJScoreCalculationResult ret;
     const struct MJScoreTestCase *pcase = &test_cases[i];
     MJScoreTest_ConvertTestCaseToAgariInformation(pcase, &agari_info);
-    if ((ret = MJScore_CalculateScore(&agari_info, &get)) != MJSCORE_CALCRESULT_OK) {
+    if ((ret = MJScore_CalculateScore(&agari_info, &score)) != MJSCORE_CALCRESULT_OK) {
       printf("NG at test case index:%d api result:%d \n", i, ret);
       is_ok = 0;
       break;
     }
-    if (!MJScoreTest_CheckScoreResult(pcase->tsumo, &get, &(pcase->answer))) {
+    if (!MJScoreTest_CheckScoreResult(pcase->tsumo, &score, &(pcase->answer))) {
       printf("NG at test case index:%d \n", i);
       printf("Answer: "); MJScoreTest_PrintMJScore(&(pcase->answer)); printf("\n");
-      printf("Get:    "); MJScoreTest_PrintMJScore(&get); printf("\n");
+      printf("Get:    "); MJScoreTest_PrintMJScore(&score); printf("\n");
       is_ok = 0;
       break;
     }
-    /* 確認した役のフラグを立てる */
-    st_established_yaku_flags |= get.yaku_flags;
   }
 
   /* 全正解を期待 */
@@ -1922,28 +2003,275 @@ static void MJScoreTest_CalculateForEasycases(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
-  /* 確認した役のフラグをクリア */
-  st_established_yaku_flags = 0;
-
   {
     MJScoreTest_CalculateTestForList(normal_test_cases, sizeof(normal_test_cases) / sizeof(normal_test_cases[0]));
     MJScoreTest_CalculateTestForList(yakuman_test_cases, sizeof(yakuman_test_cases) / sizeof(yakuman_test_cases[0]));
   }
+}
 
-  /* 確認していない役を表示 */
+/* 偶然役に対する得点計算 */
+static void MJScoreTest_CalculateForOcassionalcases(void *obj)
+{
+  TEST_UNUSED_PARAMETER(obj);
+
+  /* 通常役に対しての海底・嶺上開花・槍槓・天和・地和の成立テスト */
   {
-    uint32_t yaku, num_established;
-    uint32_t num_yakus = sizeof(yaku_name_table) / sizeof(yaku_name_table[0]);
+    uint32_t i, is_ok;
+    const uint32_t num_test_cases = sizeof(normal_test_cases) / sizeof(normal_test_cases[0]);
 
-    printf("Non-established yaku list: \n");
-    num_established = 0;
-    for (yaku = 0; yaku < num_yakus; yaku++) {
-      if (!MJSCORE_GET_YAKUFLAG(st_established_yaku_flags, (1ULL << yaku))) {
-        printf("%s, ", yaku_name_table[yaku]);
-        num_established++;
+    is_ok = 1;
+    for (i = 0; i < num_test_cases; i++) {
+      struct MJScore score, modified_score;
+      struct MJAgariInformation agari_info, modified_info;
+      MJScoreCalculationResult ret;
+
+      /* まず偶然役がない場合の得点計算 */
+      MJScoreTest_ConvertTestCaseToAgariInformation(&normal_test_cases[i], &agari_info);
+      if ((ret = MJScore_CalculateScore(&agari_info, &score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+
+      /* ダブルリーチ */
+      if (agari_info.riichi) {
+        /* 立直をダブルリーチに差し替える */
+        modified_info = agari_info;
+        modified_info.riichi = false; /* 立直は消す */
+        modified_info.double_riichi = true;
+        if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+          printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+          is_ok = 0;
+          break;
+        }
+        /* 1翻上がっているはず */
+        if (modified_score.han != (score.han + 1)) {
+          printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+              __LINE__, i, score.han, modified_score.han);
+          is_ok = 0;
+          break;
+        }
+        /* 役フラグのチェック */
+        if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_DOUBLERIICHI)) {
+          printf("%d: NG at test case index:%d \n", __LINE__, i);
+          is_ok = 0;
+          break;
+        }
+      }
+
+      /* 海底 */
+      modified_info = agari_info;
+      modified_info.haitei = true;
+      if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+      /* 1翻上がっているはず */
+      if (modified_score.han != (score.han + 1)) {
+        printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+            __LINE__, i, score.han, modified_score.han);
+        is_ok = 0;
+        break;
+      }
+      /* 役フラグのチェック */
+      if (!(agari_info.tsumo && MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_HAITEITSUMO))
+          && !(!agari_info.tsumo && MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_HOUTEIRON))) {
+        printf("%d: NG at test case index:%d \n", __LINE__, i);
+        is_ok = 0;
+        break;
+      }
+
+      /* 嶺上開花 */
+      {
+        struct MJHand merged_hand;
+
+        /* カンが含まれているか確かめるために手牌にマージ */
+        MJScore_MergeFuroToHand(&agari_info, &merged_hand);
+
+        /* カンが含まれていれば嶺上開花を加えてテスト */
+        if (MJScore_CountNumKan(&merged_hand) > 0) {
+          modified_info = agari_info;
+          modified_info.rinshan = true;
+          if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+            printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+            is_ok = 0;
+            break;
+          }
+          /* 1翻上がっているはず */
+          if (modified_score.han != (score.han + 1)) {
+            printf("Origin: "); MJScoreTest_PrintMJScore(&score); printf("\n");
+            printf("Get:    "); MJScoreTest_PrintMJScore(&modified_score); printf("\n");
+            printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+                __LINE__, i, score.han, modified_score.han);
+            is_ok = 0;
+            break;
+          }
+          /* 役フラグのチェック */
+          if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_RINSHAN)) {
+            printf("%d: NG at test case index:%d \n", __LINE__, i);
+            is_ok = 0;
+            break;
+          }
+        }
+      }
+
+      /* 槍槓: 明らかに成立しない七対子以外で調査 */
+      /* 注意: 単騎待ちでないと成立しないがそれ以外も槍槓をつけてチェックしている */
+      if (!MJSCORE_IS_YAKU_ESTABLISHED(score.yaku_flags, MJSCORE_YAKU_CHITOITSU)) {
+        modified_info = agari_info;
+        modified_info.chankan = true;
+        if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+          printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+          is_ok = 0;
+          break;
+        }
+        /* 1翻上がっているはず */
+        if (modified_score.han != (score.han + 1)) {
+          printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+              __LINE__, i, score.han, modified_score.han);
+          is_ok = 0;
+          break;
+        }
+        /* 役フラグのチェック */
+        if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_CHANKAN)) {
+          printf("%d: NG at test case index:%d \n", __LINE__, i);
+          is_ok = 0;
+          break;
+        }
+      }
+
+      /* 天和 */
+      modified_info = agari_info;
+      modified_info.tenho = true;
+      if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+      /* 役満以上になるはず */
+      if (modified_score.han < MJSCORE_HAN_YAKUMAN) {
+        printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+            __LINE__, i, score.han, modified_score.han);
+        is_ok = 0;
+        break;
+      }
+      /* 役フラグのチェック */
+      if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_TENHO)) {
+        printf("%d: NG at test case index:%d \n", __LINE__, i);
+        is_ok = 0;
+        break;
+      }
+
+      /* 地和 */
+      modified_info = agari_info;
+      modified_info.chiho = true;
+      if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+      /* 役満以上になるはず */
+      if (modified_score.han < MJSCORE_HAN_YAKUMAN) {
+        printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+            __LINE__, i, score.han, modified_score.han);
+        is_ok = 0;
+        break;
+      }
+      /* 役フラグのチェック */
+      if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_CHIHO)) {
+        printf("%d: NG at test case index:%d \n", __LINE__, i);
+        is_ok = 0;
+        break;
       }
     }
-    printf("(rest:%d/total:%d) \n", num_established, num_yakus);
+
+    /* 全正解を期待 */
+    Test_AssertEqual(is_ok, 1);
+  }
+
+  /* 天和・地和と他の役満の複合テスト（積み込みか？） */
+  {
+    uint32_t i, is_ok;
+    const uint32_t num_test_cases = sizeof(yakuman_test_cases) / sizeof(yakuman_test_cases[0]);
+
+    is_ok = 1;
+    for (i = 0; i < num_test_cases; i++) {
+      struct MJScore score, modified_score;
+      struct MJAgariInformation agari_info, modified_info;
+      MJScoreCalculationResult ret;
+
+      /* まず偶然役がない場合の得点計算 */
+      MJScoreTest_ConvertTestCaseToAgariInformation(&yakuman_test_cases[i], &agari_info);
+      if ((ret = MJScore_CalculateScore(&agari_info, &score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+
+      /* 天和 */
+      modified_info = agari_info;
+      modified_info.tenho = true;
+      if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+      /* ダブル役満以上になるはず */
+      if (modified_score.han < MJSCORE_HAN_2YAKUMAN) {
+        printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+            __LINE__, i, score.han, modified_score.han);
+        is_ok = 0;
+        break;
+      }
+      /* 役フラグのチェック */
+      if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_TENHO)) {
+        printf("%d: NG at test case index:%d \n", __LINE__, i);
+        is_ok = 0;
+        break;
+      }
+
+      /* 地和 */
+      modified_info = agari_info;
+      modified_info.chiho = true;
+      if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
+        printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
+        is_ok = 0;
+        break;
+      }
+      /* ダブル役満以上になるはず */
+      if (modified_score.han < MJSCORE_HAN_2YAKUMAN) {
+        printf("%d: NG at test case index:%d base fan:%d modified fan:%d \n",
+            __LINE__, i, score.han, modified_score.han);
+        is_ok = 0;
+        break;
+      }
+      /* 役フラグのチェック */
+      if (!MJSCORE_IS_YAKU_ESTABLISHED(modified_score.yaku_flags, MJSCORE_YAKU_CHIHO)) {
+        printf("%d: NG at test case index:%d \n", __LINE__, i);
+        is_ok = 0;
+        break;
+      }
+    }
+
+    /* 全正解を期待 */
+    Test_AssertEqual(is_ok, 1);
+  }
+
+  /* 流し満貫テスト */
+  {
+    struct MJScore score;
+    struct MJAgariInformation agari_info;
+
+    /* まっさらな状態で流し満貫フラグだけ立てる */
+    memset(&agari_info, 0, sizeof(struct MJAgariInformation));
+    agari_info.nagashimangan = true;
+
+    Test_AssertEqual(MJScore_CalculateScore(&agari_info, &score), MJSCORE_CALCRESULT_OK);
+    /* 満貫(5翻)になるはず */
+    Test_AssertEqual(score.han, 5);
+    /* 役フラグチェック */
+    Test_AssertEqual(score.yaku_flags, MJSCORE_FLAG_NAGASHIMANGAN);
   }
 }
 
@@ -1954,4 +2282,5 @@ void MJScoreTest_Setup(void)
         NULL, MJScoreTest_Initialize, MJScoreTest_Finalize);
 
   Test_AddTest(suite, MJScoreTest_CalculateForEasycases);
+  Test_AddTest(suite, MJScoreTest_CalculateForOcassionalcases);
 }
