@@ -77,12 +77,12 @@ typedef enum MJScoreCalculationResultTag {
 
 /* 副露の識別型 */
 typedef enum MJMeldTypeTag {
-  MJFURO_TYPE_INVALID = 0, /* 無効値 */
-  MJFURO_TYPE_PUNG,        /* ポン   */
-  MJFURO_TYPE_CHOW,        /* チー   */
-  MJFURO_TYPE_ANKAN,       /* 暗槓   */
-  MJFURO_TYPE_MINKAN,      /* 明槓   */
-  MJFURO_TYPE_KAKAN,       /* 加槓   */
+  MJMELD_TYPE_INVALID = 0, /* 無効値 */
+  MJMELD_TYPE_PUNG,        /* ポン   */
+  MJMELD_TYPE_CHOW,        /* チー   */
+  MJMELD_TYPE_ANKAN,       /* 暗槓   */
+  MJMELD_TYPE_MINKAN,      /* 明槓   */
+  MJMELD_TYPE_KAKAN,       /* 加槓   */
 } MJMeldType;
 
 /* 風 */

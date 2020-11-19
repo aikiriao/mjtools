@@ -23,8 +23,8 @@
 /* 手牌を構成する面子の種類 */
 typedef enum MJMentsuTypeTag {
   MJMENTSU_TYPE_INVALID = 0, /* 無効値 */
-  MJMENTSU_TYPE_PUNG,         /* ポン   */
-  MJMENTSU_TYPE_CHOW,         /* チー   */
+  MJMENTSU_TYPE_PUNG,        /* ポン   */
+  MJMENTSU_TYPE_CHOW,        /* チー   */
   MJMENTSU_TYPE_ANKAN,       /* 暗槓   */
   MJMENTSU_TYPE_MINKAN,      /* 明槓   */
   MJMENTSU_TYPE_ANKO,        /* 暗刻   */
@@ -467,11 +467,11 @@ static void MJScore_CalculateDividedHandHanFu(
     pmentsu->minhai = info->meld[i].minhai;
     /* 副露の種類の読み替え */
     switch (info->meld[i].type) {
-      case MJFURO_TYPE_PUNG: pmentsu->type = MJMENTSU_TYPE_PUNG; break;
-      case MJFURO_TYPE_CHOW: pmentsu->type = MJMENTSU_TYPE_CHOW; break;
-      case MJFURO_TYPE_ANKAN: pmentsu->type = MJMENTSU_TYPE_ANKAN; break;
-      case MJFURO_TYPE_MINKAN:
-      case MJFURO_TYPE_KAKAN:
+      case MJMELD_TYPE_PUNG: pmentsu->type = MJMENTSU_TYPE_PUNG; break;
+      case MJMELD_TYPE_CHOW: pmentsu->type = MJMENTSU_TYPE_CHOW; break;
+      case MJMELD_TYPE_ANKAN: pmentsu->type = MJMENTSU_TYPE_ANKAN; break;
+      case MJMELD_TYPE_MINKAN:
+      case MJMELD_TYPE_KAKAN:
         pmentsu->type = MJMENTSU_TYPE_MINKAN;
         break;
       default: assert(0);
@@ -511,15 +511,15 @@ static void MJScore_MergeFuroToHand(const struct MJAgariInformation *info, struc
   for (i = 0; i < info->num_meld; i++) {
     pmeld = &(info->meld[i]);
     switch (pmeld->type) {
-      case MJFURO_TYPE_CHOW:
+      case MJMELD_TYPE_CHOW:
         hai[pmeld->minhai]++; hai[pmeld->minhai + 1]++; hai[pmeld->minhai + 2]++;
         break;
-      case MJFURO_TYPE_PUNG:
+      case MJMELD_TYPE_PUNG:
         hai[pmeld->minhai] += 3;
         break;
-      case MJFURO_TYPE_ANKAN:
-      case MJFURO_TYPE_MINKAN:
-      case MJFURO_TYPE_KAKAN:
+      case MJMELD_TYPE_ANKAN:
+      case MJMELD_TYPE_MINKAN:
+      case MJMELD_TYPE_KAKAN:
         hai[pmeld->minhai] += 4;
         break;
       default:

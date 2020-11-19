@@ -106,7 +106,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -129,9 +129,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8PIN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_7MAN },
-      { MJFURO_TYPE_ANKAN, MJTILE_CHUN },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_CHOW, MJTILE_7MAN },
+      { MJMELD_TYPE_ANKAN, MJTILE_CHUN },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -153,10 +153,10 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_ANKAN, MJTILE_9PIN },
-      { MJFURO_TYPE_PUNG, MJTILE_CHUN },
-      { MJFURO_TYPE_PUNG, MJTILE_HATU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_ANKAN, MJTILE_9PIN },
+      { MJMELD_TYPE_PUNG, MJTILE_CHUN },
+      { MJMELD_TYPE_PUNG, MJTILE_HATU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 1,
     .num_honba = 1, .num_riichibo = 0,
@@ -178,9 +178,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_ANKAN, MJTILE_3PIN },
-      { MJFURO_TYPE_CHOW, MJTILE_5PIN },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_ANKAN, MJTILE_3PIN },
+      { MJMELD_TYPE_CHOW, MJTILE_5PIN },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -202,9 +202,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4PIN, 1 }, { MJTILE_HATU, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5SOU },
-      { MJFURO_TYPE_CHOW, MJTILE_1SOU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_CHOW, MJTILE_5SOU },
+      { MJMELD_TYPE_CHOW, MJTILE_1SOU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -226,10 +226,10 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8PIN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG,  MJTILE_NAN },
-      { MJFURO_TYPE_PUNG, MJTILE_4SOU },
-      { MJFURO_TYPE_CHOW, MJTILE_1MAN },
-      { MJFURO_TYPE_INVALID, 0, }
+      { MJMELD_TYPE_PUNG,  MJTILE_NAN },
+      { MJMELD_TYPE_PUNG, MJTILE_4SOU },
+      { MJMELD_TYPE_CHOW, MJTILE_1MAN },
+      { MJMELD_TYPE_INVALID, 0, }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -254,7 +254,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4SOU, 2 }, { MJTILE_5SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -280,7 +280,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_5SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -305,7 +305,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_TON,  2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -330,7 +330,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -353,9 +353,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7PIN, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5SOU },
-      { MJFURO_TYPE_PUNG, MJTILE_8MAN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_5SOU },
+      { MJMELD_TYPE_PUNG, MJTILE_8MAN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -378,8 +378,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_2PIN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_2PIN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -404,8 +404,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_HATU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_HATU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -430,8 +430,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_1PIN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_1PIN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -455,9 +455,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8PIN, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_1PIN },
-      { MJFURO_TYPE_PUNG, MJTILE_CHUN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_1PIN },
+      { MJMELD_TYPE_PUNG, MJTILE_CHUN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -483,7 +483,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -506,10 +506,10 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_HAKU },
-      { MJFURO_TYPE_PUNG, MJTILE_5SOU },
-      { MJFURO_TYPE_CHOW, MJTILE_7SOU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_HAKU },
+      { MJMELD_TYPE_PUNG, MJTILE_5SOU },
+      { MJMELD_TYPE_CHOW, MJTILE_7SOU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -534,7 +534,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 1 }, { MJTILE_9SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -556,9 +556,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_2SOU },
-      { MJFURO_TYPE_CHOW, MJTILE_5PIN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_2SOU },
+      { MJMELD_TYPE_CHOW, MJTILE_5PIN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -581,8 +581,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_2PIN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_2PIN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -604,9 +604,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5MAN },
-      { MJFURO_TYPE_CHOW, MJTILE_6PIN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_5MAN },
+      { MJMELD_TYPE_CHOW, MJTILE_6PIN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -630,7 +630,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -653,8 +653,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_6SOU, 1 }, { MJTILE_SHA,  3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_CHUN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_CHUN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -679,7 +679,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -702,9 +702,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_NAN,  3 }, { MJTILE_HAKU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG,  MJTILE_TON },
-      { MJFURO_TYPE_PUNG, MJTILE_HATU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG,  MJTILE_TON },
+      { MJMELD_TYPE_PUNG, MJTILE_HATU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -728,7 +728,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -750,10 +750,10 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2SOU, 2 }, { MJTILE_4SOU, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG,  MJTILE_SHA },
-      { MJFURO_TYPE_PUNG, MJTILE_1PIN },
-      { MJFURO_TYPE_PUNG, MJTILE_8SOU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG,  MJTILE_SHA },
+      { MJMELD_TYPE_PUNG, MJTILE_1PIN },
+      { MJMELD_TYPE_PUNG, MJTILE_8SOU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -776,7 +776,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_NAN,  2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -798,8 +798,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_CHUN, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5SOU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_5SOU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -821,10 +821,10 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_1PIN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_ANKAN,  MJTILE_HATU },
-      { MJFURO_TYPE_KAKAN,  MJTILE_8MAN },
-      { MJFURO_TYPE_MINKAN, MJTILE_2SOU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_ANKAN,  MJTILE_HATU },
+      { MJMELD_TYPE_KAKAN,  MJTILE_8MAN },
+      { MJMELD_TYPE_MINKAN, MJTILE_2SOU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -846,7 +846,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2PIN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -870,7 +870,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -892,7 +892,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_HATU, 2 }, { MJTILE_CHUN, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -916,7 +916,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_6SOU, 1 }, { MJTILE_8SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 7,
     .num_honba = 0, .num_riichibo = 0,
@@ -941,7 +941,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_9SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -965,7 +965,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_6PIN, 2 }, { MJTILE_7SOU, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -991,7 +991,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1015,7 +1015,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3SOU, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1039,7 +1039,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3SOU, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1063,9 +1063,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_ANKAN,  MJTILE_5MAN },
-      { MJFURO_TYPE_PUNG,   MJTILE_HATU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_ANKAN,  MJTILE_5MAN },
+      { MJMELD_TYPE_PUNG,   MJTILE_HATU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -1089,7 +1089,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
@@ -1113,7 +1113,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1138,8 +1138,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_CHUN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_9SOU },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_9SOU },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1163,7 +1163,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_TON,  3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -1186,9 +1186,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_6SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_8MAN },
-      { MJFURO_TYPE_PUNG, MJTILE_NAN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_8MAN },
+      { MJMELD_TYPE_PUNG, MJTILE_NAN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1213,7 +1213,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1237,8 +1237,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5MAN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_5MAN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -1262,7 +1262,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
@@ -1285,9 +1285,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5SOU },
-      { MJFURO_TYPE_PUNG, MJTILE_PEE },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_CHOW, MJTILE_5SOU },
+      { MJMELD_TYPE_PUNG, MJTILE_PEE },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1312,8 +1312,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_CHUN },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_CHUN },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1338,7 +1338,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7SOU, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1363,8 +1363,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_5SOU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_CHOW, MJTILE_5SOU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1387,9 +1387,9 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_4PIN },
-      { MJFURO_TYPE_PUNG,  MJTILE_SHA },
-      { MJFURO_TYPE_INVALID, 0 },
+      { MJMELD_TYPE_PUNG, MJTILE_4PIN },
+      { MJMELD_TYPE_PUNG,  MJTILE_SHA },
+      { MJMELD_TYPE_INVALID, 0 },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1414,8 +1414,8 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_8PIN, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_CHOW, MJTILE_6SOU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_CHOW, MJTILE_6SOU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1440,7 +1440,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
@@ -1464,7 +1464,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4SOU, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1490,7 +1490,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_1PIN, 2 }, { MJTILE_8PIN, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1513,7 +1513,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_HATU, 3 }, { MJTILE_CHUN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1535,9 +1535,9 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_4MAN, 2 }, { MJTILE_CHUN, 3 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_HAKU },
-      { MJFURO_TYPE_PUNG, MJTILE_HATU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_PUNG, MJTILE_HAKU },
+      { MJMELD_TYPE_PUNG, MJTILE_HATU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1562,7 +1562,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_CHUN, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1587,7 +1587,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_CHUN, 1 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1610,9 +1610,9 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_HATU },
-      { MJFURO_TYPE_CHOW, MJTILE_2SOU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_PUNG, MJTILE_HATU },
+      { MJMELD_TYPE_CHOW, MJTILE_2SOU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1634,9 +1634,9 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_HATU },
-      { MJFURO_TYPE_PUNG, MJTILE_SHA },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_PUNG, MJTILE_HATU },
+      { MJMELD_TYPE_PUNG, MJTILE_SHA },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1658,9 +1658,9 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_9PIN },
-      { MJFURO_TYPE_PUNG, MJTILE_1SOU },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_PUNG, MJTILE_9PIN },
+      { MJMELD_TYPE_PUNG, MJTILE_1SOU },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1681,10 +1681,10 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_8MAN, 2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_MINKAN, MJTILE_1MAN },
-      { MJFURO_TYPE_ANKAN,  MJTILE_3PIN },
-      { MJFURO_TYPE_MINKAN, MJTILE_7SOU },
-      { MJFURO_TYPE_MINKAN, MJTILE_PEE },
+      { MJMELD_TYPE_MINKAN, MJTILE_1MAN },
+      { MJMELD_TYPE_ANKAN,  MJTILE_3PIN },
+      { MJMELD_TYPE_MINKAN, MJTILE_7SOU },
+      { MJMELD_TYPE_MINKAN, MJTILE_PEE },
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1706,9 +1706,9 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_NAN },
-      { MJFURO_TYPE_PUNG, MJTILE_TON },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_PUNG, MJTILE_NAN },
+      { MJMELD_TYPE_PUNG, MJTILE_TON },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1730,8 +1730,8 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_PEE,  2 }, { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_PUNG, MJTILE_NAN },
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_PUNG, MJTILE_NAN },
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1755,7 +1755,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1779,7 +1779,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { -1, 0 },
     },
     .meld = {
-      { MJFURO_TYPE_INVALID, 0 }
+      { MJMELD_TYPE_INVALID, 0 }
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
@@ -1832,7 +1832,7 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
 
   /* 副露を変換 */
   for (i = 0; i < 4; i++) {
-    if (test_case->meld[i].type == MJFURO_TYPE_INVALID) {
+    if (test_case->meld[i].type == MJMELD_TYPE_INVALID) {
       break;
     }
     agari_info->meld[i] = test_case->meld[i];
