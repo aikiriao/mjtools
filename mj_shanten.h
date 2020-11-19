@@ -10,7 +10,7 @@ struct MJHand {
 };
 
 #ifdef __cplusplus
-extern "C"
+extern "C" {
 #endif /* __cplusplus */
 
 /* 通常手の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
