@@ -3,6 +3,7 @@
 #include "mj_random_xoshiro256pp.h"
 #include "mj_utility.h"
 
+#include <assert.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -197,6 +198,8 @@ MJDeckApiResult MJDeck_GetNumRemainHais(const struct MJDeck *deck, uint32_t *num
     return MJDECK_APIRESULT_NOT_SHUFFLED;
   }
 
+  assert((deck->tsumo_pos + deck->rinshan_pos) <= 122);
+
   /* 成功終了 */
   (*num_remain_hais) = 122 - deck->tsumo_pos - deck->rinshan_pos;
   return MJDECK_APIRESULT_OK;
@@ -214,6 +217,8 @@ MJDeckApiResult MJDeck_GetNumRemainRinshanHais(const struct MJDeck *deck, uint32
   if (!deck->shufffled) {
     return MJDECK_APIRESULT_NOT_SHUFFLED;
   }
+
+  assert(deck->rinshan_pos <= 4);
 
   /* 成功終了 */
   (*num_remain_hais) = 4 - deck->rinshan_pos;
