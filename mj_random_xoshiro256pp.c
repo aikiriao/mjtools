@@ -52,14 +52,14 @@ const struct MJRandomGeneratorInterface *MJRandomXoshiro256pp_GetInterface(void)
 static uint64_t MJRandomXoshiro256pp_RotateLeft(const uint64_t x, int32_t k)
 {
   assert(k >= 0);
-	return (x << k) | (x >> (64 - k));
+  return (x << k) | (x >> (64 - k));
 }
 
 /* 次の乱数値の取得 */
 static uint64_t MJRandomXoshiro256pp_Next(struct MJRandomXoshiro256pp *random)
 {
   uint64_t *s;
-	uint64_t result, t;
+  uint64_t result, t;
 
   assert(random != NULL);
 
@@ -68,14 +68,14 @@ static uint64_t MJRandomXoshiro256pp_Next(struct MJRandomXoshiro256pp *random)
   result = MJRandomXoshiro256pp_RotateLeft(s[0] + s[3], 23) + s[0];
   t = s[1] << 17;
 
-	s[2] ^= s[0];
-	s[3] ^= s[1];
-	s[1] ^= s[2];
-	s[0] ^= s[3];
-	s[2] ^= t;
-	s[3] = MJRandomXoshiro256pp_RotateLeft(s[3], 45);
+  s[2] ^= s[0];
+  s[3] ^= s[1];
+  s[1] ^= s[2];
+  s[0] ^= s[3];
+  s[2] ^= t;
+  s[3] = MJRandomXoshiro256pp_RotateLeft(s[3], 45);
 
-	return result;
+  return result;
 }
 
 /* [0,max]の範囲の一様乱数を生成 */
