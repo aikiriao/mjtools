@@ -427,6 +427,48 @@ static void MJDeckTest_TsumoTest(void *obj)
   }
 }
 
+/* ドラ取得テスト */
+static void MJDeckTest_GetDoraTest(void *obj)
+{
+  TEST_UNUSED_PARAMETER(obj);
+
+  /* 基本ケース */
+  {
+    struct MJDeck *deck;
+    struct MJDoraHai dora;
+    uint8_t hai;
+
+    deck = MJDeck_Create(NULL, NULL, 0);
+
+    /* シャッフル前は取得できない */
+    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_NOT_SHUFFLED);
+
+    /* シャッフル */
+    MJDeck_Shuffle(deck);
+
+    /* ドラ取得 */
+    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(dora.num_dora, 1);
+
+    /* 嶺上自摸してドラが増えるはず */
+    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(dora.num_dora, 2);
+    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(dora.num_dora, 3);
+    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(dora.num_dora, 4);
+    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(dora.num_dora, 5);
+
+    MJDeck_Destroy(deck);
+  }
+}
+ 
+
 void MJDeckTest_Setup(void)
 {
   struct TestSuite *suite
@@ -436,5 +478,6 @@ void MJDeckTest_Setup(void)
   Test_AddTest(suite, MJDeckTest_CreateDestroyTest);
   Test_AddTest(suite, MJDeckTest_ShuffleTest);
   Test_AddTest(suite, MJDeckTest_TsumoTest);
+  Test_AddTest(suite, MJDeckTest_GetDoraTest);
 }
 
