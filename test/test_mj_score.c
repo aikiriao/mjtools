@@ -2037,7 +2037,7 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
         struct MJHand merged_hand;
 
         /* カンが含まれているか確かめるために手牌にマージ */
-        MJScore_MergeFuroToHand(&agari_info, &merged_hand);
+        MJScore_MergeMeldToHand(&agari_info, &merged_hand);
 
         /* カンが含まれていれば嶺上開花を加えてテスト */
         if (MJScore_CountNumKan(&merged_hand) > 0) {

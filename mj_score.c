@@ -58,7 +58,7 @@ static void MJScore_CalculatePointFromHanFu(
     const struct MJAgariInformation *info, int32_t han, int32_t fu, struct MJPoint *point);
 
 /* 副露牌を手牌にマージ */
-static void MJScore_MergeFuroToHand(const struct MJAgariInformation *info, struct MJHand *merged_hand);
+static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struct MJHand *merged_hand);
 /* 面子の切り分け */
 static void MJScore_DivideMentsu(
   const struct MJAgariInformation *info, struct MJHand *hand,
@@ -213,7 +213,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 副露牌を手牌にマージ */
-  MJScore_MergeFuroToHand(info, &merged_hand);
+  MJScore_MergeMeldToHand(info, &merged_hand);
 
   /* カン無しで嶺上開花 */
   if (info->rinshan && (MJScore_CountNumKan(&merged_hand) == 0)) {
@@ -494,7 +494,7 @@ static void MJScore_CalculateDividedHandHanFu(
 }
 
 /* 副露牌を手牌にマージ */
-static void MJScore_MergeFuroToHand(const struct MJAgariInformation *info, struct MJHand *merged_hand)
+static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struct MJHand *merged_hand)
 {
   int32_t i;
   struct MJHand tmp;
