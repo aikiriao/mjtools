@@ -1,13 +1,13 @@
 CC 		    = gcc
-CFLAGS 	  = -std=c99 -O0 -g3 -Wall -Wextra -Wpedantic -Wformat=2 -Wstrict-aliasing=2 -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition
+CFLAGS 	  	= -std=c99 -O0 -g3 -Wall -Wextra -Wpedantic -Wformat=2 -Wstrict-aliasing=2 -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition
 CPPFLAGS	= -DDEBUG
 LDFLAGS		= -O0
-LDLIBS    = -lm
-SRC				= test_main.c test.c test_mj_tile.c test_mj_shanten.c test_mj_score.c test_mj_random_xorshiro256pp.c
-SRC				+= test_mj_deck.c
-INCLUDE   = 
-OBJS	 		= $(SRC:%.c=%.o) 
-TARGET    = test 
+LDLIBS    	= -lm
+SRC			= test_main.c test.c test_mj_tile.c test_mj_shanten.c test_mj_score.c test_mj_random_xorshiro256pp.c
+SRC			+= test_mj_deck.c
+INCLUDE   	= 
+OBJS	 	= $(SRC:%.c=%.o) 
+TARGET    	= test 
 
 all: $(TARGET) 
 
