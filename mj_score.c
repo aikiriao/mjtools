@@ -181,7 +181,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
 
   /* 鳴いてリーチしている */
   if ((info->num_meld > 0) && (info->riichi || info->double_riichi)) {
-    return MJSCORE_CALCRESULT_FURO_RIICHI;
+    return MJSCORE_CALCRESULT_MELD_RIICHI;
   }
 
   /* 立直とダブルリーチが両立している */
