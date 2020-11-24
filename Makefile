@@ -1,12 +1,12 @@
 CC 		    = gcc
-AR				= ar
+AR			= ar
 CFLAGS 	  = -std=c99 -O0 -g3 -Wall -Wextra -Wpedantic -Wformat=2 -Wstrict-aliasing=2 -Wconversion -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition
 CPPFLAGS	= -DDEBUG
 LDFLAGS		= -Wall -Wextra -Wpedantic -O0
 LDLIBS		= -lm
 ARFLAGS		= r
 
-SRCS      = mj_shanten.c mj_score.c
+SRCS      = mj_shanten.c mj_score.c mj_random_xoshiro256pp.c mj_deck.c
 OBJS			= $(SRCS:%.c=%.o)
 TARGETS   = libmjtools.a
 
