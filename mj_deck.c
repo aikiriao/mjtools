@@ -3,6 +3,7 @@
 #include "mj_random_xoshiro256pp.h"
 #include "mj_utility.h"
 
+#include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #include <stdbool.h>
@@ -255,7 +256,8 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 
   /* シャッフル（Fisher-Yatesのシャッフル） */
   for (i = 136; i > 1; i--) {
-    uint8_t j, tmp;
+    uint32_t j;
+    uint8_t tmp;
     j = deck->random_if->GetRandom(deck->random, 0, i - 1);
     tmp = deck_work[i - 1];
     deck_work[i - 1] = deck_work[j];
