@@ -284,7 +284,7 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 }
 
 /* 1枚ツモる */
-MJDeckApiResult MJDeck_Tsumo(struct MJDeck *deck, uint8_t *hai)
+MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, uint8_t *hai)
 {
   MJDeckApiResult ret;
   uint32_t num_remain_hais;
@@ -316,7 +316,7 @@ MJDeckApiResult MJDeck_Tsumo(struct MJDeck *deck, uint8_t *hai)
 }
 
 /* 1枚嶺上牌からツモる（ドラ表示が増える） */
-MJDeckApiResult MJDeck_RinshanTsumo(struct MJDeck *deck, uint8_t *hai)
+MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, uint8_t *hai)
 {
   MJDeckApiResult ret;
   uint32_t num_remain_hais;

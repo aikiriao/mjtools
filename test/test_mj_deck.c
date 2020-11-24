@@ -265,7 +265,7 @@ CHECK_END:
 }
 
 /* 自摸/嶺上自摸テスト */
-static void MJDeckTest_TsumoTest(void *obj)
+static void MJDeckTest_DrawTest(void *obj)
 {
   TEST_UNUSED_PARAMETER(obj);
 
@@ -278,7 +278,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     deck = MJDeck_Create(NULL, NULL, 0);
 
     /* シャッフル前は自摸できない */
-    Test_AssertEqual(MJDeck_Tsumo(deck, &hai), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_Draw(deck, &hai), MJDECK_APIRESULT_NOT_SHUFFLED);
     Test_AssertEqual(MJDeck_GetNumRemainHais(deck, &num_hais), MJDECK_APIRESULT_NOT_SHUFFLED);
 
     /* シャッフル */
@@ -289,7 +289,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     Test_AssertEqual(num_hais, 122);
 
     /* 自摸 */
-    Test_AssertEqual(MJDeck_Tsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_Draw(deck, &hai), MJDECK_APIRESULT_OK);
     Test_AssertCondition(MJTILE_IS_JIHAI(hai) || MJTILE_IS_SUHAI(hai));
     Test_AssertEqual(deck->tsumo_pos, 1);
 
@@ -313,7 +313,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     /* 自摸を繰り返す */
     is_ok = 1;
     for (i = 0; i < 122; i++) {
-      if (MJDeck_Tsumo(deck, &hai) != MJDECK_APIRESULT_OK) {
+      if (MJDeck_Draw(deck, &hai) != MJDECK_APIRESULT_OK) {
         is_ok = 0;
         break;
       }
@@ -329,7 +329,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     Test_AssertEqual(num_hais, 0);
 
     /* エラーの発生を確認 */
-    Test_AssertEqual(MJDeck_Tsumo(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
+    Test_AssertEqual(MJDeck_Draw(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
 
     MJDeck_Destroy(deck);
   }
@@ -343,7 +343,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     deck = MJDeck_Create(NULL, NULL, 0);
 
     /* シャッフル前は自摸できない */
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_NOT_SHUFFLED);
     Test_AssertEqual(MJDeck_GetNumRemainRinshanHais(deck, &num_hais), MJDECK_APIRESULT_NOT_SHUFFLED);
 
     /* シャッフル */
@@ -354,7 +354,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     Test_AssertEqual(num_hais, 4);
 
     /* 嶺上自摸 */
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
     Test_AssertCondition(MJTILE_IS_JIHAI(hai) || MJTILE_IS_SUHAI(hai));
     Test_AssertEqual(deck->rinshan_pos, 1);
 
@@ -385,7 +385,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     /* 嶺上自摸を繰り返す */
     is_ok = 1;
     for (i = 0; i < 4; i++) {
-      if (MJDeck_RinshanTsumo(deck, &hai) != MJDECK_APIRESULT_OK) {
+      if (MJDeck_RinshanDraw(deck, &hai) != MJDECK_APIRESULT_OK) {
         is_ok = 0;
         break;
       }
@@ -401,7 +401,7 @@ static void MJDeckTest_TsumoTest(void *obj)
     Test_AssertEqual(num_hais, 0);
 
     /* エラーの発生を確認 */
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
 
     MJDeck_Destroy(deck);
   }
@@ -417,11 +417,11 @@ static void MJDeckTest_TsumoTest(void *obj)
     /* 空になるまで自摸 */
     MJDeck_Shuffle(deck);
     for (i = 0; i < 122; i++) {
-      MJDeck_Tsumo(deck, &hai);
+      MJDeck_Draw(deck, &hai);
     }
 
     /* 嶺上自摸はできない */
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
 
     MJDeck_Destroy(deck);
   }
@@ -451,16 +451,16 @@ static void MJDeckTest_GetDoraTest(void *obj)
     Test_AssertEqual(dora.num_dora, 1);
 
     /* 嶺上自摸してドラが増えるはず */
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
     Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 2);
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
     Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 3);
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
     Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 4);
-    Test_AssertEqual(MJDeck_RinshanTsumo(deck, &hai), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
     Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 5);
 
@@ -477,7 +477,7 @@ void MJDeckTest_Setup(void)
 
   Test_AddTest(suite, MJDeckTest_CreateDestroyTest);
   Test_AddTest(suite, MJDeckTest_ShuffleTest);
-  Test_AddTest(suite, MJDeckTest_TsumoTest);
+  Test_AddTest(suite, MJDeckTest_DrawTest);
   Test_AddTest(suite, MJDeckTest_GetDoraTest);
 }
 

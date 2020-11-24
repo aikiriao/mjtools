@@ -45,10 +45,10 @@ void MJDeck_Destroy(struct MJDeck *deck);
 MJDeckApiResult MJDeck_GetDoraHai(const struct MJDeck *deck, struct MJDoraHai *dora);
 
 /* 残り自摸牌数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainHais(const struct MJDeck *deck, uint32_t *num_rest_hais);
+MJDeckApiResult MJDeck_GetNumRemainHais(const struct MJDeck *deck, uint32_t *num_remain_hais);
 
 /* 残り嶺上数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainRinshanHais(const struct MJDeck *deck, uint32_t *num_rest_hais);
+MJDeckApiResult MJDeck_GetNumRemainRinshanHais(const struct MJDeck *deck, uint32_t *num_remain_hais);
 
 /* 乱数シードのセット */
 MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed);
@@ -57,10 +57,10 @@ MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed);
 MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck);
 
 /* 1枚ツモる */
-MJDeckApiResult MJDeck_Tsumo(struct MJDeck *deck, uint8_t *hai);
+MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, uint8_t *hai);
 
 /* 1枚嶺上牌からツモる（ドラ表示が増える） */
-MJDeckApiResult MJDeck_RinshanTsumo(struct MJDeck *deck, uint8_t *hai);
+MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, uint8_t *hai);
 
 #ifdef __cplusplus
 }
