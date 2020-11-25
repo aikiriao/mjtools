@@ -81,19 +81,17 @@ static uint64_t MJRandomXoshiro256pp_Next(struct MJRandomXoshiro256pp *random)
 /* [0,max]の範囲の一様乱数を生成 */
 static uint32_t MJRandomXoshiro256pp_UniformRand(struct MJRandomXoshiro256pp *random, uint32_t max)
 {
-  uint64_t r, adjusted_max;
-  const uint64_t maxp1 = (uint64_t)max + 1;
+  uint64_t rnd;
   double uniform;
 
-  /* (max + 1)の倍数に切り捨て */
-  adjusted_max = MJUTILITY_ROUND_DOWN(UINT64_MAX, maxp1);
+  /* 64bit一様乱数の生成 */
+  rnd = MJRandomXoshiro256pp_Next(random);
 
-  /* adjusted_max未満の乱数が出るまで再抽選 */
-  while ((r = MJRandomXoshiro256pp_Next(random)) >= adjusted_max) { ; }
+  /* doubleの小数部が53bitであることを用いて[0..1)の範囲に直す */
+  /* 参考: http://prng.di.unimi.it "Generating uniform doubles in the unit interval" */
+  uniform = (rnd >> 11) * 0x1.0p-53;
 
-  /* [0, adjusted_max-1] --(/ (+ 0.5) adjusted_max)--> (0,1) --(* (max+1))--> [0,max] */
-  uniform = ((double)r + 0.5f) / adjusted_max;
-  return (uint32_t)(uniform * maxp1);
+  return (uint32_t)(uniform * ((double)max + 1));
 }
 
 /* ワークサイズ計算 */
