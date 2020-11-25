@@ -73,7 +73,7 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const int32_t 
   /* 牌を10進数に変換 */
   value = 0;
   for (number = 1; number <= 9; number++) {
-    value += suhai[number] * exp10_table[number];
+    value += (uint32_t)suhai[number] * exp10_table[number];
   }
 
   /* 開番地法: エントリ探索 */
