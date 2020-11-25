@@ -57,8 +57,8 @@
 
 /* 1枚の牌情報 */
 struct TileInfo {
-  int8_t  type;   /* 牌の種類(-1で終わり) */
-  int32_t maisu;  /* 所持数               */
+  MJTile  type;   /* 牌の種類(MJTILE_INVALIDで終わり) */
+  int32_t maisu;  /* 所持数 */
 };
 
 /* テストケース */
@@ -103,7 +103,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 },
       { MJTILE_9PIN, 2 }, { MJTILE_3SOU, 3 }, { MJTILE_4SOU, 3 },
-      { MJTILE_8SOU, 3 }, { -1, 0 },
+      { MJTILE_8SOU, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -126,7 +126,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 }, { MJTILE_4PIN, 1 },
       { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 },
-      { MJTILE_8PIN, 2 }, { -1, 0 },
+      { MJTILE_8PIN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_7MAN },
@@ -150,7 +150,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_4SOU,
     .tiles = {
       { MJTILE_6MAN, 1 }, { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 },
-      { MJTILE_4SOU, 2 }, { -1, 0 },
+      { MJTILE_4SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_ANKAN, MJTILE_9PIN },
@@ -175,7 +175,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_1SOU,
     .tiles = {
       { MJTILE_3MAN, 3 }, { MJTILE_1SOU, 2 }, { MJTILE_3SOU, 3 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_ANKAN, MJTILE_3PIN },
@@ -199,7 +199,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_HATU,
     .tiles = {
       { MJTILE_9MAN, 2 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 },
-      { MJTILE_4PIN, 1 }, { MJTILE_HATU, 3 }, { -1, 0 },
+      { MJTILE_4PIN, 1 }, { MJTILE_HATU, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5SOU },
@@ -223,7 +223,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_4MAN,
     .tiles = {
       { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 },
-      { MJTILE_8PIN, 2 }, { -1, 0 },
+      { MJTILE_8PIN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG,  MJTILE_NAN },
@@ -251,7 +251,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4MAN, 2 }, { MJTILE_6MAN, 1 }, { MJTILE_7MAN, 1 },
       { MJTILE_8MAN, 1 }, { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 },
       { MJTILE_9PIN, 1 }, { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 2 },
-      { MJTILE_4SOU, 2 }, { MJTILE_5SOU, 1 }, { -1, 0 },
+      { MJTILE_4SOU, 2 }, { MJTILE_5SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -277,7 +277,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_1PIN, 1 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 },
       { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 },
       { MJTILE_1SOU, 1 }, { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 },
-      { MJTILE_5SOU, 2 }, { -1, 0 },
+      { MJTILE_5SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -302,7 +302,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 }, { MJTILE_7MAN, 1 },
       { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 },
       { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 1 },
-      { MJTILE_TON,  2 }, { -1, 0 },
+      { MJTILE_TON,  2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -327,7 +327,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3PIN, 2 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
       { MJTILE_7PIN, 1 }, { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 },
       { MJTILE_4SOU, 1 }, { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 },
-      { MJTILE_8SOU, 1 }, { -1, 0 },
+      { MJTILE_8SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -350,7 +350,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
       { MJTILE_6MAN, 2 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
-      { MJTILE_7PIN, 1 }, { -1, 0 },
+      { MJTILE_7PIN, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5SOU },
@@ -375,7 +375,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
       { MJTILE_7MAN, 2 }, { MJTILE_8PIN, 3 }, { MJTILE_5SOU, 3 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_2PIN },
@@ -401,7 +401,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 }, { MJTILE_4PIN, 2 },
       { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 },
       { MJTILE_8PIN, 1 }, { MJTILE_9PIN, 1 }, { MJTILE_HAKU, 2 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_HATU },
@@ -427,7 +427,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2PIN, 2 }, { MJTILE_3PIN, 1 }, { MJTILE_4PIN, 1 },
       { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 2 }, { MJTILE_7PIN, 2 },
       { MJTILE_8PIN, 2 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_1PIN },
@@ -452,7 +452,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
       { MJTILE_8MAN, 2 }, { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 },
-      { MJTILE_8PIN, 1 }, { -1, 0 },
+      { MJTILE_8PIN, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_1PIN },
@@ -480,7 +480,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 }, { MJTILE_9PIN, 1 },
       { MJTILE_1SOU, 1 }, { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 },
       { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 1 }, { MJTILE_9SOU, 3 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -503,7 +503,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_6PIN,
     .tiles = {
       { MJTILE_4PIN, 3 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_HAKU },
@@ -531,7 +531,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
       { MJTILE_3PIN, 1 }, { MJTILE_4PIN, 1 }, { MJTILE_5PIN, 1 },
       { MJTILE_4SOU, 2 }, { MJTILE_6SOU, 3 }, { MJTILE_7SOU, 1 },
-      { MJTILE_8SOU, 1 }, { MJTILE_9SOU, 1 }, { -1, 0 },
+      { MJTILE_8SOU, 1 }, { MJTILE_9SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -553,7 +553,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_8MAN,
     .tiles = {
       { MJTILE_2MAN, 3 }, { MJTILE_8MAN, 3 }, { MJTILE_4SOU, 2 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_2SOU },
@@ -578,7 +578,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_4MAN, 2 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 2 },
       { MJTILE_7MAN, 2 }, { MJTILE_8MAN, 1 }, { MJTILE_4SOU, 1 },
-      { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 }, { -1, 0 },
+      { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_2PIN },
@@ -601,7 +601,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_5SOU,
     .tiles = {
       { MJTILE_4MAN, 3 }, { MJTILE_6PIN, 2 }, { MJTILE_3SOU, 1 },
-      { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 }, { -1, 0 },
+      { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5MAN },
@@ -627,7 +627,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 2 },
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_6PIN, 2 },
       { MJTILE_1SOU, 2 }, { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -650,7 +650,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_9MAN, 2 }, { MJTILE_4PIN, 1 }, { MJTILE_5PIN, 1 },
       { MJTILE_6PIN, 1 }, { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 },
-      { MJTILE_6SOU, 1 }, { MJTILE_SHA,  3 }, { -1, 0 },
+      { MJTILE_6SOU, 1 }, { MJTILE_SHA,  3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_CHUN },
@@ -676,7 +676,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_1PIN, 1 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 },
       { MJTILE_4PIN, 1 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
       { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 }, { MJTILE_9PIN, 1 },
-      { MJTILE_7SOU, 2 }, { -1, 0 },
+      { MJTILE_7SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -699,7 +699,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_HAKU,
     .tiles = {
       { MJTILE_1MAN, 1 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 },
-      { MJTILE_NAN,  3 }, { MJTILE_HAKU, 2 }, { -1, 0 },
+      { MJTILE_NAN,  3 }, { MJTILE_HAKU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG,  MJTILE_TON },
@@ -725,7 +725,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_2MAN, 2 }, { MJTILE_3MAN, 2 }, { MJTILE_4PIN, 2 },
       { MJTILE_8PIN, 2 }, { MJTILE_6SOU, 2 }, { MJTILE_7SOU, 2 },
-      { MJTILE_8SOU, 2 }, { -1, 0 },
+      { MJTILE_8SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -747,7 +747,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
   {
     .agarihai = MJTILE_2SOU,
     .tiles = {
-      { MJTILE_2SOU, 2 }, { MJTILE_4SOU, 3 }, { -1, 0 },
+      { MJTILE_2SOU, 2 }, { MJTILE_4SOU, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG,  MJTILE_SHA },
@@ -773,7 +773,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_1SOU, 2 }, { MJTILE_1PIN, 2 }, { MJTILE_9PIN, 2 },
       { MJTILE_9SOU, 2 }, { MJTILE_HAKU, 2 }, { MJTILE_PEE,  2 },
-      { MJTILE_NAN,  2 }, { -1, 0 },
+      { MJTILE_NAN,  2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -795,7 +795,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_HAKU,
     .tiles = {
       { MJTILE_2PIN, 3 }, { MJTILE_HAKU, 2 }, { MJTILE_HATU, 3 },
-      { MJTILE_CHUN, 3 }, { -1, 0 },
+      { MJTILE_CHUN, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5SOU },
@@ -818,7 +818,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_3MAN,
     .tiles = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
-      { MJTILE_1PIN, 2 }, { -1, 0 },
+      { MJTILE_1PIN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_ANKAN,  MJTILE_HATU },
@@ -843,7 +843,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_5MAN,
     .tiles = {
       { MJTILE_3MAN, 4 }, { MJTILE_4MAN, 4 }, { MJTILE_5MAN, 4 },
-      { MJTILE_2PIN, 2 }, { -1, 0 },
+      { MJTILE_2PIN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -867,7 +867,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_1SOU, 2 }, { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 },
       { MJTILE_7SOU, 2 }, { MJTILE_8SOU, 2 }, { MJTILE_9SOU, 4 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -889,7 +889,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_9PIN,
     .tiles = {
       { MJTILE_1PIN, 3 }, { MJTILE_9PIN, 3 }, { MJTILE_HAKU, 3 },
-      { MJTILE_HATU, 2 }, { MJTILE_CHUN, 3 }, { -1, 0 },
+      { MJTILE_HATU, 2 }, { MJTILE_CHUN, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -913,7 +913,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_5MAN, 3 }, { MJTILE_3PIN, 1 }, { MJTILE_4PIN, 1 },
       { MJTILE_5PIN, 1 }, { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 },
       { MJTILE_9PIN, 1 }, { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 },
-      { MJTILE_6SOU, 1 }, { MJTILE_8SOU, 2 }, { -1, 0 },
+      { MJTILE_6SOU, 1 }, { MJTILE_8SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -938,7 +938,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 },
       { MJTILE_3PIN, 2 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
       { MJTILE_7PIN, 1 }, { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 1 },
-      { MJTILE_9SOU, 1 }, { -1, 0 },
+      { MJTILE_9SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -962,7 +962,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_1MAN, 1 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 },
       { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 },
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 },
-      { MJTILE_6PIN, 2 }, { MJTILE_7SOU, 3 }, { -1, 0 },
+      { MJTILE_6PIN, 2 }, { MJTILE_7SOU, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -988,7 +988,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 },
       { MJTILE_3PIN, 2 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
       { MJTILE_7PIN, 1 }, { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 },
-      { MJTILE_8SOU, 1 }, { -1, 0 },
+      { MJTILE_8SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1012,7 +1012,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 3 },
       { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 }, { MJTILE_4PIN, 2 },
-      { MJTILE_3SOU, 3 }, { -1, 0 },
+      { MJTILE_3SOU, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1036,7 +1036,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 3 },
       { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 }, { MJTILE_4PIN, 2 },
-      { MJTILE_3SOU, 3 }, { -1, 0 },
+      { MJTILE_3SOU, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1060,7 +1060,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 }, 
       { MJTILE_2PIN, 2 }, { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 }, 
-      { MJTILE_8SOU, 1 }, { -1, 0 },
+      { MJTILE_8SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_ANKAN,  MJTILE_5MAN },
@@ -1086,7 +1086,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3MAN, 3 }, { MJTILE_5MAN, 2 }, { MJTILE_4PIN, 1 }, 
       { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 }, { MJTILE_2SOU, 3 }, 
       { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1110,7 +1110,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2MAN, 3 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 }, 
       { MJTILE_6MAN, 1 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 }, 
       { MJTILE_7PIN, 1 }, { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 },
-      { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 2 }, { -1, 0 },
+      { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1135,7 +1135,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 2 }, 
       { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 }, 
       { MJTILE_8SOU, 1 }, { MJTILE_9SOU, 1 }, 
-      { MJTILE_CHUN, 2 }, { -1, 0 },
+      { MJTILE_CHUN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_9SOU },
@@ -1160,7 +1160,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 2 }, 
       { MJTILE_6MAN, 1 }, { MJTILE_7MAN, 1 }, { MJTILE_2PIN, 2 }, 
       { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 }, { MJTILE_8SOU, 1 },
-      { MJTILE_TON,  3 }, { -1, 0 },
+      { MJTILE_TON,  3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1183,7 +1183,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 }, { MJTILE_7MAN, 1 }, 
       { MJTILE_6PIN, 2 }, { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 }, 
-      { MJTILE_6SOU, 1 }, { -1, 0 },
+      { MJTILE_6SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_8MAN },
@@ -1210,7 +1210,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_7MAN, 1 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 }, 
       { MJTILE_7PIN, 2 }, { MJTILE_8PIN, 1 }, { MJTILE_9PIN, 1 },
       { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1234,7 +1234,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, 
       { MJTILE_5PIN, 2 }, { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 }, 
       { MJTILE_8PIN, 1 }, { MJTILE_6SOU, 1 }, { MJTILE_7SOU, 1 },
-      { MJTILE_8SOU, 1 }, { -1, 0 },
+      { MJTILE_8SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5MAN },
@@ -1259,7 +1259,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_1MAN, 1 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, 
       { MJTILE_6MAN, 2 }, { MJTILE_3PIN, 3 }, { MJTILE_1SOU, 2 }, 
-      { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 }, { -1, 0 },
+      { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1282,7 +1282,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .tiles = {
       { MJTILE_9MAN, 2 }, { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 }, 
       { MJTILE_9PIN, 1 }, { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 },
-      { MJTILE_4SOU, 1 }, { -1, 0 },
+      { MJTILE_4SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5SOU },
@@ -1309,7 +1309,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, 
       { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 }, { MJTILE_4PIN, 1 },
       { MJTILE_4SOU, 3 }, { MJTILE_5SOU, 1 }, { MJTILE_6SOU, 1 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_CHUN },
@@ -1335,7 +1335,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_1PIN, 1 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 },
       { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 }, { MJTILE_8PIN, 1 },
       { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 }, { MJTILE_5SOU, 1 },
-      { MJTILE_7SOU, 2 }, { -1, 0 },
+      { MJTILE_7SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 },
@@ -1360,7 +1360,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 2 }, 
       { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 }, { MJTILE_3PIN, 1 },
       { MJTILE_4PIN, 1 }, { MJTILE_5PIN, 1 }, { MJTILE_4SOU, 2 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_5SOU },
@@ -1384,7 +1384,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .agarihai = MJTILE_2PIN,
     .tiles = {
       { MJTILE_4MAN, 2 }, { MJTILE_2PIN, 3 }, { MJTILE_4SOU, 3 }, 
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_4PIN },
@@ -1411,7 +1411,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_6MAN, 1 }, { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 },
       { MJTILE_1PIN, 2 }, { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 }, 
       { MJTILE_4PIN, 1 }, { MJTILE_6PIN, 1 }, { MJTILE_7PIN, 1 }, 
-      { MJTILE_8PIN, 1 }, { -1, 0 },
+      { MJTILE_8PIN, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_CHOW, MJTILE_6SOU },
@@ -1437,7 +1437,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_3MAN, 2 }, { MJTILE_4MAN, 3 }, { MJTILE_7MAN, 1 },
       { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 }, { MJTILE_1PIN, 1 }, 
       { MJTILE_2PIN, 1 }, { MJTILE_3PIN, 1 }, { MJTILE_2SOU, 1 }, 
-      { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 }, { -1, 0 },
+      { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1461,7 +1461,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
       { MJTILE_1MAN, 1 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 },
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 1 }, 
       { MJTILE_1SOU, 3 }, { MJTILE_2SOU, 2 }, { MJTILE_3SOU, 2 }, 
-      { MJTILE_4SOU, 1 }, { -1, 0 },
+      { MJTILE_4SOU, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1487,7 +1487,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_9MAN,
     .tiles = {
       { MJTILE_5MAN, 3 }, { MJTILE_9MAN, 3 }, { MJTILE_8SOU, 3 },
-      { MJTILE_1PIN, 2 }, { MJTILE_8PIN, 3 }, { -1, 0 },
+      { MJTILE_1PIN, 2 }, { MJTILE_8PIN, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1510,7 +1510,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_CHUN,
     .tiles = {
       { MJTILE_6PIN, 3 }, { MJTILE_7PIN, 3 }, { MJTILE_1SOU, 3 },
-      { MJTILE_HATU, 3 }, { MJTILE_CHUN, 2 }, { -1, 0 },
+      { MJTILE_HATU, 3 }, { MJTILE_CHUN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1532,7 +1532,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_1MAN,
     .tiles = {
       { MJTILE_1MAN, 1 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 },
-      { MJTILE_4MAN, 2 }, { MJTILE_CHUN, 3 }, { -1, 0 },
+      { MJTILE_4MAN, 2 }, { MJTILE_CHUN, 3 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_HAKU },
@@ -1559,7 +1559,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_9PIN, 1 }, { MJTILE_1SOU, 1 }, { MJTILE_9SOU, 1 },
       { MJTILE_TON,  2 }, { MJTILE_NAN,  1 }, { MJTILE_SHA,  1 },
       { MJTILE_PEE,  1 }, { MJTILE_HAKU, 1 }, { MJTILE_HATU, 1 },
-      { MJTILE_CHUN, 1 }, { -1, 0 },
+      { MJTILE_CHUN, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1584,7 +1584,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_9PIN, 1 }, { MJTILE_1SOU, 1 }, { MJTILE_9SOU, 1 },
       { MJTILE_TON,  2 }, { MJTILE_NAN,  1 }, { MJTILE_SHA,  1 },
       { MJTILE_PEE,  1 }, { MJTILE_HAKU, 1 }, { MJTILE_HATU, 1 },
-      { MJTILE_CHUN, 1 }, { -1, 0 },
+      { MJTILE_CHUN, 1 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1606,7 +1606,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_6SOU,
     .tiles = {
       { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 },
-      { MJTILE_6SOU, 3 }, { MJTILE_8SOU, 2 }, { -1, 0 },
+      { MJTILE_6SOU, 3 }, { MJTILE_8SOU, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_HATU },
@@ -1630,7 +1630,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_NAN,
     .tiles = {
       { MJTILE_NAN,  3 }, { MJTILE_PEE,  2 }, { MJTILE_HAKU, 3 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_HATU },
@@ -1654,7 +1654,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_9MAN,
     .tiles = {
       { MJTILE_1MAN, 2 }, { MJTILE_9MAN, 3 }, { MJTILE_9SOU, 3 },
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_9PIN },
@@ -1677,7 +1677,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
   {
     .agarihai = MJTILE_8MAN,
     .tiles = {
-      { MJTILE_8MAN, 2 }, { -1, 0 },
+      { MJTILE_8MAN, 2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_MINKAN, MJTILE_1MAN },
@@ -1702,7 +1702,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_1MAN,
     .tiles = {
       { MJTILE_1MAN, 2 }, { MJTILE_SHA,  3 }, { MJTILE_PEE,  3 }, 
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_NAN },
@@ -1726,7 +1726,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_1MAN,
     .tiles = {
       { MJTILE_1MAN, 3 }, { MJTILE_TON,  3 }, { MJTILE_SHA,  3 }, 
-      { MJTILE_PEE,  2 }, { -1, 0 },
+      { MJTILE_PEE,  2 }, { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_NAN },
@@ -1751,7 +1751,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_1MAN, 3 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, 
       { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 }, { MJTILE_6MAN, 1 }, 
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 4 }, 
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1775,7 +1775,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
       { MJTILE_1MAN, 3 }, { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, 
       { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 1 }, 
       { MJTILE_7MAN, 1 }, { MJTILE_8MAN, 1 }, { MJTILE_9MAN, 3 }, 
-      { -1, 0 },
+      { MJTILE_INVALID, 0 },
     },
     .meld = {
       { MJMELD_TYPE_INVALID, 0 }
@@ -1825,7 +1825,7 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
   for (i = 0; i < 14; i++) {
     const struct TileInfo *info = &test_case->tiles[i];
     int32_t maisu;
-    if (info->type < 0) {
+    if (!MJTILE_IS_VALID(info->type)) {
       break;
     }
     maisu = (agari_info->agarihai == info->type) ? (info->maisu - 1) : info->maisu;
