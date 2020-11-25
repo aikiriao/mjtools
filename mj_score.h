@@ -2,7 +2,6 @@
 #define MJ_SCORE_H_INCLUDED
 
 #include "mj_types.h"
-#include "mj_shanten.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -68,7 +67,7 @@ typedef enum MJScoreCalculationResultTag {
   MJSCORE_CALCRESULT_INVALID_AGARIHAI,        /* 和了牌が異常 */
   MJSCORE_CALCRESULT_INVALID_KAZE,            /* 風情報が無効 */
   MJSCORE_CALCRESULT_MELD_RIICHI,             /* 鳴いてリーチしている */
-  MJSCORE_CALCRESULT_ABNORMAL_NUM_HAI,        /* 牌数が14枚でない */
+  MJSCORE_CALCRESULT_INVALID_NUM_HAND,        /* 和了牌ふくめ牌数が14枚でない */
   MJSCORE_CALCRESULT_NOT_AGARI,               /* 和了っていない */
   MJSCORE_CALCRESULT_NOT_YAKU,                /* 役がつかなかった */
   MJSCORE_CALCRESULT_RINSHAN_WITHOUT_KAN,     /* カン無しで嶺上開花 */
@@ -78,25 +77,23 @@ typedef enum MJScoreCalculationResultTag {
 
 /* 和了時の状態 */
 struct MJAgariInformation {
-  MJTile              agarihai;       /* 和了牌 */
-  struct MJTileCount  count;          /* 手牌(和了牌含む, 副露除く) */
-  struct MJMeld       meld[4];        /* 副露情報 */
-  int32_t             num_meld;       /* 副露数 */
-  int32_t             num_dora;       /* ドラ牌数(赤牌含む) */
-  int32_t             num_honba;      /* 本場数 */
-  int32_t             num_riichibo;   /* 供託リーチ棒数 */
-  MJWind              bakaze;         /* 場風 */
-  MJWind              jikaze;         /* 自風 */
-  bool                tsumo;          /* 自摸和了？ */
-  bool                riichi;         /* 立直？ */
-  bool                ippatsu;        /* 一発？ */
-  bool                double_riichi;  /* ダブルリーチ？ */
-  bool                haitei;         /* 海底？ */
-  bool                rinshan;        /* 嶺上開花？ */
-  bool                chankan;        /* 槍槓？ */
-  bool                nagashimangan;  /* 流し満貫？ */
-  bool                tenho;          /* 天和？ */
-  bool                chiho;          /* 地和？ */
+  MJTile        agarihai;       /* 和了牌 */
+  struct MJHand hand;           /* 手牌 */
+  int32_t       num_dora;       /* ドラ牌数(赤牌含む) */
+  int32_t       num_honba;      /* 本場数 */
+  int32_t       num_riichibo;   /* 供託リーチ棒数 */
+  MJWind        bakaze;         /* 場風 */
+  MJWind        jikaze;         /* 自風 */
+  bool          tsumo;          /* 自摸和了？ */
+  bool          riichi;         /* 立直？ */
+  bool          ippatsu;        /* 一発？ */
+  bool          double_riichi;  /* ダブルリーチ？ */
+  bool          haitei;         /* 海底？ */
+  bool          rinshan;        /* 嶺上開花？ */
+  bool          chankan;        /* 槍槓？ */
+  bool          nagashimangan;  /* 流し満貫？ */
+  bool          tenho;          /* 天和？ */
+  bool          chiho;          /* 地和？ */
 };
 
 /* 得点情報 */

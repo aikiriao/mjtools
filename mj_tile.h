@@ -59,6 +59,8 @@
   (   (((t) >= MJTILE_1MAN) && ((t) <= MJTILE_9MAN))  \
    || (((t) >= MJTILE_1PIN) && ((t) <= MJTILE_9PIN))  \
    || (((t) >= MJTILE_1SOU) && ((t) <= MJTILE_9SOU)))
+/* 牌は有効な識別番号か？ */
+#define MJTILE_IS_VALID(t)  (((t) != MJTILE_INVALID) && (MJTILE_IS_JIHAI(t) || MJTILE_IS_SUHAI(t)))
 /* 牌は中張牌か？ */
 #define MJTILE_IS_CHUNCHAN(t)                         \
   (   (((t) >= MJTILE_2MAN) && ((t) <= MJTILE_8MAN))  \

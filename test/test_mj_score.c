@@ -346,7 +346,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     }
   },
   {
-    .agarihai = MJTILE_6SOU,
+    .agarihai = MJTILE_6MAN,
     .tiles = {
       { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 1 }, { MJTILE_5MAN, 1 },
       { MJTILE_6MAN, 2 }, { MJTILE_5PIN, 1 }, { MJTILE_6PIN, 1 },
@@ -1032,7 +1032,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     }
   },
   {
-    .agarihai = MJTILE_7MAN,
+    .agarihai = MJTILE_4PIN,
     .tiles = {
       { MJTILE_2MAN, 1 }, { MJTILE_3MAN, 1 }, { MJTILE_4MAN, 3 },
       { MJTILE_5MAN, 2 }, { MJTILE_6MAN, 2 }, { MJTILE_4PIN, 2 },
@@ -1606,8 +1606,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     .agarihai = MJTILE_6SOU,
     .tiles = {
       { MJTILE_2SOU, 1 }, { MJTILE_3SOU, 1 }, { MJTILE_4SOU, 1 },
-      { MJTILE_6SOU, 3 }, { MJTILE_8SOU, 2 }, { MJTILE_6SOU, 3 },
-      { -1, 0 },
+      { MJTILE_6SOU, 3 }, { MJTILE_8SOU, 2 }, { -1, 0 },
     },
     .meld = {
       { MJMELD_TYPE_PUNG, MJTILE_HATU },
@@ -1811,7 +1810,7 @@ static int MJScoreTest_Finalize(void *obj)
 /* テストケースを和了情報に変換 */
 static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTestCase *test_case, struct MJAgariInformation *agari_info)
 {
-  int32_t i;
+  int32_t i, j, pos;
 
   assert((test_case != NULL) && (agari_info != NULL));
 
@@ -1822,12 +1821,18 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
   agari_info->agarihai = test_case->agarihai;
 
   /* 手牌を変換 */
+  pos = 0;
   for (i = 0; i < 14; i++) {
     const struct TileInfo *info = &test_case->tiles[i];
+    int32_t maisu;
     if (info->type < 0) {
       break;
     }
-    agari_info->count.count[info->type] = info->maisu;
+    maisu = (agari_info->agarihai == info->type) ? (info->maisu - 1) : info->maisu;
+    for (j = 0; j < maisu; j++) {
+      agari_info->hand.hand[pos] = info->type;
+      pos++;
+    }
   }
 
   /* 副露を変換 */
@@ -1835,9 +1840,9 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
     if (test_case->meld[i].type == MJMELD_TYPE_INVALID) {
       break;
     }
-    agari_info->meld[i] = test_case->meld[i];
+    agari_info->hand.meld[i] = test_case->meld[i];
   }
-  agari_info->num_meld = i;
+  agari_info->hand.num_meld = i;
 
   agari_info->num_dora     = test_case->num_dora;
   agari_info->num_honba    = test_case->num_honba;
@@ -2037,7 +2042,7 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
         struct MJTileCount merged_count;
 
         /* カンが含まれているか確かめるために手牌にマージ */
-        MJScore_MergeMeldToHand(&agari_info, &merged_count);
+        MJScore_MergeHandToCount(&agari_info, &merged_count);
 
         /* カンが含まれていれば嶺上開花を加えてテスト */
         if (MJScore_CountNumKan(&merged_count) > 0) {
