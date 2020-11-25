@@ -1827,7 +1827,7 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
     if (info->type < 0) {
       break;
     }
-    agari_info->hand.hand[info->type] = info->maisu;
+    agari_info->count.count[info->type] = info->maisu;
   }
 
   /* 副露を変換 */
@@ -2034,13 +2034,13 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
 
       /* 嶺上開花 */
       {
-        struct MJHand merged_hand;
+        struct MJTileCount merged_count;
 
         /* カンが含まれているか確かめるために手牌にマージ */
-        MJScore_MergeMeldToHand(&agari_info, &merged_hand);
+        MJScore_MergeMeldToHand(&agari_info, &merged_count);
 
         /* カンが含まれていれば嶺上開花を加えてテスト */
-        if (MJScore_CountNumKan(&merged_hand) > 0) {
+        if (MJScore_CountNumKan(&merged_count) > 0) {
           modified_info = agari_info;
           modified_info.rinshan = true;
           if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {

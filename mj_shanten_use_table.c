@@ -20,7 +20,7 @@ struct ShantenTableEntry {
 /* 数牌の並びを頼りにテーブル探索 */
 static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const int32_t *suhai);
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand *hand);
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTileCount *count);
 
 /* 数牌の並びに対応した面子/塔子テーブル */
 static const struct ShantenTableEntry st_shanten_table[] = {
@@ -28,26 +28,26 @@ static const struct ShantenTableEntry st_shanten_table[] = {
 };
 
 /* 向聴数計算 テーブル使用版 */
-int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJHand *hand)
+int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJTileCount *count)
 {
-  struct MJHand tmp;
+  struct MJTileCount tmp;
   int32_t i, shanten, min_shanten;
 
   /* 引数チェック */
-  assert(hand != NULL);
+  assert(count != NULL);
 
   /* 作業用に手牌をコピー */
-  memcpy(&tmp, hand, sizeof(struct MJHand));
+  memcpy(&tmp, count, sizeof(struct MJTileCount));
 
   min_shanten = 8;
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 頭を抜いて調べる */
-    if (tmp.hand[i] >= 2) {            
-      tmp.hand[i] -= 2;
+    if (tmp.count[i] >= 2) {            
+      tmp.count[i] -= 2;
       /* 向聴数計算 頭を抜くので-1 */
       shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp) - 1;
       if (shanten < min_shanten) { min_shanten = shanten; }
-      tmp.hand[i] += 2;
+      tmp.count[i] += 2;
     }
   }
 
@@ -86,14 +86,14 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const int32_t 
 }
 
 /* テーブル使用時のコア処理 */
-static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand *hand)
+static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJTileCount *count)
 {
   int32_t pos, type;
   int32_t num_mentsu, num_tatsu;
   const struct ShantenTableEntry *ptable;
-  const int32_t *hai;
+  const int32_t *cnt;
 
-  assert(hand != NULL);
+  assert(count != NULL);
 
   /* 数牌の並びに関してチェック */
   MJUTILITY_STATIC_ASSERT(
@@ -102,14 +102,14 @@ static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand 
       && (MJTILE_1SOU == 21) && (MJTILE_9SOU == 29));
 
   /* 配列を頻繁に参照するので一旦オート変数に受ける */
-  hai = &hand->hand[0];
+  cnt = &count->count[0];
   /* 面子/塔子数のリセット */
   num_mentsu = num_tatsu = 0;
 
   /* 萬子, 筒子, 索子の3種類について、数牌の並びを元に面子,塔子をカウント */
   for (type = 0; type < 30; type += 10) {
     /* テーブルエントリの探索・取得 */
-    ptable = MJShanten_SearchTableEntry(&hai[type]);
+    ptable = MJShanten_SearchTableEntry(&cnt[type]);
     /* 面子/塔子数の更新 */
     num_mentsu += ptable->num_mentsu;
     num_tatsu  += ptable->num_tatsu;
@@ -117,9 +117,9 @@ static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand 
 
   /* 字牌については刻子と対子だけ数えれば良い */
   for (pos = MJTILE_TON; pos < MJTILE_MAX; pos++) {
-    if (hai[pos] == 2) {
+    if (cnt[pos] == 2) {
       num_tatsu++;
-    } else if (hai[pos] > 2) {
+    } else if (cnt[pos] > 2) {
       num_mentsu++;
     }
   }

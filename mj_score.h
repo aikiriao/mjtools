@@ -102,25 +102,25 @@ struct MJMeld {
 
 /* 和了時の状態 */
 struct MJAgariInformation {
-  uint8_t         agarihai;       /* 和了牌 */
-  struct MJHand   hand;           /* 手牌(和了牌含む, 副露除く) */
-  struct MJMeld   meld[4];        /* 副露情報 */
-  uint8_t         num_meld;       /* 副露数 */
-  uint8_t         num_dora;       /* ドラ牌数(赤牌含む) */
-  uint8_t         num_honba;      /* 本場数 */
-  uint8_t         num_riichibo;   /* 供託リーチ棒数 */
-  MJKaze          bakaze;         /* 場風 */
-  MJKaze          jikaze;         /* 自風 */
-  bool            tsumo;          /* 自摸和了？ */
-  bool            riichi;         /* 立直？ */
-  bool            ippatsu;        /* 一発？ */
-  bool            double_riichi;  /* ダブルリーチ？ */
-  bool            haitei;         /* 海底？ */
-  bool            rinshan;        /* 嶺上開花？ */
-  bool            chankan;        /* 槍槓？ */
-  bool            nagashimangan;  /* 流し満貫？ */
-  bool            tenho;          /* 天和？ */
-  bool            chiho;          /* 地和？ */
+  uint8_t             agarihai;       /* 和了牌 */
+  struct MJTileCount  count;          /* 手牌(和了牌含む, 副露除く) */
+  struct MJMeld       meld[4];        /* 副露情報 */
+  uint8_t             num_meld;       /* 副露数 */
+  uint8_t             num_dora;       /* ドラ牌数(赤牌含む) */
+  uint8_t             num_honba;      /* 本場数 */
+  uint8_t             num_riichibo;   /* 供託リーチ棒数 */
+  MJKaze              bakaze;         /* 場風 */
+  MJKaze              jikaze;         /* 自風 */
+  bool                tsumo;          /* 自摸和了？ */
+  bool                riichi;         /* 立直？ */
+  bool                ippatsu;        /* 一発？ */
+  bool                double_riichi;  /* ダブルリーチ？ */
+  bool                haitei;         /* 海底？ */
+  bool                rinshan;        /* 嶺上開花？ */
+  bool                chankan;        /* 槍槓？ */
+  bool                nagashimangan;  /* 流し満貫？ */
+  bool                tenho;          /* 天和？ */
+  bool                chiho;          /* 地和？ */
 };
 
 /* 得点情報 */

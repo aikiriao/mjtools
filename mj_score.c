@@ -46,73 +46,73 @@ struct MJDividedHand {
 
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */
 static bool MJScore_CalculateYakuman(
-  const struct MJAgariInformation *info, const struct MJHand *merged_hand, struct MJScore *score);
+  const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
 /* 切り分けが必要な手の得点計算 高点法に従い、最大点数を持つ結果をscoreに入れる */
 static void MJScore_CalculateDividedHandHanFu(
   const struct MJAgariInformation *info, struct MJScore *score);
 /* 面子の組み合わせに関係のない翻数を加算 */
 static void MJScore_AppendMergedHandHan(
-    const struct MJAgariInformation *info, const struct MJHand *merged_hand, struct MJScore *score);
+    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
 /* 翻/符から得点を計算 */
 static void MJScore_CalculatePointFromHanFu(
     const struct MJAgariInformation *info, int32_t han, int32_t fu, struct MJPoint *point);
 
 /* 副露牌を手牌にマージ */
-static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struct MJHand *merged_hand);
+static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struct MJTileCount *merged_count);
 /* 面子の切り分け */
 static void MJScore_DivideMentsu(
-  const struct MJAgariInformation *info, struct MJHand *hand,
-  struct MJDividedHand *div_hand, int32_t num_mentsu, struct MJScore *score);
+  const struct MJAgariInformation *info, struct MJTileCount *count,
+  struct MJDividedHand *div_count, int32_t num_mentsu, struct MJScore *score);
 /* 通常手の翻/符/役特定 */
 static void MJScore_CalculateYakuHanFuForDividedHand(
-    const struct MJAgariInformation *info, const struct MJDividedHand *div_hand, struct MJScore *score);
+    const struct MJAgariInformation *info, const struct MJDividedHand *div_count, struct MJScore *score);
 /* 役の特定/翻数計算 */
 static void MJScore_CalculateYakuHan(
-    const struct MJAgariInformation *info, const struct MJDividedHand *div_hand, uint64_t *yaku_flags, int32_t *han);
+    const struct MJAgariInformation *info, const struct MJDividedHand *div_count, uint64_t *yaku_flags, int32_t *han);
 /* 符計算 */
 static void MJScore_CalculateFu(
-    const struct MJAgariInformation *info, const struct MJDividedHand *div_hand, int32_t *fu);
+    const struct MJAgariInformation *info, const struct MJDividedHand *div_count, int32_t *fu);
 
 /* 盃口数（同一順子数）のカウント */
-static int32_t MJScore_CountNumPeko(const struct MJDividedHand *hand);
+static int32_t MJScore_CountNumPeko(const struct MJDividedHand *count);
 /* カン数のカウント */
-static int32_t MJScore_CountNumKan(const struct MJHand *hand);
+static int32_t MJScore_CountNumKan(const struct MJTileCount *count);
 /* 手牌から九蓮宝燈が成立しているかチェック */
-static bool MJScore_IsChurenpoutonCore(const struct MJHand *hand);
+static bool MJScore_IsChurenpoutonCore(const struct MJTileCount *count);
 /* 全帯幺が成立しているか？のコア判定処理 */
-static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const struct MJDividedHand *hand);
+static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const struct MJDividedHand *count);
 
 /* 各役が成立しているかチェックする関数 */
 /* 面子の切り分けが必要な役 */
-static bool MJScore_IsPinfu(const struct MJAgariInformation *info, const struct MJDividedHand *hand);           /* 平和 */
-static bool MJScore_IsIpeko(const struct MJAgariInformation *info, const struct MJDividedHand *hand);           /* 一盃口 */
-static bool MJScore_IsSansyokudoujyun(const struct MJAgariInformation *info, const struct MJDividedHand *hand); /* 三色同順 */
-static bool MJScore_IsIkkitsukan(const struct MJAgariInformation *info, const struct MJDividedHand *hand);      /* 一気通貫 */
-static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand);          /* 全帯幺 */
-static bool MJScore_IsToitoiho(const struct MJAgariInformation *info, const struct MJDividedHand *hand);        /* 対々和 */
-static bool MJScore_IsSananko(const struct MJAgariInformation *info, const struct MJDividedHand *hand);         /* 三暗刻 */
-static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, const struct MJDividedHand *hand); /* 三色同刻 */
-static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand);      /* 純全帯幺 */
-static bool MJScore_IsRyanpeko(const struct MJAgariInformation *info, const struct MJDividedHand *hand);        /* 二盃口 */
+static bool MJScore_IsPinfu(const struct MJAgariInformation *info, const struct MJDividedHand *count);           /* 平和 */
+static bool MJScore_IsIpeko(const struct MJAgariInformation *info, const struct MJDividedHand *count);           /* 一盃口 */
+static bool MJScore_IsSansyokudoujyun(const struct MJAgariInformation *info, const struct MJDividedHand *count); /* 三色同順 */
+static bool MJScore_IsIkkitsukan(const struct MJAgariInformation *info, const struct MJDividedHand *count);      /* 一気通貫 */
+static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct MJDividedHand *count);          /* 全帯幺 */
+static bool MJScore_IsToitoiho(const struct MJAgariInformation *info, const struct MJDividedHand *count);        /* 対々和 */
+static bool MJScore_IsSananko(const struct MJAgariInformation *info, const struct MJDividedHand *count);         /* 三暗刻 */
+static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, const struct MJDividedHand *count); /* 三色同刻 */
+static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const struct MJDividedHand *count);      /* 純全帯幺 */
+static bool MJScore_IsRyanpeko(const struct MJAgariInformation *info, const struct MJDividedHand *count);        /* 二盃口 */
 /* 手牌の切り分けが不要な役 */
-static bool MJScore_IsTanyao(const struct MJAgariInformation *info, const struct MJHand *merged_hand);          /* 断么九 */
-static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const struct MJHand *merged_hand);        /* 混老頭 */
-static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand);         /* 混一色 */
-static bool MJScore_IsChinitsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand);        /* 清一色 */
-static bool MJScore_IsSyosangen(const struct MJAgariInformation *info, const struct MJHand *merged_hand);       /* 小三元 */
-static bool MJScore_IsSankantsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand);       /* 三槓子 */
-static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, const struct MJHand *merged_hand);  /* 国士無双13面待ち */
-static bool MJScore_IsChurenpouton(const struct MJAgariInformation *info, const struct MJHand *merged_hand);    /* 九蓮宝燈 */
-static bool MJScore_IsChurenpouton9(const struct MJAgariInformation *info, const struct MJHand *merged_hand);   /* 九蓮宝燈9面待ち */
-static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct MJHand *merged_hand);          /* 四暗刻 */
-static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const struct MJHand *merged_hand);     /* 四暗刻単騎 */
-static bool MJScore_IsDaisushi(const struct MJAgariInformation *info, const struct MJHand *merged_hand);        /* 大四喜 */
-static bool MJScore_IsSyosushi(const struct MJAgariInformation *info, const struct MJHand *merged_hand);        /* 小四喜 */
-static bool MJScore_IsDaisangen(const struct MJAgariInformation *info, const struct MJHand *merged_hand);       /* 大三元 */
-static bool MJScore_IsTsuiso(const struct MJAgariInformation *info, const struct MJHand *merged_hand);          /* 字一色 */
-static bool MJScore_IsChinroto(const struct MJAgariInformation *info, const struct MJHand *merged_hand);        /* 清老頭 */
-static bool MJScore_IsRyuiso(const struct MJAgariInformation *info, const struct MJHand *merged_hand);          /* 緑一色 */
-static bool MJScore_IsSukantsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand);        /* 四槓子 */
+static bool MJScore_IsTanyao(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);          /* 断么九 */
+static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);        /* 混老頭 */
+static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);         /* 混一色 */
+static bool MJScore_IsChinitsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);        /* 清一色 */
+static bool MJScore_IsSyosangen(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);       /* 小三元 */
+static bool MJScore_IsSankantsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);       /* 三槓子 */
+static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);  /* 国士無双13面待ち */
+static bool MJScore_IsChurenpouton(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);    /* 九蓮宝燈 */
+static bool MJScore_IsChurenpouton9(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);   /* 九蓮宝燈9面待ち */
+static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);          /* 四暗刻 */
+static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);     /* 四暗刻単騎 */
+static bool MJScore_IsDaisushi(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);        /* 大四喜 */
+static bool MJScore_IsSyosushi(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);        /* 小四喜 */
+static bool MJScore_IsDaisangen(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);       /* 大三元 */
+static bool MJScore_IsTsuiso(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);          /* 字一色 */
+static bool MJScore_IsChinroto(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);        /* 清老頭 */
+static bool MJScore_IsRyuiso(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);          /* 緑一色 */
+static bool MJScore_IsSukantsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count);        /* 四槓子 */
 
 /* ルール設定項目 */
 static struct MJScoreRuleConfig st_rule_config = {
@@ -150,7 +150,7 @@ void MJScore_SetRuleConfig(const struct MJScoreRuleConfig *rule_config)
 MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation *info, struct MJScore *score)
 {
   struct MJScore tmp_score;
-  struct MJHand merged_hand;
+  struct MJTileCount merged_count;
   int32_t normal_shanten, chitoi_shanten, kokusi_shanten;
 
   /* 引数チェック */
@@ -194,7 +194,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
     int32_t i, num_hai;
     num_hai = 0;
     for (i = 0; i < MJTILE_MAX; i++) {
-      num_hai += info->hand.hand[i];
+      num_hai += info->count.count[i];
     }
     num_hai += 3 * info->num_meld; /* カンも3枚で数える */
     if (num_hai != 14) {
@@ -203,9 +203,9 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 向聴数取得 */
-  normal_shanten = MJShanten_CalculateNormalShanten(&(info->hand)) - 2 * info->num_meld;
-  chitoi_shanten = MJShanten_CalculateChitoitsuShanten(&(info->hand));
-  kokusi_shanten = MJShanten_CalculateKokushimusouShanten(&(info->hand));
+  normal_shanten = MJShanten_CalculateNormalShanten(&(info->count)) - 2 * info->num_meld;
+  chitoi_shanten = MJShanten_CalculateChitoitsuShanten(&(info->count));
+  kokusi_shanten = MJShanten_CalculateKokushimusouShanten(&(info->count));
   /* 和了ってない */
   if ((normal_shanten != -1)
       && (chitoi_shanten != -1) && (kokusi_shanten != -1)) {
@@ -213,10 +213,10 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 副露牌を手牌にマージ */
-  MJScore_MergeMeldToHand(info, &merged_hand);
+  MJScore_MergeMeldToHand(info, &merged_count);
 
   /* カン無しで嶺上開花 */
-  if (info->rinshan && (MJScore_CountNumKan(&merged_hand) == 0)) {
+  if (info->rinshan && (MJScore_CountNumKan(&merged_count) == 0)) {
     return MJSCORE_CALCRESULT_RINSHAN_WITHOUT_KAN;
   }
 
@@ -237,7 +237,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
       tmp_score.han = MJSCORE_HAN_2YAKUMAN;
     }
     /* 13面待ち */
-    if (MJScore_IsKokushimusou13(info, &merged_hand)) {
+    if (MJScore_IsKokushimusou13(info, &merged_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_KOKUSHIMUSOU13);
       if (st_rule_config.kokushi13_as_double) {
         tmp_score.han = MJSCORE_HAN_2YAKUMAN;
@@ -260,7 +260,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
       tmp_score.han = MJSCORE_HAN_YAKUMAN;
     }
     /* 字一色 */
-    if (MJScore_IsTsuiso(info, &merged_hand)) {
+    if (MJScore_IsTsuiso(info, &merged_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TSUISO);
       tmp_score.han = (tmp_score.han == MJSCORE_HAN_YAKUMAN) ? MJSCORE_HAN_2YAKUMAN : MJSCORE_HAN_YAKUMAN;
     }
@@ -303,22 +303,22 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
       tmp_score.han += info->num_dora;
     }
     /* 混老頭 */
-    if (MJScore_IsHonrouto(info, &merged_hand)) {
+    if (MJScore_IsHonrouto(info, &merged_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_HONROUTO);
       tmp_score.han += 2;
     }
     /* 清一色 */
-    if (MJScore_IsChinitsu(info, &merged_hand)) {
+    if (MJScore_IsChinitsu(info, &merged_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_CHINITSU);
       tmp_score.han += 6;
     }
     /* 混一色 */
-    if (MJScore_IsHonitsu(info, &merged_hand)) {
+    if (MJScore_IsHonitsu(info, &merged_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_HONITSU);
       tmp_score.han += 3;
     }
     /* 断么九 */
-    if (MJScore_IsTanyao(info, &merged_hand)) {
+    if (MJScore_IsTanyao(info, &merged_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TANYAO);
       tmp_score.han += 1;
     }
@@ -327,7 +327,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 国士無双以外の役満判定/翻符計算 */
-  if (MJScore_CalculateYakuman(info, &merged_hand, &tmp_score)) {
+  if (MJScore_CalculateYakuman(info, &merged_count, &tmp_score)) {
     /* 得点計算へ */
     goto CALCULATE_SCORE;
   }
@@ -336,7 +336,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   MJScore_CalculateDividedHandHanFu(info, &tmp_score);
 
   /* 面子の関係ない部分での翻数を加算 */
-  MJScore_AppendMergedHandHan(info, &merged_hand, &tmp_score);
+  MJScore_AppendMergedHandHan(info, &merged_count, &tmp_score);
 
   /* 翻/符から実際の得点計算へ */
 CALCULATE_SCORE:
@@ -357,7 +357,7 @@ CALCULATE_SCORE:
 
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */
 static bool MJScore_CalculateYakuman(
-  const struct MJAgariInformation *info, const struct MJHand *merged_hand, struct MJScore *score)
+  const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score)
 {
   struct MJScore tmp;
 
@@ -377,19 +377,19 @@ static bool MJScore_CalculateYakuman(
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 九蓮宝燈 */
-  if (MJScore_IsChurenpouton(info, merged_hand)) {
+  if (MJScore_IsChurenpouton(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHURENPOUTON);
     tmp.han += MJSCORE_HAN_YAKUMAN;
     goto YAKUMAN_EXIT;
   }
   /* 九蓮宝燈9面待ち */
-  if (MJScore_IsChurenpouton9(info, merged_hand)) {
+  if (MJScore_IsChurenpouton9(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHURENPOUTON9);
     tmp.han += MJSCORE_HAN_2YAKUMAN;
     goto YAKUMAN_EXIT;
   }
   /* 四暗刻単騎待ち */
-  if (MJScore_IsSuankoTanki(info, merged_hand)) {
+  if (MJScore_IsSuankoTanki(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SUANKOTANKI);
     tmp.han += MJSCORE_HAN_YAKUMAN;
     /* 四暗刻単騎をダブル役満にする場合 */
@@ -398,42 +398,42 @@ static bool MJScore_CalculateYakuman(
     }
   }
   /* 四暗刻 */
-  if (MJScore_IsSuanko(info, merged_hand)) {
+  if (MJScore_IsSuanko(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SUANKO);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 緑一色 */
-  if (MJScore_IsRyuiso(info, merged_hand)) {
+  if (MJScore_IsRyuiso(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_RYUISO);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 清老頭 */
-  if (MJScore_IsChinroto(info, merged_hand)) {
+  if (MJScore_IsChinroto(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHINROTO);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 大四喜 */
-  if (MJScore_IsDaisushi(info, merged_hand)) {
+  if (MJScore_IsDaisushi(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_DAISUSHI);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 小四喜 */
-  if (MJScore_IsSyosushi(info, merged_hand)) {
+  if (MJScore_IsSyosushi(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SYOSUSHI);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 字一色 */
-  if (MJScore_IsTsuiso(info, merged_hand)) {
+  if (MJScore_IsTsuiso(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TSUISO);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 四槓子 */
-  if (MJScore_IsSukantsu(info, merged_hand)) {
+  if (MJScore_IsSukantsu(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SUKANTSU);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
   /* 大三元 */
-  if (MJScore_IsDaisangen(info, merged_hand)) {
+  if (MJScore_IsDaisangen(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_DAISANGEN);
     tmp.han += MJSCORE_HAN_YAKUMAN;
   }
@@ -453,17 +453,17 @@ static void MJScore_CalculateDividedHandHanFu(
     const struct MJAgariInformation *info, struct MJScore *score)
 {
   int32_t i;
-  struct MJHand rest_hand;
-  struct MJDividedHand div_hand;
+  struct MJTileCount rest_count;
+  struct MJDividedHand div_count;
 
   assert((info != NULL) && (score != NULL));
 
   /* 分割済み手牌のクリア */
-  memset(&div_hand, 0, sizeof(struct MJDividedHand));
+  memset(&div_count, 0, sizeof(struct MJDividedHand));
 
   /* 副露牌を分割済み手牌に入れる */
   for (i = 0; i < info->num_meld; i++) {
-    struct MJMentsu *pmentsu = &(div_hand.mentsu[i]);
+    struct MJMentsu *pmentsu = &(div_count.mentsu[i]);
     pmentsu->minhai = info->meld[i].minhai;
     /* 副露の種類の読み替え */
     switch (info->meld[i].type) {
@@ -479,48 +479,48 @@ static void MJScore_CalculateDividedHandHanFu(
   }
 
   /* 手牌の面子を切り分けつつ翻/符の計算へ */
-  rest_hand = info->hand;
+  rest_count = info->count;
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 頭を抜いて調べる */
-    if (rest_hand.hand[i] >= 2) {
-      rest_hand.hand[i] -= 2;
-      div_hand.atama = (uint8_t)i;
+    if (rest_count.count[i] >= 2) {
+      rest_count.count[i] -= 2;
+      div_count.atama = (uint8_t)i;
       /* 面子の切り分けに進む */
-      MJScore_DivideMentsu(info, &rest_hand, &div_hand, info->num_meld, score);
-      div_hand.atama = 0;
-      rest_hand.hand[i] += 2;
+      MJScore_DivideMentsu(info, &rest_count, &div_count, info->num_meld, score);
+      div_count.atama = 0;
+      rest_count.count[i] += 2;
     }
   }
 }
 
 /* 副露牌を手牌にマージ */
-static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struct MJHand *merged_hand)
+static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struct MJTileCount *merged_count)
 {
   int32_t i;
-  struct MJHand tmp;
-  int32_t *hai;
+  struct MJTileCount tmp;
+  int32_t *count;
   const struct MJMeld *pmeld;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 副露以外まずコピー */
-  tmp = info->hand;
+  tmp = info->count;
 
   /* 副露牌を加える */
-  hai = &(tmp.hand[0]);
+  count = &(tmp.count[0]);
   for (i = 0; i < info->num_meld; i++) {
     pmeld = &(info->meld[i]);
     switch (pmeld->type) {
       case MJMELD_TYPE_CHOW:
-        hai[pmeld->minhai]++; hai[pmeld->minhai + 1]++; hai[pmeld->minhai + 2]++;
+        count[pmeld->minhai]++; count[pmeld->minhai + 1]++; count[pmeld->minhai + 2]++;
         break;
       case MJMELD_TYPE_PUNG:
-        hai[pmeld->minhai] += 3;
+        count[pmeld->minhai] += 3;
         break;
       case MJMELD_TYPE_ANKAN:
       case MJMELD_TYPE_MINKAN:
       case MJMELD_TYPE_KAKAN:
-        hai[pmeld->minhai] += 4;
+        count[pmeld->minhai] += 4;
         break;
       default:
         assert(0);
@@ -528,30 +528,30 @@ static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struc
   }
 
   /* 成功終了 */
-  (*merged_hand) = tmp;
+  (*merged_count) = tmp;
 }
 
 /* 面子の切り分け */
 static void MJScore_DivideMentsu(
-  const struct MJAgariInformation *info, struct MJHand *rest_hand, 
-  struct MJDividedHand *div_hand, int32_t num_mentsu, struct MJScore *score)
+  const struct MJAgariInformation *info, struct MJTileCount *rest_count, 
+  struct MJDividedHand *div_count, int32_t num_mentsu, struct MJScore *score)
 {
   int32_t i;
   int32_t *hai;
   struct MJMentsu *pmentsu;
 
-  assert((info != NULL) && (rest_hand != NULL)
-      && (div_hand != NULL) && (score != NULL));
+  assert((info != NULL) && (rest_count != NULL)
+      && (div_count != NULL) && (score != NULL));
 
   /* 面子が4つになったら切り分け終了 */
   if (num_mentsu >= 4) {
     /* 翻/符の計算へ */
-    MJScore_CalculateYakuHanFuForDividedHand(info, div_hand, score);
+    MJScore_CalculateYakuHanFuForDividedHand(info, div_count, score);
     return;
   }
 
-  hai = &(rest_hand->hand[0]);
-  pmentsu = &(div_hand->mentsu[num_mentsu]);
+  hai = &(rest_count->count[0]);
+  pmentsu = &(div_count->mentsu[num_mentsu]);
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 暗刻を抜き出して調べる */
     if (hai[i] >= 3) {
@@ -563,7 +563,7 @@ static void MJScore_DivideMentsu(
         pmentsu->type = MJMENTSU_TYPE_ANKO;
       }
       hai[i] -= 3;
-      MJScore_DivideMentsu(info, rest_hand, div_hand, num_mentsu + 1, score);
+      MJScore_DivideMentsu(info, rest_count, div_count, num_mentsu + 1, score);
       hai[i] += 3;
       pmentsu->minhai = 0;
       pmentsu->type = MJMENTSU_TYPE_INVALID;
@@ -574,7 +574,7 @@ static void MJScore_DivideMentsu(
       pmentsu->minhai = (uint8_t)i;
       pmentsu->type = MJMENTSU_TYPE_SYUNTSU;
       hai[i]--; hai[i + 1]--; hai[i + 2]--;
-      MJScore_DivideMentsu(info, rest_hand, div_hand, num_mentsu + 1, score);
+      MJScore_DivideMentsu(info, rest_count, div_count, num_mentsu + 1, score);
       hai[i]++; hai[i + 1]++; hai[i + 2]++;
       pmentsu->minhai = 0;
       pmentsu->type = MJMENTSU_TYPE_INVALID;
@@ -584,22 +584,22 @@ static void MJScore_DivideMentsu(
 
 /* 通常手の翻/符/役特定 */
 static void MJScore_CalculateYakuHanFuForDividedHand(
-    const struct MJAgariInformation *info, const struct MJDividedHand *div_hand, struct MJScore *score)
+    const struct MJAgariInformation *info, const struct MJDividedHand *div_count, struct MJScore *score)
 {
   int32_t han, fu;
   uint64_t yaku_flags;
 
-  assert((info != NULL) && (div_hand != NULL) && (score != NULL));
+  assert((info != NULL) && (div_count != NULL) && (score != NULL));
 
   /* 仮の情報をクリア */
   han = fu = 0;
   yaku_flags = 0;
 
   /* 役判定/翻数確定 */
-  MJScore_CalculateYakuHan(info, div_hand, &yaku_flags, &han);
+  MJScore_CalculateYakuHan(info, div_count, &yaku_flags, &han);
 
   /* 符計算 */
-  MJScore_CalculateFu(info, div_hand, &fu);
+  MJScore_CalculateFu(info, div_count, &fu);
 
   /* ここまでで最大の翻符数だったら特典情報更新 */
   if ((han > score->han) || ((han == score->han) && (fu > score->fu))) {
@@ -611,13 +611,13 @@ static void MJScore_CalculateYakuHanFuForDividedHand(
 
 /* 役の特定/翻数計算 */
 static void MJScore_CalculateYakuHan(
-    const struct MJAgariInformation *info, const struct MJDividedHand *div_hand,
+    const struct MJAgariInformation *info, const struct MJDividedHand *div_count,
     uint64_t *yaku_flags, int32_t *han)
 {
   int32_t tmp_han;
   uint64_t tmp_yaku_flags;
 
-  assert((info != NULL) && (div_hand != NULL) && (yaku_flags != NULL) && (han != NULL));
+  assert((info != NULL) && (div_count != NULL) && (yaku_flags != NULL) && (han != NULL));
 
   /* 情報をクリア */
   tmp_han = 0;
@@ -626,23 +626,23 @@ static void MJScore_CalculateYakuHan(
   /* 副露なしの役 */
   if (info->num_meld == 0) {
     /* 平和 */
-    if (MJScore_IsPinfu(info, div_hand)) {
+    if (MJScore_IsPinfu(info, div_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_PINFU);
       tmp_han += 1;
     }
     /* 二盃口 */
-    if (MJScore_IsRyanpeko(info, div_hand)) {
+    if (MJScore_IsRyanpeko(info, div_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_RYANPEKO);
       tmp_han += 3;
     } 
     /* 一盃口 */
-    if (MJScore_IsIpeko(info, div_hand)) {
+    if (MJScore_IsIpeko(info, div_count)) {
       MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_IPEKO);
       tmp_han += 1;
     }
   }
   /* 一気通貫 */
-  if (MJScore_IsIkkitsukan(info, div_hand)) {
+  if (MJScore_IsIkkitsukan(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_IKKITSUKAN);
     /* 食い下がり */
     if (info->num_meld > 0) {
@@ -652,7 +652,7 @@ static void MJScore_CalculateYakuHan(
     }
   }
   /* 三色同順 */
-  if (MJScore_IsSansyokudoujyun(info, div_hand)) {
+  if (MJScore_IsSansyokudoujyun(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_SANSYOKUDOUJYUN);
     /* 食い下がり */
     if (info->num_meld > 0) {
@@ -662,12 +662,12 @@ static void MJScore_CalculateYakuHan(
     }
   }
   /* 三色同刻 */
-  if (MJScore_IsSansyokudoukoku(info, div_hand)) {
+  if (MJScore_IsSansyokudoukoku(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_SANSYOKUDOUKOKU);
     tmp_han += 2;
   }
   /* 純全帯么九 */
-  if (MJScore_IsJyunchanta(info, div_hand)) {
+  if (MJScore_IsJyunchanta(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_JYUNCHANTA);
     /* 食い下がり */
     if (info->num_meld > 0) {
@@ -677,7 +677,7 @@ static void MJScore_CalculateYakuHan(
     }
   } 
   /* 混全帯么九 */
-  if (MJScore_IsChanta(info, div_hand)) {
+  if (MJScore_IsChanta(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_CHANTA);
     /* 食い下がり */
     if (info->num_meld > 0) {
@@ -687,12 +687,12 @@ static void MJScore_CalculateYakuHan(
     }
   }
   /* 対々和 */
-  if (MJScore_IsToitoiho(info, div_hand)) {
+  if (MJScore_IsToitoiho(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_TOITOIHO);
     tmp_han += 2;
   }
   /* 三暗刻 */
-  if (MJScore_IsSananko(info, div_hand)) {
+  if (MJScore_IsSananko(info, div_count)) {
     MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_SANANKO);
     tmp_han += 2;
   }
@@ -704,16 +704,16 @@ static void MJScore_CalculateYakuHan(
 
 /* 符計算 */
 static void MJScore_CalculateFu(
-    const struct MJAgariInformation *info, const struct MJDividedHand *div_hand, int32_t *fu)
+    const struct MJAgariInformation *info, const struct MJDividedHand *div_count, int32_t *fu)
 {
   int32_t i;
   int32_t tmp_fu;
   const struct MJMentsu *pmentsu;
 
-  assert((info != NULL) && (div_hand != NULL) && (fu != NULL));
+  assert((info != NULL) && (div_count != NULL) && (fu != NULL));
 
   /* 平和 */
-  if (MJScore_IsPinfu(info, div_hand)) {
+  if (MJScore_IsPinfu(info, div_count)) {
     if (info->tsumo) {
       (*fu) = 20;
     } else {
@@ -735,11 +735,11 @@ static void MJScore_CalculateFu(
   }
   /* 待ち牌による符 */
   /* 単騎待ち */
-  if (info->agarihai == div_hand->atama) {
+  if (info->agarihai == div_count->atama) {
     tmp_fu += 2;
   } else {
     for (i = 0; i < 4; i++) {
-      pmentsu = &(div_hand->mentsu[i]);
+      pmentsu = &(div_count->mentsu[i]);
       /* 辺張/嵌張待ち */
       if (pmentsu->type == MJMENTSU_TYPE_SYUNTSU) {
         if ((MJTILE_NUMBER_IS(info->agarihai, 3) && (info->agarihai == (pmentsu->minhai + 2)))
@@ -753,23 +753,23 @@ static void MJScore_CalculateFu(
   }
   /* 雀頭の状態による符 */
   /* 役牌 */
-  if (MJTILE_IS_SANGEN(div_hand->atama)
-      || ((div_hand->atama == MJTILE_TON) && (info->bakaze == MJKAZE_TON))
-      || ((div_hand->atama == MJTILE_NAN) && (info->bakaze == MJKAZE_NAN))
-      || ((div_hand->atama == MJTILE_SHA) && (info->bakaze == MJKAZE_SHA))
-      || ((div_hand->atama == MJTILE_PEE) && (info->bakaze == MJKAZE_PEE))) {
+  if (MJTILE_IS_SANGEN(div_count->atama)
+      || ((div_count->atama == MJTILE_TON) && (info->bakaze == MJKAZE_TON))
+      || ((div_count->atama == MJTILE_NAN) && (info->bakaze == MJKAZE_NAN))
+      || ((div_count->atama == MJTILE_SHA) && (info->bakaze == MJKAZE_SHA))
+      || ((div_count->atama == MJTILE_PEE) && (info->bakaze == MJKAZE_PEE))) {
     tmp_fu += 2;
   }
   /* 連風牌 */
-  if (   ((div_hand->atama == MJTILE_TON) && (info->jikaze == MJKAZE_TON))
-      || ((div_hand->atama == MJTILE_NAN) && (info->jikaze == MJKAZE_NAN))
-      || ((div_hand->atama == MJTILE_SHA) && (info->jikaze == MJKAZE_SHA))
-      || ((div_hand->atama == MJTILE_PEE) && (info->jikaze == MJKAZE_PEE))) {
+  if (   ((div_count->atama == MJTILE_TON) && (info->jikaze == MJKAZE_TON))
+      || ((div_count->atama == MJTILE_NAN) && (info->jikaze == MJKAZE_NAN))
+      || ((div_count->atama == MJTILE_SHA) && (info->jikaze == MJKAZE_SHA))
+      || ((div_count->atama == MJTILE_PEE) && (info->jikaze == MJKAZE_PEE))) {
     tmp_fu += 2;
   }
   /* 面子の構成による符 */
   for (i = 0; i < 4; i++) {
-    pmentsu = &(div_hand->mentsu[i]);
+    pmentsu = &(div_count->mentsu[i]);
     switch (pmentsu->type) {
       /* 暗刻 */
       case MJMENTSU_TYPE_ANKO:
@@ -820,11 +820,11 @@ static void MJScore_CalculateFu(
 
 /* 面子の組み合わせに関係のない翻数を加算 */
 static void MJScore_AppendMergedHandHan(
-    const struct MJAgariInformation *info, const struct MJHand *merged_hand, struct MJScore *score)
+    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score)
 {
   struct MJScore tmp;
 
-  assert((info != NULL) && (merged_hand != NULL) && (score != NULL));
+  assert((info != NULL) && (merged_count != NULL) && (score != NULL));
 
   tmp = (*score);
 
@@ -860,12 +860,12 @@ static void MJScore_AppendMergedHandHan(
     tmp.han += 1;
   }
   /* 混老頭 */
-  if (MJScore_IsHonrouto(info, merged_hand)) {
+  if (MJScore_IsHonrouto(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HONROUTO);
     tmp.han += 2;
   }
   /* 清一色 */
-  if (MJScore_IsChinitsu(info, merged_hand)) {
+  if (MJScore_IsChinitsu(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHINITSU);
     /* 食い下がり */
     if (info->num_meld > 0) {
@@ -875,7 +875,7 @@ static void MJScore_AppendMergedHandHan(
     }
   }
   /* 混一色 */
-  if (MJScore_IsHonitsu(info, merged_hand)) {
+  if (MJScore_IsHonitsu(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HONITSU);
     /* 食い下がり */
     if (info->num_meld > 0) {
@@ -885,17 +885,17 @@ static void MJScore_AppendMergedHandHan(
     }
   }
   /* 断么九 */
-  if (MJScore_IsTanyao(info, merged_hand)) {
+  if (MJScore_IsTanyao(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TANYAO);
     tmp.han += 1;
   }
   /* 三槓子 */
-  if (MJScore_IsSankantsu(info, merged_hand)) {
+  if (MJScore_IsSankantsu(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SANKANTSU);
     tmp.han += 2;
   }
   /* 小三元 */
-  if (MJScore_IsSyosangen(info, merged_hand)) {
+  if (MJScore_IsSyosangen(info, merged_count)) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SYOSANGEN);
     tmp.han += 2;
   }
@@ -911,33 +911,33 @@ static void MJScore_AppendMergedHandHan(
   }
   /* 役牌 */
   /* 白 */
-  if (merged_hand->hand[MJTILE_HAKU] >= 3) {
+  if (merged_count->count[MJTILE_HAKU] >= 3) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HAKU);
     tmp.han += 1;
   }
   /* 發 */
-  if (merged_hand->hand[MJTILE_HATU] >= 3) {
+  if (merged_count->count[MJTILE_HATU] >= 3) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HATU);
     tmp.han += 1;
   }
   /* 中 */
-  if (merged_hand->hand[MJTILE_CHUN] >= 3) {
+  if (merged_count->count[MJTILE_CHUN] >= 3) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHUN);
     tmp.han += 1;
   }
   /* 場風 */
-  if (   ((info->bakaze == MJKAZE_TON) && (merged_hand->hand[MJTILE_TON] >= 3))
-      || ((info->bakaze == MJKAZE_NAN) && (merged_hand->hand[MJTILE_NAN] >= 3))
-      || ((info->bakaze == MJKAZE_SHA) && (merged_hand->hand[MJTILE_SHA] >= 3))
-      || ((info->bakaze == MJKAZE_PEE) && (merged_hand->hand[MJTILE_PEE] >= 3))) {
+  if (   ((info->bakaze == MJKAZE_TON) && (merged_count->count[MJTILE_TON] >= 3))
+      || ((info->bakaze == MJKAZE_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
+      || ((info->bakaze == MJKAZE_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
+      || ((info->bakaze == MJKAZE_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_BAKAZE);
     tmp.han += 1;
   }
   /* 自風 */
-  if (   ((info->jikaze == MJKAZE_TON) && (merged_hand->hand[MJTILE_TON] >= 3))
-      || ((info->jikaze == MJKAZE_NAN) && (merged_hand->hand[MJTILE_NAN] >= 3))
-      || ((info->jikaze == MJKAZE_SHA) && (merged_hand->hand[MJTILE_SHA] >= 3))
-      || ((info->jikaze == MJKAZE_PEE) && (merged_hand->hand[MJTILE_PEE] >= 3))) {
+  if (   ((info->jikaze == MJKAZE_TON) && (merged_count->count[MJTILE_TON] >= 3))
+      || ((info->jikaze == MJKAZE_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
+      || ((info->jikaze == MJKAZE_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
+      || ((info->jikaze == MJKAZE_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_JIKAZE);
     tmp.han += 1;
   }
@@ -1064,17 +1064,17 @@ static void MJScore_CalculatePointFromHanFu(
 }
 
 /* 盃口数（同一順子数）のカウント */
-static int32_t MJScore_CountNumPeko(const struct MJDividedHand *hand)
+static int32_t MJScore_CountNumPeko(const struct MJDividedHand *count)
 {
   int32_t i, num_peko;
   int32_t syuntsu_count[MJTILE_MAX] = { 0, };
 
-  assert(hand != NULL);
+  assert(count != NULL);
 
   /* 順子の出現パターンをカウント */
   for (i = 0; i < 4; i++) {
-    if (hand->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) {
-      syuntsu_count[hand->mentsu[i].minhai]++;
+    if (count->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) {
+      syuntsu_count[count->mentsu[i].minhai]++;
     }
   }
 
@@ -1088,15 +1088,15 @@ static int32_t MJScore_CountNumPeko(const struct MJDividedHand *hand)
 }
 
 /* カン数をカウント */
-static int32_t MJScore_CountNumKan(const struct MJHand *hand)
+static int32_t MJScore_CountNumKan(const struct MJTileCount *count)
 {
   int32_t i, num_kan;
 
-  assert(hand != NULL);
+  assert(count != NULL);
 
   num_kan = 0;
   for (i = 0; i < MJTILE_MAX; i++) {
-    if (hand->hand[i] == 4) {
+    if (count->count[i] == 4) {
       num_kan++;
     }
   }
@@ -1106,12 +1106,12 @@ static int32_t MJScore_CountNumKan(const struct MJHand *hand)
 
 /* 平和が成立しているか？ */
 static bool MJScore_IsPinfu(
-    const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+    const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i;
   const struct MJMentsu *pmentsu;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1119,26 +1119,26 @@ static bool MJScore_IsPinfu(
   }
 
   /* 雀頭が役牌 */
-  if (MJTILE_IS_JIHAI(hand->atama)) {
-    if ((hand->atama == MJTILE_HAKU)
-        || (hand->atama == MJTILE_HATU) || (hand->atama == MJTILE_CHUN)) {
+  if (MJTILE_IS_JIHAI(count->atama)) {
+    if ((count->atama == MJTILE_HAKU)
+        || (count->atama == MJTILE_HATU) || (count->atama == MJTILE_CHUN)) {
       return false;
     }
-    if (((hand->atama == MJTILE_TON) && (info->bakaze == MJKAZE_TON))
-        || ((hand->atama == MJTILE_NAN) && (info->bakaze == MJKAZE_NAN))
-        || ((hand->atama == MJTILE_SHA) && (info->bakaze == MJKAZE_SHA))
-        || ((hand->atama == MJTILE_PEE) && (info->bakaze == MJKAZE_PEE))
-        || ((hand->atama == MJTILE_TON) && (info->jikaze == MJKAZE_TON))
-        || ((hand->atama == MJTILE_NAN) && (info->jikaze == MJKAZE_NAN))
-        || ((hand->atama == MJTILE_SHA) && (info->jikaze == MJKAZE_SHA))
-        || ((hand->atama == MJTILE_PEE) && (info->jikaze == MJKAZE_PEE))) {
+    if (((count->atama == MJTILE_TON) && (info->bakaze == MJKAZE_TON))
+        || ((count->atama == MJTILE_NAN) && (info->bakaze == MJKAZE_NAN))
+        || ((count->atama == MJTILE_SHA) && (info->bakaze == MJKAZE_SHA))
+        || ((count->atama == MJTILE_PEE) && (info->bakaze == MJKAZE_PEE))
+        || ((count->atama == MJTILE_TON) && (info->jikaze == MJKAZE_TON))
+        || ((count->atama == MJTILE_NAN) && (info->jikaze == MJKAZE_NAN))
+        || ((count->atama == MJTILE_SHA) && (info->jikaze == MJKAZE_SHA))
+        || ((count->atama == MJTILE_PEE) && (info->jikaze == MJKAZE_PEE))) {
       return false;
     }
   }
 
   /* 順子以外が出現 */
   for (i = 0; i < 4; i++) {
-    pmentsu = &hand->mentsu[i];
+    pmentsu = &count->mentsu[i];
     if (pmentsu->type != MJMENTSU_TYPE_SYUNTSU) {
       return false;
     }
@@ -1146,7 +1146,7 @@ static bool MJScore_IsPinfu(
 
   /* 両面待ちだったか？ */
   for (i = 0; i < 4; i++) {
-    pmentsu = &hand->mentsu[i];
+    pmentsu = &count->mentsu[i];
     /* 辺張待ちは弾く */
     if (((info->agarihai == pmentsu->minhai) && !MJTILE_NUMBER_IS(pmentsu->minhai + 1, 8))
         || ((info->agarihai == (pmentsu->minhai + 2)) && !MJTILE_NUMBER_IS(pmentsu->minhai, 1))) {
@@ -1159,9 +1159,9 @@ static bool MJScore_IsPinfu(
 
 /* 一盃口が成立しているか？ */
 static bool MJScore_IsIpeko(
-    const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+    const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1169,27 +1169,27 @@ static bool MJScore_IsIpeko(
   }
 
   /* 盃口数で判断 */
-  return (MJScore_CountNumPeko(hand) == 1) ? true : false;
+  return (MJScore_CountNumPeko(count) == 1) ? true : false;
 }
 
 /* 三色同順が成立しているか？ */
 static bool MJScore_IsSansyokudoujyun(
-    const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+    const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 数牌かつ同じ3つの並びを探す */
   for (i = 0; i < 2; i++) {
-    if (MJTILE_IS_SUHAI(hand->mentsu[i].minhai)
-        && MJTILE_IS_SUHAI(hand->mentsu[i + 1].minhai)
-        && MJTILE_IS_SUHAI(hand->mentsu[i + 2].minhai)) {
-      if (MJTILE_IS_SAME_NUMBER(hand->mentsu[i].minhai, hand->mentsu[i + 1].minhai)
-          && MJTILE_IS_SAME_NUMBER(hand->mentsu[i].minhai, hand->mentsu[i + 2].minhai)
-          && (hand->mentsu[i].minhai != hand->mentsu[i + 1].minhai)
-          && (hand->mentsu[i].minhai != hand->mentsu[i + 2].minhai)
-          && (hand->mentsu[i + 1].minhai != hand->mentsu[i + 2].minhai)) {
+    if (MJTILE_IS_SUHAI(count->mentsu[i].minhai)
+        && MJTILE_IS_SUHAI(count->mentsu[i + 1].minhai)
+        && MJTILE_IS_SUHAI(count->mentsu[i + 2].minhai)) {
+      if (MJTILE_IS_SAME_NUMBER(count->mentsu[i].minhai, count->mentsu[i + 1].minhai)
+          && MJTILE_IS_SAME_NUMBER(count->mentsu[i].minhai, count->mentsu[i + 2].minhai)
+          && (count->mentsu[i].minhai != count->mentsu[i + 1].minhai)
+          && (count->mentsu[i].minhai != count->mentsu[i + 2].minhai)
+          && (count->mentsu[i + 1].minhai != count->mentsu[i + 2].minhai)) {
         return true;
       }
     }
@@ -1201,7 +1201,7 @@ static bool MJScore_IsSansyokudoujyun(
 
 /* 一気通貫が成立しているか？ */
 static bool MJScore_IsIkkitsukan(
-    const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+    const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i, j;
   uint8_t suhai_count[30] = { 0, };
@@ -1212,13 +1212,13 @@ static bool MJScore_IsIkkitsukan(
       && (MJTILE_1PIN == 11) && (MJTILE_9PIN == 19)
       && (MJTILE_1SOU == 21) && (MJTILE_9SOU == 29));
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 数牌の出現数をカウント */
   for (i = 0; i < 4; i++) {
-    uint8_t minhai = hand->mentsu[i].minhai;
+    uint8_t minhai = count->mentsu[i].minhai;
     if (MJTILE_IS_SUHAI(minhai)
-        && ((hand->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) || (hand->mentsu[i].type == MJMENTSU_TYPE_CHOW))) {
+        && ((count->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) || (count->mentsu[i].type == MJMENTSU_TYPE_CHOW))) {
       suhai_count[minhai]++; suhai_count[minhai + 1]++; suhai_count[minhai + 2]++;
     }
   }
@@ -1241,24 +1241,24 @@ static bool MJScore_IsIkkitsukan(
 }
 
 /* 全帯幺が成立しているか？のコア判定処理 */
-static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i;
   const struct MJMentsu *pmentsu;
   bool syuntsu;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   syuntsu = false;
 
   /* 頭牌は么九牌か？ */
-  if (!MJTILE_IS_YAOCHU(hand->atama)) {
+  if (!MJTILE_IS_YAOCHU(count->atama)) {
     return false;
   } 
 
   /* 全ての面子に対して么九牌が絡んでいるかチェック */
   for (i = 0; i < 4; i++) {
-    pmentsu = &(hand->mentsu[i]);
+    pmentsu = &(count->mentsu[i]);
     if ((pmentsu->type == MJMENTSU_TYPE_PUNG) || (pmentsu->type == MJMENTSU_TYPE_ANKAN)
         || (pmentsu->type == MJMENTSU_TYPE_MINKAN) || (pmentsu->type == MJMENTSU_TYPE_ANKO)
         || (pmentsu->type == MJMENTSU_TYPE_TOITSU)) {
@@ -1281,44 +1281,44 @@ static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const st
 }
 
 /* 全帯幺が成立しているか？ */
-static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i;
   bool jihai;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   jihai = false;
 
   /* 頭牌は么九牌か？ */
-  if (!MJTILE_IS_YAOCHU(hand->atama)) {
+  if (!MJTILE_IS_YAOCHU(count->atama)) {
     return false;
-  } else if (MJTILE_IS_JIHAI(hand->atama)) {
+  } else if (MJTILE_IS_JIHAI(count->atama)) {
     jihai = true;
   }
 
   /* 字牌の出現をチェック */
   for (i = 0; i < 4; i++) {
-    if (MJTILE_IS_JIHAI(hand->mentsu[i].minhai)) {
+    if (MJTILE_IS_JIHAI(count->mentsu[i].minhai)) {
       jihai = true;
     }
   }
 
   /* 数牌はコア処理で判定 */
-  return (jihai && MJScore_IsChantaCore(info, hand));
+  return (jihai && MJScore_IsChantaCore(info, count));
 }
 
 /* 対々和が成立しているか？ */
-static bool MJScore_IsToitoiho(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsToitoiho(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i;
   const struct MJMentsu *pmentsu;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 順子（チー）が含まれていたら不成立 */
   for (i = 0; i < 4; i++) {
-    pmentsu = &(hand->mentsu[i]);
+    pmentsu = &(count->mentsu[i]);
     if ((pmentsu->type == MJMENTSU_TYPE_CHOW) || (pmentsu->type == MJMENTSU_TYPE_SYUNTSU)) {
       return false;
     }
@@ -1328,17 +1328,17 @@ static bool MJScore_IsToitoiho(const struct MJAgariInformation *info, const stru
 }
 
 /* 三暗刻が成立しているか？ */
-static bool MJScore_IsSananko(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsSananko(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i, num_anko;
   const struct MJMentsu *pmentsu;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 暗刻（暗槓）をカウント */
   num_anko = 0;
   for (i = 0; i < 4; i++) {
-    pmentsu = &(hand->mentsu[i]);
+    pmentsu = &(count->mentsu[i]);
     if ((pmentsu->type == MJMENTSU_TYPE_ANKO) || (pmentsu->type == MJMENTSU_TYPE_ANKAN)) {
       num_anko++;
     }
@@ -1348,21 +1348,21 @@ static bool MJScore_IsSananko(const struct MJAgariInformation *info, const struc
 }
 
 /* 三色同刻が成立しているか？ */
-static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i, j, num_dokoku;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 3種類の面子が同じ牌からなるポン/暗刻/カンか？ */
   for (i = 0; i < 4; i++) {
-    if (MJTILE_IS_SUHAI(hand->mentsu[i].minhai)) {
+    if (MJTILE_IS_SUHAI(count->mentsu[i].minhai)) {
       /* 同刻数を数える */
       num_dokoku = 0;
       for (j = i + 1; j < 4; j++) {
-        if (MJTILE_IS_SAME_NUMBER(hand->mentsu[i].minhai, hand->mentsu[j].minhai)
-            && ((hand->mentsu[i].type != MJMENTSU_TYPE_CHOW) && (hand->mentsu[i].type != MJMENTSU_TYPE_SYUNTSU))
-            && ((hand->mentsu[j].type != MJMENTSU_TYPE_CHOW) && (hand->mentsu[j].type != MJMENTSU_TYPE_SYUNTSU))) {
+        if (MJTILE_IS_SAME_NUMBER(count->mentsu[i].minhai, count->mentsu[j].minhai)
+            && ((count->mentsu[i].type != MJMENTSU_TYPE_CHOW) && (count->mentsu[i].type != MJMENTSU_TYPE_SYUNTSU))
+            && ((count->mentsu[j].type != MJMENTSU_TYPE_CHOW) && (count->mentsu[j].type != MJMENTSU_TYPE_SYUNTSU))) {
           num_dokoku++;
         }
       }
@@ -1377,32 +1377,32 @@ static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, con
 }
 
 /* 純全帯幺が成立しているか？ */
-static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i;
 
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 頭牌は老頭牌か？ */
-  if (!MJTILE_IS_ROUTOU(hand->atama)) {
+  if (!MJTILE_IS_ROUTOU(count->atama)) {
     return false;
   }
 
   /* 字牌が出現していないか確認 */
   for (i = 0; i < 4; i++) {
-    if (MJTILE_IS_JIHAI(hand->mentsu[i].minhai)) {
+    if (MJTILE_IS_JIHAI(count->mentsu[i].minhai)) {
       return false;
     }
   }
 
   /* 残りはコア判定処理に任せる */
-  return MJScore_IsChantaCore(info, hand);
+  return MJScore_IsChantaCore(info, count);
 }
 
 /* 二盃口が成立しているか？ */
-static bool MJScore_IsRyanpeko(const struct MJAgariInformation *info, const struct MJDividedHand *hand)
+static bool MJScore_IsRyanpeko(const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
-  assert((info != NULL) && (hand != NULL));
+  assert((info != NULL) && (count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1410,16 +1410,16 @@ static bool MJScore_IsRyanpeko(const struct MJAgariInformation *info, const stru
   }
 
   /* 盃口数で判断 */
-  return (MJScore_CountNumPeko(hand) == 2) ? true : false;
+  return (MJScore_CountNumPeko(count) == 2) ? true : false;
 }
 
 /* 断么九が成立しているか？ */
 static bool MJScore_IsTanyao(
-    const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+    const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 喰いタン判定 喰いタンなしで、ポン・チー・カンがあったらfalse */
   if (!(st_rule_config.kuitan)) {
@@ -1430,7 +1430,7 @@ static bool MJScore_IsTanyao(
 
   /* 么九牌が含まれていたらfalse */
   for (i = 0; i < MJTILE_MAX; i++) {
-    if (MJTILE_IS_YAOCHU(i) && (merged_hand->hand[i] > 0)) {
+    if (MJTILE_IS_YAOCHU(i) && (merged_count->count[i] > 0)) {
       return false;
     }
   }
@@ -1439,16 +1439,16 @@ static bool MJScore_IsTanyao(
 }
 
 /* 混老頭が成立しているか？ */
-static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
   const int32_t *hai;
   bool routou, jihai;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
   
   routou = jihai = false;
-  hai = &(merged_hand->hand[0]);
+  hai = &(merged_count->count[0]);
   for (i = 0; i < MJTILE_MAX; i++) {
     if (!MJTILE_IS_YAOCHU(i)) {
       /* 么九牌以外が含まれていたら不成立 */
@@ -1470,24 +1470,24 @@ static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const stru
 }
 
 /* 混一色が成立しているか？ */
-static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i, num_types, type;
-  const int32_t *hai;
+  const int32_t *count;
   bool jihai;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   num_types = 0;
-  hai = &(merged_hand->hand[0]);
+  count = &(merged_count->count[0]);
 
   jihai = false;
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 字牌の出現をマーク */
-    if (MJTILE_IS_JIHAI(i) && (hai[i] > 0)) {
+    if (MJTILE_IS_JIHAI(i) && (count[i] > 0)) {
       jihai = true;
     }
-    if (MJTILE_IS_SUHAI(i) && (hai[i] > 0)) {
+    if (MJTILE_IS_SUHAI(i) && (count[i] > 0)) {
       if (num_types == 0) {
         /* 最初の種類を記録 */
         num_types++;
@@ -1505,21 +1505,21 @@ static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struc
 }
 
 /* 清一色が成立しているか？ */
-static bool MJScore_IsChinitsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsChinitsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i, num_types, type;
-  const int32_t *hai;
+  const int32_t *count;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   num_types = 0;
-  hai = &(merged_hand->hand[0]);
+  count = &(merged_count->count[0]);
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 字牌は出現してはならない */
-    if (MJTILE_IS_JIHAI(i) && (hai[i] > 0)) {
+    if (MJTILE_IS_JIHAI(i) && (count[i] > 0)) {
       return false;
     }
-    if (MJTILE_IS_SUHAI(i) && (hai[i] > 0)) {
+    if (MJTILE_IS_SUHAI(i) && (count[i] > 0)) {
       if (num_types == 0) {
         /* 最初の種類を記録 */
         num_types++;
@@ -1536,23 +1536,23 @@ static bool MJScore_IsChinitsu(const struct MJAgariInformation *info, const stru
 }
 
 /* 小三元が成立しているか？ */
-static bool MJScore_IsSyosangen(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsSyosangen(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i, num_sangen_mentsu;
   bool sangen_atama;
-  const int32_t *hai;
+  const int32_t *count;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 三元牌が2つ入っているか？ */
   num_sangen_mentsu = 0;
   sangen_atama = false;
-  hai = &(merged_hand->hand[0]);
+  count = &(merged_count->count[0]);
   for (i = 0; i < MJTILE_MAX; i++) {
     if (MJTILE_IS_SANGEN(i)) {
-      if (hai[i] == 2) {
+      if (count[i] == 2) {
         sangen_atama = true;
-      } else if (hai[i] >= 3) {
+      } else if (count[i] >= 3) {
         num_sangen_mentsu++;
       }
     }
@@ -1563,9 +1563,9 @@ static bool MJScore_IsSyosangen(const struct MJAgariInformation *info, const str
 }
 
 /* 三槓子が成立しているか？ */
-static bool MJScore_IsSankantsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsSankantsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 3副露必須（簡易判定） */
   if (info->num_meld != 3) {
@@ -1573,14 +1573,14 @@ static bool MJScore_IsSankantsu(const struct MJAgariInformation *info, const str
   }
 
   /* カン数のチェック */
-  return (MJScore_CountNumKan(merged_hand) == 3) ? true : false;
+  return (MJScore_CountNumKan(merged_count) == 3) ? true : false;
 }
 
 /* 国士無双13面待ちが成立しているか？ */
-static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
-  struct MJHand tmp;
+  struct MJTileCount tmp;
 
   /* 13面待ち時の牌姿 */
   static const uint8_t pattern[13] = { 
@@ -1590,7 +1590,7 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
     MJTILE_CHUN 
   };
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1603,14 +1603,14 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
   }
 
   /* 作業領域に保存 */
-  tmp = (*merged_hand);
+  tmp = (*merged_count);
 
   /* 和了牌を除く */
-  tmp.hand[info->agarihai]--;
+  tmp.count[info->agarihai]--;
 
   /* 和了牌がない状態で上記の牌を全て持っている必要がある */
   for (i = 0; i < 13; i++) {
-    if (tmp.hand[pattern[i]] != 1) {
+    if (tmp.count[pattern[i]] != 1) {
       return false;
     }
   }
@@ -1619,25 +1619,25 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
 }
 
 /* 手牌から九蓮宝燈が成立しているか？ */
-static bool MJScore_IsChurenpoutonCore(const struct MJHand *hand)
+static bool MJScore_IsChurenpoutonCore(const struct MJTileCount *count)
 {
   int32_t i, type, type_offset;
-  const int32_t *hai;
+  const int32_t *cnt;
 
-  assert(hand != NULL);
+  assert(count != NULL);
 
-  hai = &(hand->hand[0]);
+  cnt = &(count->count[0]);
 
   /* 字牌が含まれていたら不成立 */
   for (i = MJTILE_TON; i <= MJTILE_CHUN; i++) {
-    if (hai[i] > 0) {
+    if (cnt[i] > 0) {
       return false;
     }
   }
 
   /* 持っている牌の種類を特定 */
   for (i = 0; i <= MJTILE_9SOU; i++) {
-    if (hai[i] > 0) {
+    if (cnt[i] > 0) {
       type = i / 10;
       break;
     }
@@ -1646,12 +1646,12 @@ static bool MJScore_IsChurenpoutonCore(const struct MJHand *hand)
 
   /* 1, 9は3枚以上持つべし */
   type_offset = 10 * type;
-  if ((hai[type_offset + 1] < 3) || (hai[type_offset + 9] < 3)) {
+  if ((cnt[type_offset + 1] < 3) || (cnt[type_offset + 9] < 3)) {
     return false;
   }
   /* 2-8は1枚以上持つべし */
   for (i = type_offset + 2; i <= type_offset + 8; i++) {
-    if (hai[i] == 0) {
+    if (cnt[i] == 0) {
       return false;
     }
   }
@@ -1660,9 +1660,9 @@ static bool MJScore_IsChurenpoutonCore(const struct MJHand *hand)
 }
 
 /* 九蓮宝燈が成立しているか？ */
-static bool MJScore_IsChurenpouton(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsChurenpouton(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1671,25 +1671,25 @@ static bool MJScore_IsChurenpouton(const struct MJAgariInformation *info, const 
 
   /* 9面待ちの場合を弾く */
   if (MJTILE_IS_CHUNCHAN(info->agarihai)) {
-    if (merged_hand->hand[info->agarihai] == 2) {
+    if (merged_count->count[info->agarihai] == 2) {
       return false;
     }
   } else if (MJTILE_IS_ROUTOU(info->agarihai)) {
-    if (merged_hand->hand[info->agarihai] == 4) {
+    if (merged_count->count[info->agarihai] == 4) {
       return false;
     }
   }
 
   /* コア処理実行 */
-  return MJScore_IsChurenpoutonCore(merged_hand);
+  return MJScore_IsChurenpoutonCore(merged_count);
 }
 
 /* 九蓮宝燈9面待ちが成立しているか？ */
-static bool MJScore_IsChurenpouton9(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsChurenpouton9(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
-  struct MJHand tmp;
+  struct MJTileCount tmp;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1697,38 +1697,38 @@ static bool MJScore_IsChurenpouton9(const struct MJAgariInformation *info, const
   }
 
   /* 作業領域に保存 */
-  tmp = (*merged_hand);
+  tmp = (*merged_count);
 
   /* 和了牌を抜いてからチェック */
-  tmp.hand[info->agarihai]--;
+  tmp.count[info->agarihai]--;
   return MJScore_IsChurenpoutonCore(&tmp);
 }
 
 /* 四暗刻が成立しているか？ */
-static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
   int32_t num_anko, num_toitsu;
-  const int32_t *hai;
+  const int32_t *count;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 鳴いている or ツモ和了りじゃない */
   if ((info->num_meld > 0) || !(info->tsumo)) {
     return false;
   }
 
-  hai = &(merged_hand->hand[0]);
+  count = &(merged_count->count[0]);
   
   /* 頭と和了牌は一致しない（単騎待ちの場合を排除） */
-  if (hai[info->agarihai] == 2) {
+  if (count[info->agarihai] == 2) {
     return false;
   }
 
   /* 暗刻と対子をカウント */
   num_anko = num_toitsu = 0;
   for (i = 0; i < MJTILE_MAX; i++) {
-    switch (hai[i]) {
+    switch (count[i]) {
       case 3: num_anko++;  break;
       case 2: num_toitsu++; break;
       default: break;
@@ -1740,14 +1740,14 @@ static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct
 }
 
 /* 四暗刻単騎が成立しているか？ */
-static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
   int32_t num_anko;
-  const int32_t *hai;
-  struct MJHand tmp;
+  const int32_t *count;
+  struct MJTileCount tmp;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 鳴いている */
   if (info->num_meld > 0) {
@@ -1755,15 +1755,15 @@ static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const s
   }
 
   /* 和了牌を抜く */
-  tmp = (*merged_hand);
-  tmp.hand[info->agarihai]--;
+  tmp = (*merged_count);
+  tmp.count[info->agarihai]--;
 
-  hai = &(tmp.hand[0]);
+  count = &(tmp.count[0]);
 
   /* 暗刻をカウント */
   num_anko = 0;
   for (i = 0; i < MJTILE_MAX; i++) {
-    switch (hai[i]) {
+    switch (count[i]) {
       case 0: break;
       case 1: 
         /* 抜いた牌のはず */
@@ -1782,25 +1782,25 @@ static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const s
 }
 
 /* 大四喜が成立しているか？ */
-static bool MJScore_IsDaisushi(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsDaisushi(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 東南西北がすべて3枚以上あるか？ */
-  return ((merged_hand->hand[MJTILE_TON] >= 3) && (merged_hand->hand[MJTILE_NAN] >= 3) 
-      && (merged_hand->hand[MJTILE_SHA] >= 3) && (merged_hand->hand[MJTILE_PEE] >= 3)) ? true : false;
+  return ((merged_count->count[MJTILE_TON] >= 3) && (merged_count->count[MJTILE_NAN] >= 3) 
+      && (merged_count->count[MJTILE_SHA] >= 3) && (merged_count->count[MJTILE_PEE] >= 3)) ? true : false;
 }
 
 /* 小四喜が成立しているか？ */
-static bool MJScore_IsSyosushi(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsSyosushi(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i, num_anko, num_toitsu;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   num_anko = num_toitsu = 0;
   for (i = MJTILE_TON; i <= MJTILE_PEE; i++) {
-    switch (merged_hand->hand[i]) {
+    switch (merged_count->count[i]) {
       case 3: num_anko++; break;
       case 2: num_toitsu++; break;
     }
@@ -1810,25 +1810,25 @@ static bool MJScore_IsSyosushi(const struct MJAgariInformation *info, const stru
 }
 
 /* 大三元が成立しているか？ */
-static bool MJScore_IsDaisangen(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsDaisangen(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 白發中がすべて3枚以上あるか？ */
-  return ((merged_hand->hand[MJTILE_HAKU] >= 3) && (merged_hand->hand[MJTILE_HATU] >= 3) 
-      && (merged_hand->hand[MJTILE_CHUN] >= 3)) ? true : false;
+  return ((merged_count->count[MJTILE_HAKU] >= 3) && (merged_count->count[MJTILE_HATU] >= 3) 
+      && (merged_count->count[MJTILE_CHUN] >= 3)) ? true : false;
 }
 
 /* 字一色が成立しているか？ */
-static bool MJScore_IsTsuiso(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsTsuiso(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 1枚でも字牌以外が含まれていたら不成立 */
   for (i = 0; i <= MJTILE_9SOU; i++) {
-    if (merged_hand->hand[i] > 0) {
+    if (merged_count->count[i] > 0) {
       return false;
     }
   }
@@ -1837,15 +1837,15 @@ static bool MJScore_IsTsuiso(const struct MJAgariInformation *info, const struct
 }
 
 /* 清老頭が成立しているか？ */
-static bool MJScore_IsChinroto(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsChinroto(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 1枚でも老頭牌以外が含まれていたら不成立 */
   for (i = 0; i < MJTILE_MAX; i++) {
-    if (!MJTILE_IS_ROUTOU(i) && (merged_hand->hand[i] > 0)) {
+    if (!MJTILE_IS_ROUTOU(i) && (merged_count->count[i] > 0)) {
       return false;
     }
   }
@@ -1854,11 +1854,11 @@ static bool MJScore_IsChinroto(const struct MJAgariInformation *info, const stru
 }
 
 /* 緑一色が成立しているか？ */
-static bool MJScore_IsRyuiso(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsRyuiso(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
   int32_t i;
 
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 1枚でも緑牌以外が含まれていたら不成立 */
   for (i = 0; i < MJTILE_MAX; i++) {
@@ -1867,7 +1867,7 @@ static bool MJScore_IsRyuiso(const struct MJAgariInformation *info, const struct
         || (i == MJTILE_8SOU) || (i == MJTILE_HATU)) {
       continue;
     }
-    if (merged_hand->hand[i] > 0) {
+    if (merged_count->count[i] > 0) {
       return false;
     }
   }
@@ -1876,9 +1876,9 @@ static bool MJScore_IsRyuiso(const struct MJAgariInformation *info, const struct
 }
 
 /* 四槓子が成立しているか？ */
-static bool MJScore_IsSukantsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
+static bool MJScore_IsSukantsu(const struct MJAgariInformation *info, const struct MJTileCount *merged_count)
 {
-  assert((info != NULL) && (merged_hand != NULL));
+  assert((info != NULL) && (merged_count != NULL));
 
   /* 4副露必須（簡易判定） */
   if (info->num_meld != 4) {
@@ -1886,5 +1886,5 @@ static bool MJScore_IsSukantsu(const struct MJAgariInformation *info, const stru
   }
 
   /* カン数のカウント */
-  return (MJScore_CountNumKan(merged_hand) == 4) ? true : false;
+  return (MJScore_CountNumKan(merged_count) == 4) ? true : false;
 }
