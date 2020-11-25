@@ -1,13 +1,14 @@
-#ifndef MJMJTILE_H_INCLUDED
-#define MJMJTILE_H_INCLUDED
+#ifndef MJTILE_H_INCLUDED
+#define MJTILE_H_INCLUDED
+
+#include <stdint.h>
 
 /* 数牌の種類 */
 #define MJTILETYPE_MANZU  0 /* 萬子 */
 #define MJTILETYPE_PINZU  1 /* 筒子 */
 #define MJTILETYPE_SOUZU  2 /* 索子 */
 
-/* 牌の識別整数を定義 とつげき東北氏作のMJexeIO.DLLに準拠
- * 格納先の変数がenum(int)より小さい場合に備えてdefine */
+/* 牌の識別整数を定義 とつげき東北氏作のMJexeIO.DLLに準拠 */
 
 /* 萬子 */
 #define MJTILE_1MAN   1  /* 一萬 */
@@ -76,4 +77,7 @@
 /* 2つの数牌が同じ数字か？ */
 #define MJTILE_IS_SAME_NUMBER(t1, t2) (MJTILE_IS_SUHAI(t1) && MJTILE_IS_SUHAI(t2) && (((t1) % 10) == ((t2) % 10)))
 
-#endif /* MJMJTILE_H_INCLUDED */
+/* 牌の識別整数を入れる型 */
+typedef uint8_t MJTile;
+
+#endif /* MJTILE_H_INCLUDED */

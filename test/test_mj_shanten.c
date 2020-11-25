@@ -9,8 +9,8 @@
 
 /* 1枚の牌情報 */
 struct TileInfo {
-  int8_t  type;   /* 牌の種類(-1で終わり) */
-  uint8_t maisu;  /* 所持数               */
+  int32_t type;   /* 牌の種類(-1で終わり) */
+  int32_t maisu;  /* 所持数               */
 };
 
 /* テストケース */

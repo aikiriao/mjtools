@@ -208,18 +208,18 @@ CHECK_END:
 
   /* 生成直後にシャッフルしても、並びが変わってほしい */
   {
-    uint8_t shufffled_deck[136];
+    MJTile shufffled_deck[136];
     struct MJDeck *deck;
 
     deck = MJDeck_Create(NULL, NULL, 0);
     MJDeck_Shuffle(deck);
-    memcpy(&shufffled_deck[0],   deck->deck,        sizeof(uint8_t) * 122);
-    memcpy(&shufffled_deck[122], deck->rinshan,     sizeof(uint8_t) *   4);
-    memcpy(&shufffled_deck[126], deck->dora.omote,  sizeof(uint8_t) *   5);
-    memcpy(&shufffled_deck[131], deck->dora.ura,    sizeof(uint8_t) *   5);
+    memcpy(&shufffled_deck[0],   deck->deck,        sizeof(MJTile) * 122);
+    memcpy(&shufffled_deck[122], deck->rinshan,     sizeof(MJTile) *   4);
+    memcpy(&shufffled_deck[126], deck->dora.omote,  sizeof(MJTile) *   5);
+    memcpy(&shufffled_deck[131], deck->dora.ura,    sizeof(MJTile) *   5);
     MJDeck_Destroy(deck);
 
-    Test_AssertNotEqual(memcmp(shufffled_deck, default_deck, sizeof(uint8_t) * 136), 0);
+    Test_AssertNotEqual(memcmp(shufffled_deck, default_deck, sizeof(MJTile) * 136), 0);
   }
 
   /* シードを揃えたときに、同一の並びになるか？ */
@@ -227,7 +227,7 @@ CHECK_END:
 #define NUM_TRIALS 10
     struct MJDeck *deck;
     uint32_t trial, is_ok;
-    uint8_t decks[NUM_TRIALS][136];
+    MJTile decks[NUM_TRIALS][136];
     struct MJRandomXoshiro256ppSeed xor_seed = {
       .seed = { ~1, 2, ~3, 4 },
     };
@@ -237,17 +237,17 @@ CHECK_END:
     for (trial = 0; trial < NUM_TRIALS; trial++) {
       MJDeck_SetRandomSeed(deck, &xor_seed);
       MJDeck_Shuffle(deck);
-      memcpy(&decks[trial][0],   deck->deck,        sizeof(uint8_t) * 122);
-      memcpy(&decks[trial][122], deck->rinshan,     sizeof(uint8_t) *   4);
-      memcpy(&decks[trial][126], deck->dora.omote,  sizeof(uint8_t) *   5);
-      memcpy(&decks[trial][131], deck->dora.ura,    sizeof(uint8_t) *   5);
+      memcpy(&decks[trial][0],   deck->deck,        sizeof(MJTile) * 122);
+      memcpy(&decks[trial][122], deck->rinshan,     sizeof(MJTile) *   4);
+      memcpy(&decks[trial][126], deck->dora.omote,  sizeof(MJTile) *   5);
+      memcpy(&decks[trial][131], deck->dora.ura,    sizeof(MJTile) *   5);
     }
     MJDeck_Destroy(deck);
 
     /* 全て同じ並びになることを期待 */
     is_ok = 1;
     for (trial = 1; trial < NUM_TRIALS; trial++) {
-      if (memcmp(decks[0], decks[trial], sizeof(uint8_t) * 136) != 0) {
+      if (memcmp(decks[0], decks[trial], sizeof(MJTile) * 136) != 0) {
         is_ok = 0;
         break;
       }
@@ -272,7 +272,7 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 基本ケース */
   {
     struct MJDeck *deck;
-    uint8_t hai;
+    MJTile hai;
     uint32_t num_hais;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -303,7 +303,7 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 空になるまで自摸る */
   {
     struct MJDeck *deck;
-    uint8_t hai;
+    MJTile hai;
     uint32_t i, is_ok, num_hais;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -337,7 +337,7 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 嶺上自摸基本ケース */
   {
     struct MJDeck *deck;
-    uint8_t hai;
+    MJTile hai;
     uint32_t num_hais;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -374,7 +374,7 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 空になるまで嶺上自摸 */
   {
     struct MJDeck *deck;
-    uint8_t hai;
+    MJTile hai;
     uint32_t i, is_ok, num_hais;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -409,7 +409,7 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 配山が残り0枚の場合は嶺上自摸ができないことの確認 */
   {
     struct MJDeck *deck;
-    uint8_t hai;
+    MJTile hai;
     uint32_t i;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -436,7 +436,7 @@ static void MJDeckTest_GetDoraTest(void *obj)
   {
     struct MJDeck *deck;
     struct MJDoraHai dora;
-    uint8_t hai;
+    MJTile hai;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 

@@ -97,18 +97,18 @@ typedef enum MJKazeTag {
 /* 副露の状態 */
 struct MJMeld {
   MJMeldType  type;     /* 種類 */
-  uint8_t     minhai;   /* 副露を構成する牌で最小の識別整数を持つ牌 */
+  MJTile      minhai;   /* 副露を構成する牌で最小の識別整数を持つ牌 */
 };
 
 /* 和了時の状態 */
 struct MJAgariInformation {
-  uint8_t             agarihai;       /* 和了牌 */
+  MJTile              agarihai;       /* 和了牌 */
   struct MJTileCount  count;          /* 手牌(和了牌含む, 副露除く) */
   struct MJMeld       meld[4];        /* 副露情報 */
-  uint8_t             num_meld;       /* 副露数 */
-  uint8_t             num_dora;       /* ドラ牌数(赤牌含む) */
-  uint8_t             num_honba;      /* 本場数 */
-  uint8_t             num_riichibo;   /* 供託リーチ棒数 */
+  int32_t             num_meld;       /* 副露数 */
+  int32_t             num_dora;       /* ドラ牌数(赤牌含む) */
+  int32_t             num_honba;      /* 本場数 */
+  int32_t             num_riichibo;   /* 供託リーチ棒数 */
   MJKaze              bakaze;         /* 場風 */
   MJKaze              jikaze;         /* 自風 */
   bool                tsumo;          /* 自摸和了？ */

@@ -2,6 +2,7 @@
 #define MJDECK_H_INCLUDED
 
 #include "mj_random.h"
+#include "mj_tile.h"
 #include <stdint.h>
 
 /* 牌山ハンドル */
@@ -14,8 +15,8 @@ struct MJDeckConfig {
 
 /* ドラ牌 */
 struct MJDoraHai {
-  uint8_t   omote[5]; /* 表ドラ */
-  uint8_t   ura[5];   /* 裏ドラ */
+  MJTile    omote[5]; /* 表ドラ */
+  MJTile    ura[5];   /* 裏ドラ */
   uint32_t  num_dora; /* ドラ表示枚数 */
 };
 
@@ -57,10 +58,10 @@ MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed);
 MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck);
 
 /* 1枚ツモる */
-MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, uint8_t *hai);
+MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *hai);
 
 /* 1枚嶺上牌からツモる（ドラ表示が増える） */
-MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, uint8_t *hai);
+MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, MJTile *hai);
 
 #ifdef __cplusplus
 }

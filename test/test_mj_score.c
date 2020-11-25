@@ -58,17 +58,17 @@
 /* 1枚の牌情報 */
 struct TileInfo {
   int8_t  type;   /* 牌の種類(-1で終わり) */
-  uint8_t maisu;  /* 所持数               */
+  int32_t maisu;  /* 所持数               */
 };
 
 /* テストケース */
 struct MJScoreTestCase {
-  uint8_t agarihai;             /* 和了牌 */
+  MJTile          agarihai;     /* 和了牌 */
   struct TileInfo tiles[14];    /* 手牌情報（最大14エントリ） */
   struct MJMeld   meld[4];      /* 副露情報（最大4エントリ, typeをINVALIDにして終わり） */
-  uint8_t         num_dora;     /* ドラ牌数 */
-  uint8_t         num_honba;    /* 本場数 */
-  uint8_t         num_riichibo; /* 供託立直棒 */
+  int32_t         num_dora;     /* ドラ牌数 */
+  int32_t         num_honba;    /* 本場数 */
+  int32_t         num_riichibo; /* 供託立直棒 */
   MJKaze          bakaze;       /* 場風 */
   MJKaze          jikaze;       /* 自風 */
   bool            tsumo;        /* 自摸 */
@@ -1837,7 +1837,7 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
     }
     agari_info->meld[i] = test_case->meld[i];
   }
-  agari_info->num_meld = (uint8_t)i;
+  agari_info->num_meld = i;
 
   agari_info->num_dora     = test_case->num_dora;
   agari_info->num_honba    = test_case->num_honba;

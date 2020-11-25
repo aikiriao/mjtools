@@ -15,8 +15,8 @@
 struct MJDeck {
   void              *random;        /* 乱数生成インスタンス */
   const struct MJRandomGeneratorInterface *random_if; /* 乱数生成インターフェース */
-  uint8_t           deck[122];      /* 牌山 */
-  uint8_t           rinshan[4];     /* 嶺上牌 */
+  MJTile            deck[122];      /* 牌山 */
+  MJTile            rinshan[4];     /* 嶺上牌 */
   uint32_t          tsumo_pos;      /* ツモ位置 */
   uint32_t          rinshan_pos;    /* 嶺上ツモ位置 */
   struct MJDoraHai  dora;           /* ドラ牌 */
@@ -31,7 +31,7 @@ static const struct MJDeckConfig default_config = {
 };
 
 /* 並び替える前の牌山 */
-static const uint8_t default_deck[136] = {
+static const MJTile default_deck[136] = {
   MJTILE_1MAN, MJTILE_1MAN, MJTILE_1MAN, MJTILE_1MAN,
   MJTILE_2MAN, MJTILE_2MAN, MJTILE_2MAN, MJTILE_2MAN,
   MJTILE_3MAN, MJTILE_3MAN, MJTILE_3MAN, MJTILE_3MAN,
@@ -244,7 +244,7 @@ MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed)
 MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 {
   uint32_t i;
-  uint8_t deck_work[136]; /* シャッフル用一時領域 */
+  MJTile deck_work[136]; /* シャッフル用一時領域 */
 
   /* 引数チェック */
   if (deck == NULL) {
@@ -257,7 +257,7 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
   /* シャッフル（Fisher-Yatesのシャッフル） */
   for (i = 136; i > 1; i--) {
     uint32_t j;
-    uint8_t tmp;
+    MJTile tmp;
     j = deck->random_if->GetRandom(deck->random, 0, i - 1);
     tmp = deck_work[i - 1];
     deck_work[i - 1] = deck_work[j];
@@ -265,10 +265,10 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
   }
 
   /* 牌山/嶺上牌/ドラ牌のセット */
-  memcpy(deck->deck,        &deck_work[  0],  sizeof(uint8_t) * 122);
-  memcpy(deck->rinshan,     &deck_work[122],  sizeof(uint8_t) *   4);
-  memcpy(deck->dora.omote,  &deck_work[126],  sizeof(uint8_t) *   5);
-  memcpy(deck->dora.ura,    &deck_work[131],  sizeof(uint8_t) *   5);
+  memcpy(deck->deck,        &deck_work[  0],  sizeof(MJTile) * 122);
+  memcpy(deck->rinshan,     &deck_work[122],  sizeof(MJTile) *   4);
+  memcpy(deck->dora.omote,  &deck_work[126],  sizeof(MJTile) *   5);
+  memcpy(deck->dora.ura,    &deck_work[131],  sizeof(MJTile) *   5);
 
   /* ツモ位置の初期化 */
   deck->tsumo_pos = 0;
@@ -284,7 +284,7 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 }
 
 /* 1枚ツモる */
-MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, uint8_t *hai)
+MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *hai)
 {
   MJDeckApiResult ret;
   uint32_t num_remain_hais;
@@ -316,7 +316,7 @@ MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, uint8_t *hai)
 }
 
 /* 1枚嶺上牌からツモる（ドラ表示が増える） */
-MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, uint8_t *hai)
+MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, MJTile *hai)
 {
   MJDeckApiResult ret;
   uint32_t num_remain_hais;

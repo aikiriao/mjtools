@@ -35,12 +35,12 @@ typedef enum MJMentsuTypeTag {
 /* 面子の情報 */
 struct MJMentsu {
   MJMentsuType  type;
-  uint8_t       minhai;       /* 面子を構成する最小の牌 */
+  MJTile        minhai;       /* 面子を構成する最小の牌 */
 };
 
 /* 面子が切り分けられた手牌 */
 struct MJDividedHand {
-  uint8_t atama;                /* 頭牌 */
+  MJTile          atama;        /* 頭牌 */
   struct MJMentsu mentsu[4];    /* 面子 */
 };
 
@@ -484,7 +484,7 @@ static void MJScore_CalculateDividedHandHanFu(
     /* 頭を抜いて調べる */
     if (rest_count.count[i] >= 2) {
       rest_count.count[i] -= 2;
-      div_count.atama = (uint8_t)i;
+      div_count.atama = (MJTile)i;
       /* 面子の切り分けに進む */
       MJScore_DivideMentsu(info, &rest_count, &div_count, info->num_meld, score);
       div_count.atama = 0;
@@ -555,7 +555,7 @@ static void MJScore_DivideMentsu(
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 暗刻を抜き出して調べる */
     if (hai[i] >= 3) {
-      pmentsu->minhai = (uint8_t)i;
+      pmentsu->minhai = (MJTile)i;
       if ((i == info->agarihai) && !(info->tsumo)) {
         /* 和了牌の場合は明刻に */
         pmentsu->type = MJMENTSU_TYPE_PUNG;
@@ -571,7 +571,7 @@ static void MJScore_DivideMentsu(
     /* 順子を抜き出して調べる */
     if (MJTILE_IS_SUHAI(i) && (hai[i] > 0)
         && (hai[i + 1] > 0) && (hai[i + 2] > 0)) {
-      pmentsu->minhai = (uint8_t)i;
+      pmentsu->minhai = (MJTile)i;
       pmentsu->type = MJMENTSU_TYPE_SYUNTSU;
       hai[i]--; hai[i + 1]--; hai[i + 2]--;
       MJScore_DivideMentsu(info, rest_count, div_count, num_mentsu + 1, score);
@@ -1204,7 +1204,7 @@ static bool MJScore_IsIkkitsukan(
     const struct MJAgariInformation *info, const struct MJDividedHand *count)
 {
   int32_t i, j;
-  uint8_t suhai_count[30] = { 0, };
+  MJTile suhai_count[30] = { 0, };
 
   /* 数牌の並びに関してチェック */
   MJUTILITY_STATIC_ASSERT(
@@ -1216,7 +1216,7 @@ static bool MJScore_IsIkkitsukan(
 
   /* 数牌の出現数をカウント */
   for (i = 0; i < 4; i++) {
-    uint8_t minhai = count->mentsu[i].minhai;
+    MJTile minhai = count->mentsu[i].minhai;
     if (MJTILE_IS_SUHAI(minhai)
         && ((count->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) || (count->mentsu[i].type == MJMENTSU_TYPE_CHOW))) {
       suhai_count[minhai]++; suhai_count[minhai + 1]++; suhai_count[minhai + 2]++;
@@ -1583,7 +1583,7 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
   struct MJTileCount tmp;
 
   /* 13面待ち時の牌姿 */
-  static const uint8_t pattern[13] = { 
+  static const MJTile pattern[13] = { 
     MJTILE_1MAN, MJTILE_9MAN, MJTILE_1PIN, MJTILE_9PIN, 
     MJTILE_1SOU, MJTILE_9SOU, MJTILE_TON,  MJTILE_NAN,
     MJTILE_SHA,  MJTILE_PEE,  MJTILE_HAKU, MJTILE_HATU,
