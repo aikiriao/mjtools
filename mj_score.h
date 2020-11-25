@@ -65,7 +65,6 @@ typedef enum MJScoreCalculationResultTag {
   MJSCORE_CALCRESULT_OK = 0,
   MJSCORE_CALCRESULT_INVALID_ARGUMENT,        /* 引数が不正 */
   MJSCORE_CALCRESULT_INVALID_AGARIHAI,        /* 和了牌が異常 */
-  MJSCORE_CALCRESULT_INVALID_KAZE,            /* 風情報が無効 */
   MJSCORE_CALCRESULT_MELD_RIICHI,             /* 鳴いてリーチしている */
   MJSCORE_CALCRESULT_INVALID_NUM_HAND,        /* 和了牌ふくめ牌数が14枚でない */
   MJSCORE_CALCRESULT_NOT_AGARI,               /* 和了っていない */

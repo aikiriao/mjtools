@@ -174,11 +174,6 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
     return MJSCORE_CALCRESULT_INVALID_AGARIHAI;
   }
 
-  /* 風情報が無効 */
-  if ((info->jikaze == MJWIND_INVALID) || (info->bakaze == MJWIND_INVALID)) {
-    return MJSCORE_CALCRESULT_INVALID_KAZE;
-  }
-
   /* 鳴いてリーチしている */
   if ((info->hand.num_meld > 0) && (info->riichi || info->double_riichi)) {
     return MJSCORE_CALCRESULT_MELD_RIICHI;
