@@ -69,8 +69,8 @@ struct MJScoreTestCase {
   int32_t         num_dora;     /* ドラ牌数 */
   int32_t         num_honba;    /* 本場数 */
   int32_t         num_riichibo; /* 供託立直棒 */
-  MJKaze          bakaze;       /* 場風 */
-  MJKaze          jikaze;       /* 自風 */
+  MJWind          bakaze;       /* 場風 */
+  MJWind          jikaze;       /* 自風 */
   bool            tsumo;        /* 自摸 */
   bool            riichi;       /* 立直 */
   bool            ippatsu;      /* 一発 */
@@ -110,7 +110,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 40,
@@ -135,7 +135,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 60,
@@ -160,7 +160,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 1, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 70,
@@ -184,7 +184,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 7, .fu = 50,
@@ -208,7 +208,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 30,
@@ -233,7 +233,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -258,7 +258,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 20,
@@ -284,7 +284,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 30,
@@ -309,7 +309,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 30,
@@ -334,7 +334,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 6, .fu = 30,
@@ -359,7 +359,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 30,
@@ -383,7 +383,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 40,
@@ -409,7 +409,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 30,
@@ -435,7 +435,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 30,
@@ -461,7 +461,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -487,7 +487,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 8, .fu = 30,
@@ -513,7 +513,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 30,
@@ -538,7 +538,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = true, .ippatsu = true,
     .answer = {
       .han = 3, .fu = 40,
@@ -562,7 +562,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 30,
@@ -586,7 +586,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 30,
@@ -610,7 +610,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -634,7 +634,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = true, .ippatsu = true,
     .answer = {
       .han = 5, .fu = 30,
@@ -658,7 +658,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 40,
@@ -683,7 +683,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 20,
@@ -708,7 +708,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 50,
@@ -732,7 +732,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 25,
@@ -757,7 +757,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 40,
@@ -780,7 +780,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 25,
@@ -803,7 +803,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 6, .fu = 50,
@@ -828,7 +828,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 70,
@@ -850,7 +850,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 6, .fu = 20,
@@ -874,7 +874,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 30,
@@ -896,7 +896,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 60,
@@ -920,7 +920,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 7,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 8, .fu = 40,
@@ -945,7 +945,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 40,
@@ -969,7 +969,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 30,
@@ -995,7 +995,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 20,
@@ -1019,7 +1019,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 30,
@@ -1043,7 +1043,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 5, .fu = 30,
@@ -1069,7 +1069,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 50,
@@ -1093,7 +1093,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 3,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 40,
@@ -1117,7 +1117,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_NAN,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 30,
@@ -1143,7 +1143,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_NAN,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_NAN,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 30,
@@ -1167,7 +1167,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 40,
@@ -1192,7 +1192,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -1217,7 +1217,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 40,
@@ -1242,7 +1242,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 30,
@@ -1266,7 +1266,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 2,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 3, .fu = 40,
@@ -1291,7 +1291,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -1317,7 +1317,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 30,
@@ -1342,7 +1342,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 4, .fu = 20,
@@ -1368,7 +1368,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -1393,7 +1393,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 40,
@@ -1419,7 +1419,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 1, .fu = 30,
@@ -1444,7 +1444,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 1,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = true, .ippatsu = false,
     .answer = {
       .han = 2, .fu = 40,
@@ -1468,7 +1468,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_NAN, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_NAN, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = true, .ippatsu = true,
     .answer = {
       .han = 3, .fu = 30,
@@ -1494,7 +1494,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = true, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1517,7 +1517,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 26, .fu = 0,
@@ -1541,7 +1541,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1566,7 +1566,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1591,7 +1591,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 26, .fu = 0,
@@ -1616,7 +1616,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_SHA,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_SHA,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1640,7 +1640,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_TON,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_TON,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1664,7 +1664,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1688,7 +1688,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1712,7 +1712,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1735,7 +1735,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1759,7 +1759,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 13, .fu = 0,
@@ -1783,7 +1783,7 @@ static const struct MJScoreTestCase yakuman_test_cases[] = {
     },
     .num_dora = 0,
     .num_honba = 0, .num_riichibo = 0,
-    .bakaze = MJKAZE_TON, .jikaze = MJKAZE_PEE,
+    .bakaze = MJWIND_TON, .jikaze = MJWIND_PEE,
     .tsumo = false, .riichi = false, .ippatsu = false,
     .answer = {
       .han = 26, .fu = 0,

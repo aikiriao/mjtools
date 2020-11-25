@@ -1,6 +1,7 @@
 #ifndef MJ_SCORE_H_INCLUDED
 #define MJ_SCORE_H_INCLUDED
 
+#include "mj_types.h"
 #include "mj_shanten.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -75,31 +76,6 @@ typedef enum MJScoreCalculationResultTag {
   MJSCORE_CALCRESULT_NG, 
 } MJScoreCalculationResult;
 
-/* 副露の識別型 */
-typedef enum MJMeldTypeTag {
-  MJMELD_TYPE_INVALID = 0, /* 無効値 */
-  MJMELD_TYPE_PUNG,        /* ポン   */
-  MJMELD_TYPE_CHOW,        /* チー   */
-  MJMELD_TYPE_ANKAN,       /* 暗槓   */
-  MJMELD_TYPE_MINKAN,      /* 明槓   */
-  MJMELD_TYPE_KAKAN,       /* 加槓   */
-} MJMeldType;
-
-/* 風 */
-typedef enum MJKazeTag {
-  MJKAZE_INVALID = 0,  /* 無効値 */
-  MJKAZE_TON,          /* 東 */
-  MJKAZE_NAN,          /* 南 */
-  MJKAZE_SHA,          /* 西 */
-  MJKAZE_PEE,          /* 北 */
-} MJKaze;
-
-/* 副露の状態 */
-struct MJMeld {
-  MJMeldType  type;     /* 種類 */
-  MJTile      minhai;   /* 副露を構成する牌で最小の識別整数を持つ牌 */
-};
-
 /* 和了時の状態 */
 struct MJAgariInformation {
   MJTile              agarihai;       /* 和了牌 */
@@ -109,8 +85,8 @@ struct MJAgariInformation {
   int32_t             num_dora;       /* ドラ牌数(赤牌含む) */
   int32_t             num_honba;      /* 本場数 */
   int32_t             num_riichibo;   /* 供託リーチ棒数 */
-  MJKaze              bakaze;         /* 場風 */
-  MJKaze              jikaze;         /* 自風 */
+  MJWind              bakaze;         /* 場風 */
+  MJWind              jikaze;         /* 自風 */
   bool                tsumo;          /* 自摸和了？ */
   bool                riichi;         /* 立直？ */
   bool                ippatsu;        /* 一発？ */

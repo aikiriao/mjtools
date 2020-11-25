@@ -175,7 +175,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 風情報が無効 */
-  if ((info->jikaze == MJKAZE_INVALID) || (info->bakaze == MJKAZE_INVALID)) {
+  if ((info->jikaze == MJWIND_INVALID) || (info->bakaze == MJWIND_INVALID)) {
     return MJSCORE_CALCRESULT_INVALID_KAZE;
   }
 
@@ -754,17 +754,17 @@ static void MJScore_CalculateFu(
   /* 雀頭の状態による符 */
   /* 役牌 */
   if (MJTILE_IS_SANGEN(div_count->atama)
-      || ((div_count->atama == MJTILE_TON) && (info->bakaze == MJKAZE_TON))
-      || ((div_count->atama == MJTILE_NAN) && (info->bakaze == MJKAZE_NAN))
-      || ((div_count->atama == MJTILE_SHA) && (info->bakaze == MJKAZE_SHA))
-      || ((div_count->atama == MJTILE_PEE) && (info->bakaze == MJKAZE_PEE))) {
+      || ((div_count->atama == MJTILE_TON) && (info->bakaze == MJWIND_TON))
+      || ((div_count->atama == MJTILE_NAN) && (info->bakaze == MJWIND_NAN))
+      || ((div_count->atama == MJTILE_SHA) && (info->bakaze == MJWIND_SHA))
+      || ((div_count->atama == MJTILE_PEE) && (info->bakaze == MJWIND_PEE))) {
     tmp_fu += 2;
   }
   /* 連風牌 */
-  if (   ((div_count->atama == MJTILE_TON) && (info->jikaze == MJKAZE_TON))
-      || ((div_count->atama == MJTILE_NAN) && (info->jikaze == MJKAZE_NAN))
-      || ((div_count->atama == MJTILE_SHA) && (info->jikaze == MJKAZE_SHA))
-      || ((div_count->atama == MJTILE_PEE) && (info->jikaze == MJKAZE_PEE))) {
+  if (   ((div_count->atama == MJTILE_TON) && (info->jikaze == MJWIND_TON))
+      || ((div_count->atama == MJTILE_NAN) && (info->jikaze == MJWIND_NAN))
+      || ((div_count->atama == MJTILE_SHA) && (info->jikaze == MJWIND_SHA))
+      || ((div_count->atama == MJTILE_PEE) && (info->jikaze == MJWIND_PEE))) {
     tmp_fu += 2;
   }
   /* 面子の構成による符 */
@@ -926,18 +926,18 @@ static void MJScore_AppendMergedHandHan(
     tmp.han += 1;
   }
   /* 場風 */
-  if (   ((info->bakaze == MJKAZE_TON) && (merged_count->count[MJTILE_TON] >= 3))
-      || ((info->bakaze == MJKAZE_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
-      || ((info->bakaze == MJKAZE_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
-      || ((info->bakaze == MJKAZE_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
+  if (   ((info->bakaze == MJWIND_TON) && (merged_count->count[MJTILE_TON] >= 3))
+      || ((info->bakaze == MJWIND_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
+      || ((info->bakaze == MJWIND_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
+      || ((info->bakaze == MJWIND_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_BAKAZE);
     tmp.han += 1;
   }
   /* 自風 */
-  if (   ((info->jikaze == MJKAZE_TON) && (merged_count->count[MJTILE_TON] >= 3))
-      || ((info->jikaze == MJKAZE_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
-      || ((info->jikaze == MJKAZE_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
-      || ((info->jikaze == MJKAZE_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
+  if (   ((info->jikaze == MJWIND_TON) && (merged_count->count[MJTILE_TON] >= 3))
+      || ((info->jikaze == MJWIND_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
+      || ((info->jikaze == MJWIND_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
+      || ((info->jikaze == MJWIND_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
     MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_JIKAZE);
     tmp.han += 1;
   }
@@ -1039,7 +1039,7 @@ static void MJScore_CalculatePointFromHanFu(
 
   /* 出力バッファに結果を設定 */
   memset(&tmp, 0, sizeof(struct MJPoint));
-  if (info->jikaze == MJKAZE_TON) {
+  if (info->jikaze == MJWIND_TON) {
     /* 親 */
     tmp.point             = oya_point;
     if (info->tsumo) {
@@ -1124,14 +1124,14 @@ static bool MJScore_IsPinfu(
         || (count->atama == MJTILE_HATU) || (count->atama == MJTILE_CHUN)) {
       return false;
     }
-    if (((count->atama == MJTILE_TON) && (info->bakaze == MJKAZE_TON))
-        || ((count->atama == MJTILE_NAN) && (info->bakaze == MJKAZE_NAN))
-        || ((count->atama == MJTILE_SHA) && (info->bakaze == MJKAZE_SHA))
-        || ((count->atama == MJTILE_PEE) && (info->bakaze == MJKAZE_PEE))
-        || ((count->atama == MJTILE_TON) && (info->jikaze == MJKAZE_TON))
-        || ((count->atama == MJTILE_NAN) && (info->jikaze == MJKAZE_NAN))
-        || ((count->atama == MJTILE_SHA) && (info->jikaze == MJKAZE_SHA))
-        || ((count->atama == MJTILE_PEE) && (info->jikaze == MJKAZE_PEE))) {
+    if (((count->atama == MJTILE_TON) && (info->bakaze == MJWIND_TON))
+        || ((count->atama == MJTILE_NAN) && (info->bakaze == MJWIND_NAN))
+        || ((count->atama == MJTILE_SHA) && (info->bakaze == MJWIND_SHA))
+        || ((count->atama == MJTILE_PEE) && (info->bakaze == MJWIND_PEE))
+        || ((count->atama == MJTILE_TON) && (info->jikaze == MJWIND_TON))
+        || ((count->atama == MJTILE_NAN) && (info->jikaze == MJWIND_NAN))
+        || ((count->atama == MJTILE_SHA) && (info->jikaze == MJWIND_SHA))
+        || ((count->atama == MJTILE_PEE) && (info->jikaze == MJWIND_PEE))) {
       return false;
     }
   }

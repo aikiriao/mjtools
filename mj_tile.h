@@ -11,45 +11,45 @@
 /* 牌の識別整数を定義 とつげき東北氏作のMJexeIO.DLLに準拠 */
 
 /* 萬子 */
-#define MJTILE_1MAN   1  /* 一萬 */
-#define MJTILE_2MAN   2  /* 二萬 */
-#define MJTILE_3MAN   3  /* 三萬 */
-#define MJTILE_4MAN   4  /* 四萬 */
-#define MJTILE_5MAN   5  /* 五萬 */
-#define MJTILE_6MAN   6  /* 六萬 */
-#define MJTILE_7MAN   7  /* 七萬 */
-#define MJTILE_8MAN   8  /* 八萬 */
-#define MJTILE_9MAN   9  /* 九萬 */
+#define MJTILE_1MAN      1    /* 一萬 */
+#define MJTILE_2MAN      2    /* 二萬 */
+#define MJTILE_3MAN      3    /* 三萬 */
+#define MJTILE_4MAN      4    /* 四萬 */
+#define MJTILE_5MAN      5    /* 五萬 */
+#define MJTILE_6MAN      6    /* 六萬 */
+#define MJTILE_7MAN      7    /* 七萬 */
+#define MJTILE_8MAN      8    /* 八萬 */
+#define MJTILE_9MAN      9    /* 九萬 */
 /* 筒子 */
-#define MJTILE_1PIN  11  /* 一筒 */
-#define MJTILE_2PIN  12  /* 二筒 */
-#define MJTILE_3PIN  13  /* 三筒 */
-#define MJTILE_4PIN  14  /* 四筒 */
-#define MJTILE_5PIN  15  /* 五筒 */
-#define MJTILE_6PIN  16  /* 六筒 */
-#define MJTILE_7PIN  17  /* 七筒 */
-#define MJTILE_8PIN  18  /* 八筒 */
-#define MJTILE_9PIN  19  /* 九筒 */
+#define MJTILE_1PIN     11    /* 一筒 */
+#define MJTILE_2PIN     12    /* 二筒 */
+#define MJTILE_3PIN     13    /* 三筒 */
+#define MJTILE_4PIN     14    /* 四筒 */
+#define MJTILE_5PIN     15    /* 五筒 */
+#define MJTILE_6PIN     16    /* 六筒 */
+#define MJTILE_7PIN     17    /* 七筒 */
+#define MJTILE_8PIN     18    /* 八筒 */
+#define MJTILE_9PIN     19    /* 九筒 */
 /* 索子 */
-#define MJTILE_1SOU  21  /* 一索 */
-#define MJTILE_2SOU  22  /* 二索 */
-#define MJTILE_3SOU  23  /* 三索 */
-#define MJTILE_4SOU  24  /* 四索 */
-#define MJTILE_5SOU  25  /* 五索 */
-#define MJTILE_6SOU  26  /* 六索 */
-#define MJTILE_7SOU  27  /* 七索 */
-#define MJTILE_8SOU  28  /* 八索 */
-#define MJTILE_9SOU  29  /* 九索 */
+#define MJTILE_1SOU     21    /* 一索 */
+#define MJTILE_2SOU     22    /* 二索 */
+#define MJTILE_3SOU     23    /* 三索 */
+#define MJTILE_4SOU     24    /* 四索 */
+#define MJTILE_5SOU     25    /* 五索 */
+#define MJTILE_6SOU     26    /* 六索 */
+#define MJTILE_7SOU     27    /* 七索 */
+#define MJTILE_8SOU     28    /* 八索 */
+#define MJTILE_9SOU     29    /* 九索 */
 /* 字牌 */
-#define MJTILE_TON   31  /* 東 */
-#define MJTILE_NAN   32  /* 南 */
-#define MJTILE_SHA   33  /* 西 */
-#define MJTILE_PEE   34  /* 北 */
-#define MJTILE_HAKU  35  /* 白 */
-#define MJTILE_HATU  36  /* 發 */
-#define MJTILE_CHUN  37  /* 中 */
-/* 最大値 */
-#define MJTILE_MAX   38
+#define MJTILE_TON      31    /* 東 */
+#define MJTILE_NAN      32    /* 南 */
+#define MJTILE_SHA      33    /* 西 */
+#define MJTILE_PEE      34    /* 北 */
+#define MJTILE_HAKU     35    /* 白 */
+#define MJTILE_HATU     36    /* 發 */
+#define MJTILE_CHUN     37    /* 中 */
+#define MJTILE_MAX      38    /* 最大値 */
+#define MJTILE_INVALID  0xFF  /* 無効値 */
 
 /* 牌判定マクロ */
 /* 牌は字牌か？ */
