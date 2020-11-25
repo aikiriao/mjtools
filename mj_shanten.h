@@ -6,7 +6,7 @@
 
 /* 手牌の状態 */
 struct MJHand {
-  uint8_t hand[MJTILE_MAX];  /* 各牌の所持数が並んだ配列 */
+  int32_t hand[MJTILE_MAX];  /* 各牌の所持数が並んだ配列 */
 };
 
 #ifdef __cplusplus

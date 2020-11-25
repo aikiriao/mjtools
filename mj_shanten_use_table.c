@@ -18,7 +18,7 @@ struct ShantenTableEntry {
 };
 
 /* 数牌の並びを頼りにテーブル探索 */
-static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai);
+static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const int32_t *suhai);
 /* テーブル使用時のコア処理 */
 static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand *hand);
 
@@ -59,7 +59,7 @@ int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJHand *hand)
 }
 
 /* 数牌の並びを頼りにテーブル探索 */
-static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const uint8_t *suhai)
+static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const int32_t *suhai)
 {
   uint32_t key, value, number;
   /* 10の冪数テーブル（左側に一番若い数牌が置かれるため、降順） */
@@ -91,7 +91,7 @@ static int32_t MJShanten_CalculateNormalShantenUseTableCore(const struct MJHand 
   int32_t pos, type;
   int32_t num_mentsu, num_tatsu;
   const struct ShantenTableEntry *ptable;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   assert(hand != NULL);
 

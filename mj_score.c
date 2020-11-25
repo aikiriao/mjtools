@@ -498,7 +498,7 @@ static void MJScore_MergeMeldToHand(const struct MJAgariInformation *info, struc
 {
   int32_t i;
   struct MJHand tmp;
-  uint8_t *hai;
+  int32_t *hai;
   const struct MJMeld *pmeld;
 
   assert((info != NULL) && (merged_hand != NULL));
@@ -537,7 +537,7 @@ static void MJScore_DivideMentsu(
   struct MJDividedHand *div_hand, int32_t num_mentsu, struct MJScore *score)
 {
   int32_t i;
-  uint8_t *hai;
+  int32_t *hai;
   struct MJMentsu *pmentsu;
 
   assert((info != NULL) && (rest_hand != NULL)
@@ -1442,7 +1442,7 @@ static bool MJScore_IsTanyao(
 static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
 {
   int32_t i;
-  const uint8_t *hai;
+  const int32_t *hai;
   bool routou, jihai;
 
   assert((info != NULL) && (merged_hand != NULL));
@@ -1473,7 +1473,7 @@ static bool MJScore_IsHonrouto(const struct MJAgariInformation *info, const stru
 static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
 {
   int32_t i, num_types, type;
-  const uint8_t *hai;
+  const int32_t *hai;
   bool jihai;
 
   assert((info != NULL) && (merged_hand != NULL));
@@ -1508,7 +1508,7 @@ static bool MJScore_IsHonitsu(const struct MJAgariInformation *info, const struc
 static bool MJScore_IsChinitsu(const struct MJAgariInformation *info, const struct MJHand *merged_hand)
 {
   int32_t i, num_types, type;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   assert((info != NULL) && (merged_hand != NULL));
 
@@ -1540,7 +1540,7 @@ static bool MJScore_IsSyosangen(const struct MJAgariInformation *info, const str
 {
   int32_t i, num_sangen_mentsu;
   bool sangen_atama;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   assert((info != NULL) && (merged_hand != NULL));
 
@@ -1622,7 +1622,7 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
 static bool MJScore_IsChurenpoutonCore(const struct MJHand *hand)
 {
   int32_t i, type, type_offset;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   assert(hand != NULL);
 
@@ -1709,7 +1709,7 @@ static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct
 {
   int32_t i;
   int32_t num_anko, num_toitsu;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   assert((info != NULL) && (merged_hand != NULL));
 
@@ -1744,7 +1744,7 @@ static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const s
 {
   int32_t i;
   int32_t num_anko;
-  const uint8_t *hai;
+  const int32_t *hai;
   struct MJHand tmp;
 
   assert((info != NULL) && (merged_hand != NULL));

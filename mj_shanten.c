@@ -19,7 +19,7 @@ static void MJShanten_CalculateNormalShantenTatsu(
 int32_t MJShanten_CalculateChitoitsuShanten(const struct MJHand *hand)
 {
   int32_t i, shanten, num_toitu, num_types;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   /* 引数チェック */
   assert(hand != NULL);
@@ -54,7 +54,7 @@ int32_t MJShanten_CalculateChitoitsuShanten(const struct MJHand *hand)
 int32_t MJShanten_CalculateKokushimusouShanten(const struct MJHand *hand)
 {
   int32_t i, shanten, head;
-  const uint8_t *hai;
+  const int32_t *hai;
 
   /* 引数チェック */
   assert(hand != NULL);
@@ -128,7 +128,7 @@ static void MJShanten_CalculateNormalShantenMentsu(
     struct MJHand *hand, int32_t pos,
     int32_t num_mentsu, int32_t *min_shanten)
 {
-  uint8_t *hai;
+  int32_t *hai;
 
   /* 引数チェック */
   assert((hand != NULL) && (min_shanten != NULL));
@@ -163,7 +163,7 @@ static void MJShanten_CalculateNormalShantenTatsu(
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten)
 {
   int32_t shanten;
-  uint8_t *hai;
+  int32_t *hai;
 
   /* 引数チェック */
   assert((hand != NULL) && (min_shanten != NULL));
