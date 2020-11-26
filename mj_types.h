@@ -14,12 +14,6 @@ typedef enum MJMeldTypeTag {
   MJMELD_TYPE_INVALID,     /* 無効値 */
 } MJMeldType;
 
-/* 副露の状態 */
-struct MJMeld {
-  MJMeldType  type;     /* 種類 */
-  MJTile      minhai;   /* 副露を構成する牌で最小の識別整数を持つ牌 */
-};
-
 /* 風 */
 typedef enum MJWindTag {
   MJWIND_TON = 0,      /* 東 */
@@ -27,6 +21,12 @@ typedef enum MJWindTag {
   MJWIND_SHA,          /* 西 */
   MJWIND_PEE,          /* 北 */
 } MJWind;
+
+/* 副露の状態 */
+struct MJMeld {
+  MJMeldType  type;     /* 種類 */
+  MJTile      minhai;   /* 副露を構成する牌で最小の識別整数を持つ牌 */
+};
 
 /* 手牌 */
 struct MJHand {
