@@ -92,16 +92,16 @@ int32_t MJShanten_CalculateNormalShanten(const struct MJTileCount *count)
   tmp = (*count);
 
   min_shanten = 8;
-	for (i = 0; i < MJTILE_MAX; i++) {
-		/* 頭を抜いて調べる */
-		if (tmp.count[i] >= 2) {            
-			tmp.count[i] -= 2;
+  for (i = 0; i < MJTILE_MAX; i++) {
+    /* 頭を抜いて調べる */
+    if (tmp.count[i] >= 2) {            
+      tmp.count[i] -= 2;
       /* 頭を抜いている分1減らす */
       shanten = MJShanten_CalculateNormalShantenNaive(&tmp) - 1;
       if (shanten < min_shanten) { min_shanten = shanten; }
-			tmp.count[i] += 2;
-		}
-	}
+      tmp.count[i] += 2;
+    }
+  }
 
   /* 雀頭がない場合を含めるため、頭を抜かずに調べる */
   shanten = MJShanten_CalculateNormalShantenNaive(&tmp);
