@@ -1,8 +1,8 @@
 #ifndef MJDECK_H_INCLUDED
 #define MJDECK_H_INCLUDED
 
+#include "mj_types.h"
 #include "mj_random.h"
-#include "mj_tile.h"
 #include <stdint.h>
 
 /* 牌山ハンドル */
@@ -11,13 +11,6 @@ struct MJDeck;
 /* インスタンス生成コンフィグ */
 struct MJDeckConfig {
   const struct MJRandomGeneratorInterface *random_if;  /* 乱数生成インターフェース(NULLでデフォルトの乱数生成器を使用) */
-};
-
-/* ドラ牌 */
-struct MJDoraHai {
-  MJTile    omote[5]; /* 表ドラ */
-  MJTile    ura[5];   /* 裏ドラ */
-  uint32_t  num_dora; /* ドラ表示枚数 */
 };
 
 /* API結果型 */

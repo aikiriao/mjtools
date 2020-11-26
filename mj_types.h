@@ -35,4 +35,11 @@ struct MJHand {
   int32_t       num_meld; /* 副露数 */
 };
 
+/* ドラ牌 */
+struct MJDoraHai {
+  MJTile    omote[5]; /* 表ドラ */
+  MJTile    ura[5];   /* 裏ドラ */
+  uint32_t  num_dora; /* ドラ表示枚数 */
+};
+
 #endif /* MJTYPES_H_INCLUDED */
