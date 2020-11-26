@@ -89,7 +89,7 @@ static uint32_t MJRandomXoshiro256pp_UniformRand(struct MJRandomXoshiro256pp *ra
 
   /* doubleの小数部が53bitであることを用いて[0..1)の範囲に直す */
   /* 参考: http://prng.di.unimi.it "Generating uniform doubles in the unit interval" */
-  uniform = (rnd >> 11) * 0x1.0p-53;
+  uniform = (double)(rnd >> 11) * 0x1.0p-53;
 
   return (uint32_t)(uniform * ((double)max + 1));
 }
