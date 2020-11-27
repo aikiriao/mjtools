@@ -26,7 +26,7 @@ static void MJRandomXoshiro256pp_Destroy(void *random);
 /* シード値の設定 */
 static void MJRandomXoshiro256pp_SetSeed(void *random, const void *seed);
 /* 乱数生成 */
-static uint32_t MJRandomXoshiro256pp_GetRandom(void *random, uint32_t min, uint32_t max);
+static int32_t MJRandomXoshiro256pp_GetRandom(void *random, int32_t min, int32_t max);
 
 /* インターフェース定義 */
 static const struct MJRandomGeneratorInterface st_xoshiro128_interface = {
@@ -79,7 +79,7 @@ static uint64_t MJRandomXoshiro256pp_Next(struct MJRandomXoshiro256pp *random)
 }
 
 /* [0,max]の範囲の一様乱数を生成 */
-static uint32_t MJRandomXoshiro256pp_UniformRand(struct MJRandomXoshiro256pp *random, uint32_t max)
+static int32_t MJRandomXoshiro256pp_UniformRand(struct MJRandomXoshiro256pp *random, int32_t max)
 {
   uint64_t rnd;
   double uniform;
@@ -91,7 +91,7 @@ static uint32_t MJRandomXoshiro256pp_UniformRand(struct MJRandomXoshiro256pp *ra
   /* 参考: http://prng.di.unimi.it "Generating uniform doubles in the unit interval" */
   uniform = (double)(rnd >> 11) * 0x1.0p-53;
 
-  return (uint32_t)(uniform * ((double)max + 1));
+  return (int32_t)(uniform * ((double)max + 1));
 }
 
 /* ワークサイズ計算 */
@@ -174,9 +174,9 @@ static void MJRandomXoshiro256pp_SetSeed(void *random, const void *seed)
 }
 
 /* 乱数生成 */
-static uint32_t MJRandomXoshiro256pp_GetRandom(void *random, uint32_t min, uint32_t max)
+static int32_t MJRandomXoshiro256pp_GetRandom(void *random, int32_t min, int32_t max)
 {
-  uint32_t result;
+  int32_t result;
   struct MJRandomXoshiro256pp *xor = (struct MJRandomXoshiro256pp *)random;
 
   assert(random != NULL);

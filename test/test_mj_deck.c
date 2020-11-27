@@ -155,8 +155,8 @@ static void MJDeckTest_ShuffleTest(void *obj)
 
   /* シャッフルで消失したり増えた牌がないかチェック */
   {
-    uint32_t i, kyoku, is_ok;
-    uint32_t tile_count[MJTILE_MAX];
+    int32_t i, kyoku, is_ok;
+    int32_t tile_count[MJTILE_MAX];
     struct MJDeck *deck;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -226,7 +226,7 @@ CHECK_END:
   {
 #define NUM_TRIALS 10
     struct MJDeck *deck;
-    uint32_t trial, is_ok;
+    int32_t trial, is_ok;
     MJTile decks[NUM_TRIALS][136];
     struct MJRandomXoshiro256ppSeed xor_seed = {
       .seed = { ~1, 2, ~3, 4 },
@@ -273,7 +273,7 @@ static void MJDeckTest_DrawTest(void *obj)
   {
     struct MJDeck *deck;
     MJTile tile;
-    uint32_t num_tiles;
+    int32_t num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
@@ -304,7 +304,7 @@ static void MJDeckTest_DrawTest(void *obj)
   {
     struct MJDeck *deck;
     MJTile tile;
-    uint32_t i, is_ok, num_tiles;
+    int32_t i, is_ok, num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
@@ -338,7 +338,7 @@ static void MJDeckTest_DrawTest(void *obj)
   {
     struct MJDeck *deck;
     MJTile tile;
-    uint32_t num_tiles;
+    int32_t num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
@@ -375,7 +375,7 @@ static void MJDeckTest_DrawTest(void *obj)
   {
     struct MJDeck *deck;
     MJTile tile;
-    uint32_t i, is_ok, num_tiles;
+    int32_t i, is_ok, num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
@@ -410,7 +410,7 @@ static void MJDeckTest_DrawTest(void *obj)
   {
     struct MJDeck *deck;
     MJTile tile;
-    uint32_t i;
+    int32_t i;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 

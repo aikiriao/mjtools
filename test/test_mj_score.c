@@ -2005,10 +2005,10 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
 static void MJScoreTest_PrintEstablishedYakus(uint64_t yaku_flags)
 {
 #define SEPARATOR ", "
-  uint32_t index;
+  int32_t index;
 
   /* フラグが立っている役を全て表示 */
-  for (index = 0; index < sizeof(yaku_name_table) / sizeof(yaku_name_table[0]); index++) {
+  for (index = 0; index < (int32_t)(sizeof(yaku_name_table) / sizeof(yaku_name_table[0])); index++) {
     if (MJSCORE_IS_YAKU_ESTABLISHED(yaku_flags, index)) {
       printf("%s", yaku_name_table[index]);
       printf("%s", SEPARATOR);
@@ -2061,9 +2061,9 @@ static bool MJScoreTest_CheckScoreResult(bool tsumo, const struct MJScore *get, 
 }
 
 /* テストケースに対して計算テスト実行 */
-static void MJScoreTest_CalculateTestForList(const struct MJScoreTestCase *test_cases, uint32_t num_test)
+static void MJScoreTest_CalculateTestForList(const struct MJScoreTestCase *test_cases, int32_t num_test)
 {
-  uint32_t i, is_ok;
+  int32_t i, is_ok;
 
   /* 全ケースで確認 */
   is_ok = 1;
@@ -2109,8 +2109,8 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
 
   /* 通常役に対しての海底・嶺上開花・槍槓・天和・地和の成立テスト */
   {
-    uint32_t i, is_ok;
-    const uint32_t num_test_cases = sizeof(normal_test_cases) / sizeof(normal_test_cases[0]);
+    int32_t i, is_ok;
+    const int32_t num_test_cases = sizeof(normal_test_cases) / sizeof(normal_test_cases[0]);
 
     is_ok = 1;
     for (i = 0; i < num_test_cases; i++) {
@@ -2285,8 +2285,8 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
 
   /* 天和・地和と他の役満の複合テスト（積み込みか？） */
   {
-    uint32_t i, is_ok;
-    const uint32_t num_test_cases = sizeof(yakuman_test_cases) / sizeof(yakuman_test_cases[0]);
+    int32_t i, is_ok;
+    const int32_t num_test_cases = sizeof(yakuman_test_cases) / sizeof(yakuman_test_cases[0]);
 
     is_ok = 1;
     for (i = 0; i < num_test_cases; i++) {

@@ -39,10 +39,10 @@ void MJDeck_Destroy(struct MJDeck *deck);
 MJDeckApiResult MJDeck_GetDoraTile(const struct MJDeck *deck, struct MJDoraTile *dora);
 
 /* 残り自摸牌数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainTiles(const struct MJDeck *deck, uint32_t *num_remain_tiles);
+MJDeckApiResult MJDeck_GetNumRemainTiles(const struct MJDeck *deck, int32_t *num_remain_tiles);
 
 /* 残り嶺上数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainRinshanTiles(const struct MJDeck *deck, uint32_t *num_remain_tiles);
+MJDeckApiResult MJDeck_GetNumRemainRinshanTiles(const struct MJDeck *deck, int32_t *num_remain_tiles);
 
 /* 乱数シードのセット */
 MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed);

@@ -17,8 +17,8 @@ struct MJDeck {
   const struct MJRandomGeneratorInterface *random_if; /* 乱数生成インターフェース */
   MJTile            deck[122];      /* 牌山 */
   MJTile            rinshan[4];     /* 嶺上牌 */
-  uint32_t          tsumo_pos;      /* ツモ位置 */
-  uint32_t          rinshan_pos;    /* 嶺上ツモ位置 */
+  int32_t           tsumo_pos;      /* ツモ位置 */
+  int32_t           rinshan_pos;    /* 嶺上ツモ位置 */
   struct MJDoraTile dora;           /* ドラ牌 */
   bool              shufffled;      /* シャッフル済み？ */
   bool              alloced_by_own; /* メモリは自前確保か？ */
@@ -187,7 +187,7 @@ MJDeckApiResult MJDeck_GetDoraTile(const struct MJDeck *deck, struct MJDoraTile 
 }
 
 /* 残り自摸牌数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainTiles(const struct MJDeck *deck, uint32_t *num_remain_tiles)
+MJDeckApiResult MJDeck_GetNumRemainTiles(const struct MJDeck *deck, int32_t *num_remain_tiles)
 {
   /* 引数チェック */
   if ((deck == NULL) || (num_remain_tiles == NULL)) {
@@ -207,7 +207,7 @@ MJDeckApiResult MJDeck_GetNumRemainTiles(const struct MJDeck *deck, uint32_t *nu
 }
 
 /* 残り嶺上数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainRinshanTiles(const struct MJDeck *deck, uint32_t *num_remain_tiles)
+MJDeckApiResult MJDeck_GetNumRemainRinshanTiles(const struct MJDeck *deck, int32_t *num_remain_tiles)
 {
   /* 引数チェック */
   if ((deck == NULL) || (num_remain_tiles == NULL)) {
@@ -243,7 +243,7 @@ MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed)
 /* 洗牌 */
 MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 {
-  uint32_t i;
+  int32_t i;
   MJTile deck_work[136]; /* シャッフル用一時領域 */
 
   /* 引数チェック */
@@ -256,7 +256,7 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 
   /* シャッフル（Fisher-Yatesのシャッフル） */
   for (i = 136; i > 1; i--) {
-    uint32_t j;
+    int32_t j;
     MJTile tmp;
     j = deck->random_if->GetRandom(deck->random, 0, i - 1);
     tmp = deck_work[i - 1];
@@ -287,7 +287,7 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *tile)
 {
   MJDeckApiResult ret;
-  uint32_t num_remain_tiles;
+  int32_t num_remain_tiles;
 
   /* 引数チェック */
   if ((deck == NULL) || (tile == NULL)) {
@@ -319,7 +319,7 @@ MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *tile)
 MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, MJTile *tile)
 {
   MJDeckApiResult ret;
-  uint32_t num_remain_tiles;
+  int32_t num_remain_tiles;
 
   /* 引数チェック */
   if ((deck == NULL) || (tile == NULL)) {

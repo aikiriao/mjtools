@@ -72,7 +72,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
   TEST_UNUSED_PARAMETER(obj);
 
   {
-    uint32_t i, is_ok;
+    int32_t i, is_ok;
 
     /* テストケース */
     const struct MJShantenTestCase test_cases[] = {
@@ -196,7 +196,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
         6,
       },
     };
-    const uint32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
+    const int32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
 
     /* 全ケースで確認 */
     is_ok = 1;
@@ -222,7 +222,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
   TEST_UNUSED_PARAMETER(obj);
 
   {
-    uint32_t i, is_ok;
+    int32_t i, is_ok;
 
     /* テストケース */
     const struct MJShantenTestCase test_cases[] = {
@@ -265,7 +265,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
         13,
       },
     };
-    const uint32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
+    const int32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
 
     /* 全ケースで確認 */
     is_ok = 1;
@@ -291,7 +291,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
   TEST_UNUSED_PARAMETER(obj);
 
   {
-    uint32_t i, is_ok;
+    int32_t i, is_ok;
 
     /* テストケース */
     const struct MJShantenTestCase test_cases[] = {
@@ -354,7 +354,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
         1,
       },
     };
-    const uint32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
+    const int32_t num_test = sizeof(test_cases) / sizeof(test_cases[0]);
 
     /* 全ケースで確認 */
     is_ok = 1;
@@ -425,7 +425,7 @@ static void MJShantenTest_ParseLine(
 }
 
 /* 失敗したケースを表示 */
-static void MJShantenTest_PrintShantenMissCase(const struct MJTileCount *count, uint32_t get, uint32_t answer)
+static void MJShantenTest_PrintShantenMissCase(const struct MJTileCount *count, int32_t get, int32_t answer)
 {
   int i, j;
   printf("get:%d ans:%d \n", get, answer);
@@ -443,7 +443,7 @@ static int32_t MJShantenTest_CalculateShantenForProblemFile(const char *filename
   FILE *fp;
   char linebuf[256];
   struct MJTileCount count;
-  uint32_t total, normal_ok, normal_usetable_ok, kokusi_ok, chitoi_ok;
+  int32_t total, normal_ok, normal_usetable_ok, kokusi_ok, chitoi_ok;
   int32_t normal_answer, kokushi_answer, chitoi_answer;
   int32_t normal_shanten, normal_usetable_shanten, kokushi_shanten, chitoi_shanten;
 

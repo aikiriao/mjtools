@@ -68,8 +68,8 @@ static void MJRandomXoshiro256ppTest_EntropyTest(void *obj)
   {
 #define NUM_SAMPLES (2048)
     double entropy;
-    uint32_t i, ite, is_ok;
-    uint32_t count[256];
+    int32_t i, ite, is_ok;
+    int32_t count[256];
     struct MJRandomXoshiro256pp *random;
 
     random = MJRandomXoshiro256pp_Create(NULL, 0);
@@ -81,7 +81,7 @@ static void MJRandomXoshiro256ppTest_EntropyTest(void *obj)
 
       /* 乱数生成 */
       for (i = 0; i < NUM_SAMPLES; i++) {
-        uint32_t rnd = MJRandomXoshiro256pp_GetRandom(random, 0, 255);
+        int32_t rnd = MJRandomXoshiro256pp_GetRandom(random, 0, 255);
         if (rnd > 255) {
           printf("generated number(%d) is outer range at %d \n", rnd, ite);
           is_ok = 0;
@@ -126,10 +126,10 @@ static void MJRandomXoshiro256ppTest_SetSeedTest(void *obj)
 #define NUM_SAMPLES 100
 #define RANDMIN 1e2
 #define RANDMAX 1e8
-    uint32_t is_ok, seq, smpl;
+    int32_t is_ok, seq, smpl;
     struct MJRandomXoshiro256pp *random;
     struct MJRandomXoshiro256ppSeed seed;
-    uint32_t rand_seq[NUM_SAMPLES];
+    int32_t rand_seq[NUM_SAMPLES];
 
     random = MJRandomXoshiro256pp_Create(NULL, 0);
 
@@ -139,7 +139,7 @@ static void MJRandomXoshiro256ppTest_SetSeedTest(void *obj)
       seed.seed[0] = seed.seed[1] = seed.seed[2] = seed.seed[3] = ~seq;
       MJRandomXoshiro256pp_SetSeed(random, &seed);
       for (smpl = 0; smpl < NUM_SAMPLES; smpl++) {
-        uint32_t rnd = MJRandomXoshiro256pp_GetRandom(random, RANDMIN, RANDMAX);
+        int32_t rnd = MJRandomXoshiro256pp_GetRandom(random, RANDMIN, RANDMAX);
         if ((rnd < RANDMIN) || (rnd > RANDMAX)) {
           is_ok = 0;
           printf("generated number(%d) is outer range at %d,%d \n", rnd, seq, smpl);
@@ -153,7 +153,7 @@ static void MJRandomXoshiro256ppTest_SetSeedTest(void *obj)
       MJRandomXoshiro256pp_SetSeed(random, &seed);
       /* 同じ列が再現するか？ */
       for (smpl = 0; smpl < NUM_SAMPLES; smpl++) {
-        uint32_t rnd = MJRandomXoshiro256pp_GetRandom(random, RANDMIN, RANDMAX);
+        int32_t rnd = MJRandomXoshiro256pp_GetRandom(random, RANDMIN, RANDMAX);
         if ((rnd < RANDMIN) || (rnd > RANDMAX)) {
           is_ok = 0;
           printf("generated number(%d) is outer range at %d,%d \n", rnd, seq, smpl);
@@ -182,10 +182,10 @@ TEST_EXIT1:
 #define NUM_SAMPLES 10
 #define RANDMIN 5
 #define RANDMAX 10
-    uint32_t is_ok, seq, seq2, smpl;
+    int32_t is_ok, seq, seq2, smpl;
     struct MJRandomXoshiro256pp *random;
     struct MJRandomXoshiro256ppSeed seed;
-    uint32_t rand_seq[NUM_SEQUENCES][NUM_SAMPLES];
+    int32_t rand_seq[NUM_SEQUENCES][NUM_SAMPLES];
 
     random = MJRandomXoshiro256pp_Create(NULL, 0);
 
@@ -195,7 +195,7 @@ TEST_EXIT1:
       seed.seed[0] = seed.seed[1] = seed.seed[2] = seed.seed[3] = ~seq;
       MJRandomXoshiro256pp_SetSeed(random, &seed);
       for (smpl = 0; smpl < NUM_SAMPLES; smpl++) {
-        uint32_t rnd = MJRandomXoshiro256pp_GetRandom(random, RANDMIN, RANDMAX);
+        int32_t rnd = MJRandomXoshiro256pp_GetRandom(random, RANDMIN, RANDMAX);
         if ((rnd < RANDMIN) || (rnd > RANDMAX)) {
           is_ok = 0;
           printf("generated number(%d) is outer range at %d,%d \n", rnd, seq, smpl);
@@ -208,7 +208,7 @@ TEST_EXIT1:
     /* 同じシーケンスが現れないことを期待 */
     for (seq = 0; seq < NUM_SEQUENCES; seq++) {
       for (seq2 = (seq + 1); seq2 < NUM_SEQUENCES; seq2++) {
-        if (memcmp(&rand_seq[seq], &rand_seq[seq2], sizeof(uint32_t) * NUM_SAMPLES) == 0) {
+        if (memcmp(&rand_seq[seq], &rand_seq[seq2], sizeof(int32_t) * NUM_SAMPLES) == 0) {
           is_ok = 0;
           printf("seq %d and seq %d are same. \n", seq, seq2);
           goto TEST_EXIT2;

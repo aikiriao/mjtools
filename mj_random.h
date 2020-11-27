@@ -14,7 +14,7 @@ struct MJRandomGeneratorInterface {
   /* 乱数シード値の設定 */
   void (*SetSeed)(void *random, const void *seed);
   /* min以上max以下の整数乱数を発生させる */
-  uint32_t (*GetRandom)(void *random, uint32_t min, uint32_t max);
+  int32_t (*GetRandom)(void *random, int32_t min, int32_t max);
 };
 
 #endif /* MJRANDOM_H_INCLUDED */
