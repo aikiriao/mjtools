@@ -19,7 +19,7 @@ struct MJDeck {
   MJTile            rinshan[4];     /* 嶺上牌 */
   uint32_t          tsumo_pos;      /* ツモ位置 */
   uint32_t          rinshan_pos;    /* 嶺上ツモ位置 */
-  struct MJDoraHai  dora;           /* ドラ牌 */
+  struct MJDoraTile dora;           /* ドラ牌 */
   bool              shufffled;      /* シャッフル済み？ */
   bool              alloced_by_own; /* メモリは自前確保か？ */
   void              *work;          /* ワークメモリ先頭アドレス */
@@ -169,7 +169,7 @@ void MJDeck_Destroy(struct MJDeck *deck)
 }
 
 /* ドラ表示牌の取得 */
-MJDeckApiResult MJDeck_GetDoraHai(const struct MJDeck *deck, struct MJDoraHai *dora)
+MJDeckApiResult MJDeck_GetDoraTile(const struct MJDeck *deck, struct MJDoraTile *dora)
 {
   /* 引数チェック */
   if ((deck == NULL) || (dora == NULL)) {
@@ -187,10 +187,10 @@ MJDeckApiResult MJDeck_GetDoraHai(const struct MJDeck *deck, struct MJDoraHai *d
 }
 
 /* 残り自摸牌数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainHais(const struct MJDeck *deck, uint32_t *num_remain_hais)
+MJDeckApiResult MJDeck_GetNumRemainTiles(const struct MJDeck *deck, uint32_t *num_remain_tiles)
 {
   /* 引数チェック */
-  if ((deck == NULL) || (num_remain_hais == NULL)) {
+  if ((deck == NULL) || (num_remain_tiles == NULL)) {
     return MJDECK_APIRESULT_INVALID_ARGUMENT;
   }
 
@@ -202,15 +202,15 @@ MJDeckApiResult MJDeck_GetNumRemainHais(const struct MJDeck *deck, uint32_t *num
   assert((deck->tsumo_pos + deck->rinshan_pos) <= 122);
 
   /* 成功終了 */
-  (*num_remain_hais) = 122 - deck->tsumo_pos - deck->rinshan_pos;
+  (*num_remain_tiles) = 122 - deck->tsumo_pos - deck->rinshan_pos;
   return MJDECK_APIRESULT_OK;
 }
 
 /* 残り嶺上数の取得 */
-MJDeckApiResult MJDeck_GetNumRemainRinshanHais(const struct MJDeck *deck, uint32_t *num_remain_hais)
+MJDeckApiResult MJDeck_GetNumRemainRinshanTiles(const struct MJDeck *deck, uint32_t *num_remain_tiles)
 {
   /* 引数チェック */
-  if ((deck == NULL) || (num_remain_hais == NULL)) {
+  if ((deck == NULL) || (num_remain_tiles == NULL)) {
     return MJDECK_APIRESULT_INVALID_ARGUMENT;
   }
 
@@ -222,7 +222,7 @@ MJDeckApiResult MJDeck_GetNumRemainRinshanHais(const struct MJDeck *deck, uint32
   assert(deck->rinshan_pos <= 4);
 
   /* 成功終了 */
-  (*num_remain_hais) = 4 - deck->rinshan_pos;
+  (*num_remain_tiles) = 4 - deck->rinshan_pos;
   return MJDECK_APIRESULT_OK;
 }
 
@@ -284,13 +284,13 @@ MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 }
 
 /* 1枚ツモる */
-MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *hai)
+MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *tile)
 {
   MJDeckApiResult ret;
-  uint32_t num_remain_hais;
+  uint32_t num_remain_tiles;
 
   /* 引数チェック */
-  if ((deck == NULL) || (hai == NULL)) {
+  if ((deck == NULL) || (tile == NULL)) {
     return MJDECK_APIRESULT_INVALID_ARGUMENT;
   }
 
@@ -300,29 +300,29 @@ MJDeckApiResult MJDeck_Draw(struct MJDeck *deck, MJTile *hai)
   }
 
   /* 残り牌数の取得 */
-  if ((ret = MJDeck_GetNumRemainHais(deck, &num_remain_hais)) != MJDECK_APIRESULT_OK) {
+  if ((ret = MJDeck_GetNumRemainTiles(deck, &num_remain_tiles)) != MJDECK_APIRESULT_OK) {
     return ret;
   }
   /* 牌山が空 */
-  if (num_remain_hais == 0) {
+  if (num_remain_tiles == 0) {
     return MJDECK_APIRESULT_EMPTY_DECK;
   }
 
   /* 山から1枚取得 */
-  (*hai) = deck->deck[deck->tsumo_pos];
+  (*tile) = deck->deck[deck->tsumo_pos];
   deck->tsumo_pos++;
 
   return MJDECK_APIRESULT_OK;
 }
 
 /* 1枚嶺上牌からツモる（ドラ表示が増える） */
-MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, MJTile *hai)
+MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, MJTile *tile)
 {
   MJDeckApiResult ret;
-  uint32_t num_remain_hais;
+  uint32_t num_remain_tiles;
 
   /* 引数チェック */
-  if ((deck == NULL) || (hai == NULL)) {
+  if ((deck == NULL) || (tile == NULL)) {
     return MJDECK_APIRESULT_INVALID_ARGUMENT;
   }
 
@@ -332,24 +332,24 @@ MJDeckApiResult MJDeck_RinshanDraw(struct MJDeck *deck, MJTile *hai)
   }
 
   /* 残り嶺上牌数の取得 */
-  if ((ret = MJDeck_GetNumRemainRinshanHais(deck, &num_remain_hais)) != MJDECK_APIRESULT_OK) {
+  if ((ret = MJDeck_GetNumRemainRinshanTiles(deck, &num_remain_tiles)) != MJDECK_APIRESULT_OK) {
     return ret;
   }
   /* 牌山が空 */
-  if (num_remain_hais == 0) {
+  if (num_remain_tiles == 0) {
     return MJDECK_APIRESULT_EMPTY_DECK;
   }
 
   /* 最後の自摸の後に嶺上自摸はできない */
-  if ((ret = MJDeck_GetNumRemainHais(deck, &num_remain_hais)) != MJDECK_APIRESULT_OK) {
+  if ((ret = MJDeck_GetNumRemainTiles(deck, &num_remain_tiles)) != MJDECK_APIRESULT_OK) {
     return ret;
   }
-  if (num_remain_hais == 0) {
+  if (num_remain_tiles == 0) {
     return MJDECK_APIRESULT_EMPTY_DECK;
   }
 
   /* 山から1枚取得 */
-  (*hai) = deck->rinshan[deck->rinshan_pos];
+  (*tile) = deck->rinshan[deck->rinshan_pos];
   deck->rinshan_pos++;
 
   /* ドラ表示牌数増加 */

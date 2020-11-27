@@ -156,7 +156,7 @@ static void MJDeckTest_ShuffleTest(void *obj)
   /* シャッフルで消失したり増えた牌がないかチェック */
   {
     uint32_t i, kyoku, is_ok;
-    uint32_t hai_count[MJTILE_MAX];
+    uint32_t tile_count[MJTILE_MAX];
     struct MJDeck *deck;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -172,27 +172,27 @@ static void MJDeckTest_ShuffleTest(void *obj)
 
       /* 牌数カウントをリセット */
       for (i = 0; i < MJTILE_MAX; i++) {
-        hai_count[i] = 0;
+        tile_count[i] = 0;
       }
       /* 牌山 */
       for (i = 0; i < 122; i++) {
-        hai_count[deck->deck[i]]++;
+        tile_count[deck->deck[i]]++;
       }
       /* 嶺上牌 */
       for (i = 0; i < 4; i++) {
-        hai_count[deck->rinshan[i]]++;
+        tile_count[deck->rinshan[i]]++;
       }
       /* ドラ牌 */
       for (i = 0; i < 5; i++) {
-        hai_count[deck->dora.omote[i]]++;
-        hai_count[deck->dora.ura[i]]++;
+        tile_count[deck->dora.omote[i]]++;
+        tile_count[deck->dora.ura[i]]++;
       }
 
       /* 全ての牌が4枚ずつ存在しなければならない */
       for (i = 0; i < MJTILE_MAX; i++) {
         if (MJTILE_IS_SUHAI(i) || MJTILE_IS_JIHAI(i)) {
-          if (hai_count[i] != 4) {
-            printf("%d %d \n", i, hai_count[i]);
+          if (tile_count[i] != 4) {
+            printf("%d %d \n", i, tile_count[i]);
             is_ok = 0;
             goto CHECK_END;
           }
@@ -272,30 +272,30 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 基本ケース */
   {
     struct MJDeck *deck;
-    MJTile hai;
-    uint32_t num_hais;
+    MJTile tile;
+    uint32_t num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
     /* シャッフル前は自摸できない */
-    Test_AssertEqual(MJDeck_Draw(deck, &hai), MJDECK_APIRESULT_NOT_SHUFFLED);
-    Test_AssertEqual(MJDeck_GetNumRemainHais(deck, &num_hais), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_Draw(deck, &tile), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_GetNumRemainTiles(deck, &num_tiles), MJDECK_APIRESULT_NOT_SHUFFLED);
 
     /* シャッフル */
     MJDeck_Shuffle(deck);
 
     /* 全部残っているので122枚のはず */
-    Test_AssertEqual(MJDeck_GetNumRemainHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 122);
+    Test_AssertEqual(MJDeck_GetNumRemainTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 122);
 
     /* 自摸 */
-    Test_AssertEqual(MJDeck_Draw(deck, &hai), MJDECK_APIRESULT_OK);
-    Test_AssertCondition(MJTILE_IS_JIHAI(hai) || MJTILE_IS_SUHAI(hai));
+    Test_AssertEqual(MJDeck_Draw(deck, &tile), MJDECK_APIRESULT_OK);
+    Test_AssertCondition(MJTILE_IS_JIHAI(tile) || MJTILE_IS_SUHAI(tile));
     Test_AssertEqual(deck->tsumo_pos, 1);
 
     /* 残り牌数は1枚減るはず */
-    Test_AssertEqual(MJDeck_GetNumRemainHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 121);
+    Test_AssertEqual(MJDeck_GetNumRemainTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 121);
 
     MJDeck_Destroy(deck);
   }
@@ -303,8 +303,8 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 空になるまで自摸る */
   {
     struct MJDeck *deck;
-    MJTile hai;
-    uint32_t i, is_ok, num_hais;
+    MJTile tile;
+    uint32_t i, is_ok, num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
@@ -313,11 +313,11 @@ static void MJDeckTest_DrawTest(void *obj)
     /* 自摸を繰り返す */
     is_ok = 1;
     for (i = 0; i < 122; i++) {
-      if (MJDeck_Draw(deck, &hai) != MJDECK_APIRESULT_OK) {
+      if (MJDeck_Draw(deck, &tile) != MJDECK_APIRESULT_OK) {
         is_ok = 0;
         break;
       }
-      if (!MJTILE_IS_JIHAI(hai) && !MJTILE_IS_SUHAI(hai)) {
+      if (!MJTILE_IS_JIHAI(tile) && !MJTILE_IS_SUHAI(tile)) {
         is_ok = 0;
         break;
       }
@@ -325,11 +325,11 @@ static void MJDeckTest_DrawTest(void *obj)
     Test_AssertEqual(is_ok, 1);
 
     /* 残り0枚でもう一度自摸 */
-    Test_AssertEqual(MJDeck_GetNumRemainHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 0);
+    Test_AssertEqual(MJDeck_GetNumRemainTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 0);
 
     /* エラーの発生を確認 */
-    Test_AssertEqual(MJDeck_Draw(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
+    Test_AssertEqual(MJDeck_Draw(deck, &tile), MJDECK_APIRESULT_EMPTY_DECK);
 
     MJDeck_Destroy(deck);
   }
@@ -337,36 +337,36 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 嶺上自摸基本ケース */
   {
     struct MJDeck *deck;
-    MJTile hai;
-    uint32_t num_hais;
+    MJTile tile;
+    uint32_t num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
     /* シャッフル前は自摸できない */
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_NOT_SHUFFLED);
-    Test_AssertEqual(MJDeck_GetNumRemainRinshanHais(deck, &num_hais), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_GetNumRemainRinshanTiles(deck, &num_tiles), MJDECK_APIRESULT_NOT_SHUFFLED);
 
     /* シャッフル */
     MJDeck_Shuffle(deck);
 
     /* 全部残っているので4枚のはず */
-    Test_AssertEqual(MJDeck_GetNumRemainRinshanHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 4);
+    Test_AssertEqual(MJDeck_GetNumRemainRinshanTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 4);
 
     /* 嶺上自摸 */
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
-    Test_AssertCondition(MJTILE_IS_JIHAI(hai) || MJTILE_IS_SUHAI(hai));
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_OK);
+    Test_AssertCondition(MJTILE_IS_JIHAI(tile) || MJTILE_IS_SUHAI(tile));
     Test_AssertEqual(deck->rinshan_pos, 1);
 
     /* 残り牌数は1枚減るはず */
-    Test_AssertEqual(MJDeck_GetNumRemainRinshanHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 3);
+    Test_AssertEqual(MJDeck_GetNumRemainRinshanTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 3);
 
     /* ドラ表示数の変化確認 */
     Test_AssertEqual(deck->dora.num_dora, 2);
     /* 牌山の減少確認 */
-    Test_AssertEqual(MJDeck_GetNumRemainHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 121);
+    Test_AssertEqual(MJDeck_GetNumRemainTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 121);
 
     MJDeck_Destroy(deck);
   }
@@ -374,8 +374,8 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 空になるまで嶺上自摸 */
   {
     struct MJDeck *deck;
-    MJTile hai;
-    uint32_t i, is_ok, num_hais;
+    MJTile tile;
+    uint32_t i, is_ok, num_tiles;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
@@ -385,11 +385,11 @@ static void MJDeckTest_DrawTest(void *obj)
     /* 嶺上自摸を繰り返す */
     is_ok = 1;
     for (i = 0; i < 4; i++) {
-      if (MJDeck_RinshanDraw(deck, &hai) != MJDECK_APIRESULT_OK) {
+      if (MJDeck_RinshanDraw(deck, &tile) != MJDECK_APIRESULT_OK) {
         is_ok = 0;
         break;
       }
-      if (!MJTILE_IS_JIHAI(hai) && !MJTILE_IS_SUHAI(hai)) {
+      if (!MJTILE_IS_JIHAI(tile) && !MJTILE_IS_SUHAI(tile)) {
         is_ok = 0;
         break;
       }
@@ -397,11 +397,11 @@ static void MJDeckTest_DrawTest(void *obj)
     Test_AssertEqual(is_ok, 1);
 
     /* 残り0枚でもう一度嶺上自摸 */
-    Test_AssertEqual(MJDeck_GetNumRemainRinshanHais(deck, &num_hais), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(num_hais, 0);
+    Test_AssertEqual(MJDeck_GetNumRemainRinshanTiles(deck, &num_tiles), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(num_tiles, 0);
 
     /* エラーの発生を確認 */
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_EMPTY_DECK);
 
     MJDeck_Destroy(deck);
   }
@@ -409,7 +409,7 @@ static void MJDeckTest_DrawTest(void *obj)
   /* 配山が残り0枚の場合は嶺上自摸ができないことの確認 */
   {
     struct MJDeck *deck;
-    MJTile hai;
+    MJTile tile;
     uint32_t i;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -417,11 +417,11 @@ static void MJDeckTest_DrawTest(void *obj)
     /* 空になるまで自摸 */
     MJDeck_Shuffle(deck);
     for (i = 0; i < 122; i++) {
-      MJDeck_Draw(deck, &hai);
+      MJDeck_Draw(deck, &tile);
     }
 
     /* 嶺上自摸はできない */
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_EMPTY_DECK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_EMPTY_DECK);
 
     MJDeck_Destroy(deck);
   }
@@ -435,33 +435,33 @@ static void MJDeckTest_GetDoraTest(void *obj)
   /* 基本ケース */
   {
     struct MJDeck *deck;
-    struct MJDoraHai dora;
-    MJTile hai;
+    struct MJDoraTile dora;
+    MJTile tile;
 
     deck = MJDeck_Create(NULL, NULL, 0);
 
     /* シャッフル前は取得できない */
-    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_NOT_SHUFFLED);
+    Test_AssertEqual(MJDeck_GetDoraTile(deck, &dora), MJDECK_APIRESULT_NOT_SHUFFLED);
 
     /* シャッフル */
     MJDeck_Shuffle(deck);
 
     /* ドラ取得 */
-    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraTile(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 1);
 
     /* 嶺上自摸してドラが増えるはず */
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraTile(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 2);
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraTile(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 3);
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraTile(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 4);
-    Test_AssertEqual(MJDeck_RinshanDraw(deck, &hai), MJDECK_APIRESULT_OK);
-    Test_AssertEqual(MJDeck_GetDoraHai(deck, &dora), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_RinshanDraw(deck, &tile), MJDECK_APIRESULT_OK);
+    Test_AssertEqual(MJDeck_GetDoraTile(deck, &dora), MJDECK_APIRESULT_OK);
     Test_AssertEqual(dora.num_dora, 5);
 
     MJDeck_Destroy(deck);
