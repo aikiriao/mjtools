@@ -20,6 +20,7 @@ typedef enum MJWindTag {
   MJWIND_NAN,          /* 南 */
   MJWIND_SHA,          /* 西 */
   MJWIND_PEE,          /* 北 */
+  MJWIND_INVALID,      /* 無効値 */
 } MJWind;
 
 /* 副露の状態 */

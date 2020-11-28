@@ -71,12 +71,13 @@ typedef enum MJScoreCalculationResultTag {
   MJSCORE_CALCRESULT_NOT_YAKU,                /* 役がつかなかった */
   MJSCORE_CALCRESULT_RINSHAN_WITHOUT_KAN,     /* カン無しで嶺上開花 */
   MJSCORE_CALCRESULT_RIICHI_AND_DOUBLERIICHI, /* 立直とダブルリーチが両立している */
+  MJSCORE_CALCRESULT_INVALID_WIND,            /* 無効な風情報が指定されている */
   MJSCORE_CALCRESULT_NG, 
 } MJScoreCalculationResult;
 
 /* 和了時の状態 */
 struct MJAgariInformation {
-  MJTile        agarihai;       /* 和了牌 */
+  MJTile        winning_tile;   /* 和了牌 */
   struct MJHand hand;           /* 手牌 */
   int32_t       num_dora;       /* ドラ牌数(赤牌含む) */
   int32_t       num_honba;      /* 本場数 */

@@ -170,7 +170,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 和了牌が異常 */
-  if (!MJTILE_IS_SUHAI(info->agarihai) && !MJTILE_IS_JIHAI(info->agarihai)) {
+  if (!MJTILE_IS_SUHAI(info->winning_tile) && !MJTILE_IS_JIHAI(info->winning_tile)) {
     return MJSCORE_CALCRESULT_INVALID_AGARIHAI;
   }
 
@@ -182,6 +182,12 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   /* 立直とダブルリーチが両立している */
   if ((info->riichi) && (info->double_riichi)) {
     return MJSCORE_CALCRESULT_RIICHI_AND_DOUBLERIICHI;
+  }
+
+  /* 無効な風情報が指定されている */
+  if ((info->jikaze == MJWIND_INVALID)
+      || (info->bakaze == MJWIND_INVALID)) {
+    return MJSCORE_CALCRESULT_INVALID_WIND;
   }
 
   /* 和了牌含めて14枚あるかチェック */
@@ -477,7 +483,7 @@ static void MJScore_CalculateDividedHandHanFu(
   }
 
   /* 純手牌をカウント */
-  purehand.count[info->agarihai]++;
+  purehand.count[info->winning_tile]++;
   for (i = 0; i < 13; i++) {
     if (MJTILE_IS_VALID(info->hand.hand[i])) {
       purehand.count[info->hand.hand[i]]++;
@@ -513,7 +519,7 @@ static void MJScore_MergeHandToCount(const struct MJAgariInformation *info, stru
   count = &(tmp.count[0]);
 
   /* 和了牌をカウント */
-  count[info->agarihai]++;
+  count[info->winning_tile]++;
 
   /* 副露以外をカウント */
   for (i = 0; i < 13; i++) {
@@ -571,7 +577,7 @@ static void MJScore_DivideMentsu(
     /* 暗刻を抜き出して調べる */
     if (hai[i] >= 3) {
       pmentsu->minhai = (MJTile)i;
-      if ((i == info->agarihai) && !(info->tsumo)) {
+      if ((i == info->winning_tile) && !(info->tsumo)) {
         /* 和了牌の場合は明刻に */
         pmentsu->type = MJMENTSU_TYPE_PUNG;
       } else {
@@ -750,16 +756,16 @@ static void MJScore_CalculateFu(
   }
   /* 待ち牌による符 */
   /* 単騎待ち */
-  if (info->agarihai == div_hand->atama) {
+  if (info->winning_tile == div_hand->atama) {
     tmp_fu += 2;
   } else {
     for (i = 0; i < 4; i++) {
       pmentsu = &(div_hand->mentsu[i]);
       /* 辺張/嵌張待ち */
       if (pmentsu->type == MJMENTSU_TYPE_SYUNTSU) {
-        if ((MJTILE_NUMBER_IS(info->agarihai, 3) && (info->agarihai == (pmentsu->minhai + 2)))
-            || (MJTILE_NUMBER_IS(info->agarihai, 7) && (info->agarihai == pmentsu->minhai))
-            || (info->agarihai == (pmentsu->minhai + 1))) {
+        if ((MJTILE_NUMBER_IS(info->winning_tile, 3) && (info->winning_tile == (pmentsu->minhai + 2)))
+            || (MJTILE_NUMBER_IS(info->winning_tile, 7) && (info->winning_tile == pmentsu->minhai))
+            || (info->winning_tile == (pmentsu->minhai + 1))) {
           tmp_fu += 2;
           break;
         }
@@ -1163,8 +1169,8 @@ static bool MJScore_IsPinfu(
   for (i = 0; i < 4; i++) {
     pmentsu = &hand->mentsu[i];
     /* 辺張待ちは弾く */
-    if (((info->agarihai == pmentsu->minhai) && !MJTILE_NUMBER_IS(pmentsu->minhai + 1, 8))
-        || ((info->agarihai == (pmentsu->minhai + 2)) && !MJTILE_NUMBER_IS(pmentsu->minhai, 1))) {
+    if (((info->winning_tile == pmentsu->minhai) && !MJTILE_NUMBER_IS(pmentsu->minhai + 1, 8))
+        || ((info->winning_tile == (pmentsu->minhai + 2)) && !MJTILE_NUMBER_IS(pmentsu->minhai, 1))) {
       return true;
     }
   }
@@ -1613,7 +1619,7 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
   }
 
   /* 和了牌が么九牌か？ */
-  if (!MJTILE_IS_YAOCHU(info->agarihai)) {
+  if (!MJTILE_IS_YAOCHU(info->winning_tile)) {
     return false;
   }
 
@@ -1621,7 +1627,7 @@ static bool MJScore_IsKokushimusou13(const struct MJAgariInformation *info, cons
   tmp = (*merged_count);
 
   /* 和了牌を除く */
-  tmp.count[info->agarihai]--;
+  tmp.count[info->winning_tile]--;
 
   /* 和了牌がない状態で上記の牌を全て持っている必要がある */
   for (i = 0; i < 13; i++) {
@@ -1685,12 +1691,12 @@ static bool MJScore_IsChurenpouton(const struct MJAgariInformation *info, const 
   }
 
   /* 9面待ちの場合を弾く */
-  if (MJTILE_IS_CHUNCHAN(info->agarihai)) {
-    if (merged_count->count[info->agarihai] == 2) {
+  if (MJTILE_IS_CHUNCHAN(info->winning_tile)) {
+    if (merged_count->count[info->winning_tile] == 2) {
       return false;
     }
-  } else if (MJTILE_IS_ROUTOU(info->agarihai)) {
-    if (merged_count->count[info->agarihai] == 4) {
+  } else if (MJTILE_IS_ROUTOU(info->winning_tile)) {
+    if (merged_count->count[info->winning_tile] == 4) {
       return false;
     }
   }
@@ -1715,7 +1721,7 @@ static bool MJScore_IsChurenpouton9(const struct MJAgariInformation *info, const
   tmp = (*merged_count);
 
   /* 和了牌を抜いてからチェック */
-  tmp.count[info->agarihai]--;
+  tmp.count[info->winning_tile]--;
   return MJScore_IsChurenpoutonCore(&tmp);
 }
 
@@ -1736,7 +1742,7 @@ static bool MJScore_IsSuanko(const struct MJAgariInformation *info, const struct
   count = &(merged_count->count[0]);
   
   /* 頭と和了牌は一致しない（単騎待ちの場合を排除） */
-  if (count[info->agarihai] == 2) {
+  if (count[info->winning_tile] == 2) {
     return false;
   }
 
@@ -1771,7 +1777,7 @@ static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const s
 
   /* 和了牌を抜く */
   tmp = (*merged_count);
-  tmp.count[info->agarihai]--;
+  tmp.count[info->winning_tile]--;
 
   count = &(tmp.count[0]);
 
@@ -1782,7 +1788,7 @@ static bool MJScore_IsSuankoTanki(const struct MJAgariInformation *info, const s
       case 0: break;
       case 1: 
         /* 抜いた牌のはず */
-        if (i != info->agarihai) {
+        if (i != info->winning_tile) {
           return false;
         }
         break;
