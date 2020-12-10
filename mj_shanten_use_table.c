@@ -76,6 +76,9 @@ static const struct ShantenTableEntry *MJShanten_SearchTableEntry(const int32_t 
     value += (uint32_t)suhai[number] * exp10_table[number];
   }
 
+  /* テーブルサイズは2の冪数を前提 */
+  MJUTILITY_STATIC_ASSERT(MJUTILITY_IS_POWERED_OF_2(MJSHANTEN_TABLE_SIZE));
+
   /* 開番地法: エントリ探索 */
   key = MJSHANTEN_MAKE_HASH(value) & (MJSHANTEN_TABLE_SIZE - 1);
   while (st_shanten_table[key].value != value) {
