@@ -29,7 +29,7 @@ static void MJRandomXoshiro256pp_SetSeed(void *random, const void *seed);
 static int32_t MJRandomXoshiro256pp_GetRandom(void *random, int32_t min, int32_t max);
 
 /* インターフェース定義 */
-static const struct MJRandomGeneratorInterface st_xoshiro128_interface = {
+static const struct MJRandomGeneratorInterface st_xoshiro256_interface = {
   MJRandomXoshiro256pp_CalculateWorksize,
   MJRandomXoshiro256pp_Create,
   MJRandomXoshiro256pp_Destroy,
@@ -45,7 +45,7 @@ static const struct MJRandomXoshiro256ppSeed default_seed = {
 /* インターフェース取得 */
 const struct MJRandomGeneratorInterface *MJRandomXoshiro256pp_GetInterface(void)
 {
-  return &st_xoshiro128_interface;
+  return &st_xoshiro256_interface;
 }
 
 /* ビットローテート */
