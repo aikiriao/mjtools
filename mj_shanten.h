@@ -1,7 +1,7 @@
 #ifndef MJSHANTEN_H_INCLUDED
 #define MJSHANTEN_H_INCLUDED
 
-#include "mj_tile.h"
+#include "mj_types.h"
 #include <stdint.h>
 
 /* 各牌の所持数が並んだ配列 */
@@ -14,6 +14,9 @@ struct MJTileCount {
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+/* 手牌（副露含む）を牌出現カウントに変換 */
+void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCount *count);
 
 /* 通常手の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateNormalShanten(const struct MJTileCount *count);

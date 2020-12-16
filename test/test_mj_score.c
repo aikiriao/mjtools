@@ -2180,7 +2180,8 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
         struct MJTileCount merged_count;
 
         /* カンが含まれているか確かめるために手牌にマージ */
-        MJScore_MergeHandToCount(&agari_info, &merged_count);
+        MJShanten_ConvertHandToTileCount(&agari_info.hand, &merged_count);
+        merged_count.count[agari_info.winning_tile]++;
 
         /* カンが含まれていれば嶺上開花を加えてテスト */
         if (MJScore_CountNumKan(&merged_count) > 0) {

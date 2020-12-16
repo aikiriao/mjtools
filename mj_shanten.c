@@ -15,6 +15,51 @@ static void MJShanten_CalculateNormalShantenTatsu(
     struct MJTileCount *count, int32_t pos,
     int32_t num_mentsu, int32_t num_tatsu, int32_t *min_shanten);
 
+/* 手牌（副露含む）をカウントに変換 */
+void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCount *tile_count)
+{
+  int32_t i;
+  struct MJTileCount tmp;
+  int32_t *count;
+  const struct MJMeld *pmeld;
+
+  assert((hand != NULL) && (tile_count != NULL));
+
+  /* カウントを0クリア */
+  memset(&tmp, 0, sizeof(struct MJTileCount));
+  count = &(tmp.count[0]);
+
+  /* 副露以外をカウント */
+  for (i = 0; i < 13; i++) {
+    if (MJTILE_IS_VALID(hand->hand[i])) {
+      count[hand->hand[i]]++;
+    }
+  }
+  
+  /* 副露牌をカウント */
+  for (i = 0; i < hand->num_meld; i++) {
+    pmeld = &(hand->meld[i]);
+    switch (pmeld->type) {
+      case MJMELD_TYPE_CHOW:
+        count[pmeld->minhai]++; count[pmeld->minhai + 1]++; count[pmeld->minhai + 2]++;
+        break;
+      case MJMELD_TYPE_PUNG:
+        count[pmeld->minhai] += 3;
+        break;
+      case MJMELD_TYPE_ANKAN:
+      case MJMELD_TYPE_MINKAN:
+      case MJMELD_TYPE_KAKAN:
+        count[pmeld->minhai] += 4;
+        break;
+      default:
+        assert(0);
+    }
+  }
+
+  /* 成功終了 */
+  (*tile_count) = tmp;
+}
+
 /* 七対子の向聴数を計算 */
 int32_t MJShanten_CalculateChitoitsuShanten(const struct MJTileCount *count)
 {

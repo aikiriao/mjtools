@@ -1,6 +1,8 @@
 #ifndef MJTYPES_H_INCLUDED
 #define MJTYPES_H_INCLUDED
 
+#include <stdbool.h>
+
 /* 牌定義 */
 #include "mj_tile.h"
 

@@ -57,8 +57,6 @@ static void MJScore_AppendMergedHandHan(
 static void MJScore_CalculatePointFromHanFu(
     const struct MJAgariInformation *info, int32_t han, int32_t fu, struct MJPoint *point);
 
-/* 副露牌を手牌にマージ */
-static void MJScore_MergeHandToCount(const struct MJAgariInformation *info, struct MJTileCount *merged_count);
 /* 面子の切り分け */
 static void MJScore_DivideMentsu(
   const struct MJAgariInformation *info, struct MJTileCount *remain_count,
@@ -205,8 +203,10 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
     }
   }
 
-  /* 副露牌を手牌にマージ */
-  MJScore_MergeHandToCount(info, &merged_count);
+  /* 手牌をカウントに変換 */
+  MJShanten_ConvertHandToTileCount(&info->hand, &merged_count);
+  /* 和了牌をカウント */
+  merged_count.count[info->winning_tile]++;
 
   /* 向聴数取得 */
   normal_shanten = MJShanten_CalculateNormalShanten(&merged_count);
@@ -502,54 +502,6 @@ static void MJScore_CalculateDividedHandHanFu(
       purehand.count[i] += 2;
     }
   }
-}
-
-/* 副露牌を手牌にマージ */
-static void MJScore_MergeHandToCount(const struct MJAgariInformation *info, struct MJTileCount *merged_count)
-{
-  int32_t i;
-  struct MJTileCount tmp;
-  int32_t *count;
-  const struct MJMeld *pmeld;
-
-  assert((info != NULL) && (merged_count != NULL));
-
-  /* カウントを0クリア */
-  memset(&tmp, 0, sizeof(struct MJTileCount));
-  count = &(tmp.count[0]);
-
-  /* 和了牌をカウント */
-  count[info->winning_tile]++;
-
-  /* 副露以外をカウント */
-  for (i = 0; i < 13; i++) {
-    if (MJTILE_IS_VALID(info->hand.hand[i])) {
-      count[info->hand.hand[i]]++;
-    }
-  }
-  
-  /* 副露牌をカウント */
-  for (i = 0; i < info->hand.num_meld; i++) {
-    pmeld = &(info->hand.meld[i]);
-    switch (pmeld->type) {
-      case MJMELD_TYPE_CHOW:
-        count[pmeld->minhai]++; count[pmeld->minhai + 1]++; count[pmeld->minhai + 2]++;
-        break;
-      case MJMELD_TYPE_PUNG:
-        count[pmeld->minhai] += 3;
-        break;
-      case MJMELD_TYPE_ANKAN:
-      case MJMELD_TYPE_MINKAN:
-      case MJMELD_TYPE_KAKAN:
-        count[pmeld->minhai] += 4;
-        break;
-      default:
-        assert(0);
-    }
-  }
-
-  /* 成功終了 */
-  (*merged_count) = tmp;
 }
 
 /* 面子の切り分け */
