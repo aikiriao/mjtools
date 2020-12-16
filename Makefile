@@ -7,6 +7,7 @@ LDLIBS		= -lm
 ARFLAGS		= r
 
 SRCS      	= mj_shanten.c mj_score.c mj_random_xoshiro256pp.c mj_deck.c mj_shanten_use_table.c
+SRCS      	+= mj_player.c mj_player_tsumogiri.c mj_river.c
 OBJS		= $(SRCS:%.c=%.o)
 TARGETS   	= libmjtools.a
 
