@@ -83,7 +83,7 @@ struct MJAgariInformation {
   int32_t       num_honba;      /* 本場数 */
   int32_t       num_riichibo;   /* 供託リーチ棒数 */
   MJWind        round_wind;     /* 場風 */
-  MJWind        player_wind;    /* 自風 */
+  MJWind        player_wind;    /* 和了者の風（家） */
   bool          tsumo;          /* 自摸和了？ */
   bool          riichi;         /* 立直？ */
   bool          ippatsu;        /* 一発？ */
