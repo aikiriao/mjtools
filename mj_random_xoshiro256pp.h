@@ -13,7 +13,7 @@ struct MJRandomXoshiro256ppSeed {
 extern "C" {
 #endif /* __cplusplus */
 
-/* XOrshiro256++乱数生成器のインターフェースを取得 */
+/* XOshiro256++乱数生成器のインターフェースを取得 */
 const struct MJRandomGeneratorInterface *MJRandomXoshiro256pp_GetInterface(void);
 
 #ifdef __cplusplus
