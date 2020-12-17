@@ -105,13 +105,13 @@ const char *MJPlayer_GetName(const struct MJPlayer *player)
 }
 
 /* 誰かのアクション時 */
-void MJPlayer_OnAction(struct MJPlayer *player, const struct MJPlayerAction *action, MJWind action_player, MJWind target_player, struct MJPlayerAction *player_action)
+void MJPlayer_OnAction(struct MJPlayer *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind target_player, struct MJPlayerAction *player_action)
 {
   assert(player != NULL);
-  assert(action != NULL);
+  assert(trigger_action != NULL);
   assert(player_action != NULL);
   player->player_interface->OnAction(player->player_instance,
-      action, action_player, target_player, player_action);
+      trigger_player, trigger_action, target_player, player_action);
 }
 
 /* 自摸時 */

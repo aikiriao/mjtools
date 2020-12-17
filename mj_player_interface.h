@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /* インターフェースバージョン番号 */
-#define MJPLAYERINTERFACE_VERSION    1
+#define MJPLAYERINTERFACE_VERSION    2
 
 /* トークン3連結マクロ */
 #define MJPLAYER_CAT3_SUB(x, y, z) x ## y ## z
@@ -50,7 +50,7 @@ struct MJPlayerAction {
 /* プレーヤーインターフェース */
 struct MJPlayerInterface {
   /* プレーヤーインターフェース名の取得 引数は無視してください */
-  const char *(*GetName)(const MJPlayerInterfaceVersion1Tag *version_tag);
+  const char *(*GetName)(const MJPlayerInterfaceVersion2Tag *version_tag);
   /* ワークサイズ計算 */
   int32_t (*CalculateWorkSize)(void);
   /* プレーヤーインスタンス作成 */
@@ -58,7 +58,7 @@ struct MJPlayerInterface {
   /* プレーヤーインスタンス破棄 */
   void (*Destroy)(void *player);
   /* 誰かのアクション時 */
-  void (*OnAction)(void *player, const struct MJPlayerAction *action, MJWind action_player, MJWind target_player, struct MJPlayerAction *player_action);
+  void (*OnAction)(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind target_player, struct MJPlayerAction *player_action);
   /* 自摸時 */
   void (*OnDraw)(void *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action);
   /* 局開始時 */

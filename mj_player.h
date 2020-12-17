@@ -24,7 +24,7 @@ void MJPlayer_Destroy(struct MJPlayer *player);
 /* インターフェース名取得 */
 const char *MJPlayer_GetName(const struct MJPlayer *player);
 /* 誰かのアクション時 */
-void MJPlayer_OnAction(struct MJPlayer *player, const struct MJPlayerAction *action, MJWind action_player, MJWind target_player, struct MJPlayerAction *player_action);
+void MJPlayer_OnAction(struct MJPlayer *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind target_player, struct MJPlayerAction *player_action);
 /* 自摸時 */
 void MJPlayer_OnDraw(struct MJPlayer *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時 */
