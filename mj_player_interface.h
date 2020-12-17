@@ -58,7 +58,7 @@ struct MJPlayerInterface {
   /* プレーヤーインスタンス破棄 */
   void (*Destroy)(void *player);
   /* 誰かのアクション時 */
-  void (*OnAction)(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind target_player, struct MJPlayerAction *player_action);
+  void (*OnAction)(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
   /* 自摸時 */
   void (*OnDraw)(void *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action);
   /* 局開始時 */

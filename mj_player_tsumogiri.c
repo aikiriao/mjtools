@@ -25,7 +25,7 @@ static void *MJPlayerTsumogiri_Create(void *work, int32_t work_size);
 /* インスタンス破棄 */
 static void MJPlayerTsumogiri_Destroy(void *player);
 /* 誰かのアクション時の対応 */
-static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind target_player, struct MJPlayerAction *player_action);
+static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
 /* 自摸時の対応 */
 static void MJPlayerTsumogiri_OnDraw(void *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時の対応 */
@@ -104,21 +104,21 @@ static void MJPlayerTsumogiri_Destroy(void *player)
 }
 
 /* 誰かのアクション時の対応 */
-static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind target_player, struct MJPlayerAction *player_action)
+static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action)
 {
   MJUTILITY_UNUSED_ARGUMENT(player);
   MJUTILITY_UNUSED_ARGUMENT(trigger_player);
   MJUTILITY_UNUSED_ARGUMENT(trigger_action);
-  MJUTILITY_UNUSED_ARGUMENT(target_player);
-  MJUTILITY_UNUSED_ARGUMENT(player_action);
+  MJUTILITY_UNUSED_ARGUMENT(action_player);
+  MJUTILITY_UNUSED_ARGUMENT(action);
 
   /* デバッグ向けにアサート */
   assert(player != NULL);
   assert(trigger_action != NULL);
-  assert(player_action != NULL);
+  assert(action != NULL);
 
   /* 何もしない */
-  player_action->type = MJPLAYER_ACTIONTYPE_NONE;
+  action->type = MJPLAYER_ACTIONTYPE_NONE;
 }
 
 /* 自摸時の対応 */
