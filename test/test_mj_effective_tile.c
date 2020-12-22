@@ -67,6 +67,11 @@ static void MJEffectiveTileTest_ConvertTileInfoToHand(const struct TileInfo *til
       pos++;
     }
   }
+
+  /* 副露はなし */
+  hand->meld[0].minhai  = MJTILE_INVALID;
+  hand->meld[0].type    = MJMELD_TYPE_INVALID;
+  hand->num_meld = 0;
 }
 
 /* 引数のテストケース配列に対してテスト 成功時は1, 失敗がある場合は0を返す */
