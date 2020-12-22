@@ -419,7 +419,7 @@ static MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTilesCore(const stru
       count_work.count[t]++;
       /* 向聴数が下がっていれば有効牌 */
       if (current_shanten > shanten_calculator(&count_work)) {
-        tmp.tiles[tmp.num_effective_tiles] = t;
+        tmp.tiles[tmp.num_effective_tiles] = (MJTile)t;
         tmp.num_effective_tiles++;
       }
       /* 増やした牌を元に戻す */
