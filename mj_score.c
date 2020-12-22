@@ -50,9 +50,9 @@ static bool MJScore_CalculateYakuman(
 /* 切り分けが必要な手の得点計算 高点法に従い、最大点数を持つ結果をscoreに入れる */
 static void MJScore_CalculateDividedHandHanFu(
   const struct MJAgariInformation *info, struct MJScore *score);
-/* 面子の組み合わせに関係のない翻数を加算 */
-static void MJScore_AppendMergedHandHan(
-    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
+/* 切り分けが不要な役の判定/翻を計算 */
+static void MJScore_CalculateYakuHanForMergedHand(
+    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, uint64_t *yaku_flags, int32_t *han);
 /* 翻/符から得点を計算 */
 static void MJScore_CalculatePointFromHanFu(
     const struct MJAgariInformation *info, int32_t han, int32_t fu, struct MJPoint *point);
@@ -338,13 +338,19 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   /* 切り分けが必要な役の判定/翻符計算 */
   MJScore_CalculateDividedHandHanFu(info, &tmp_score);
 
-  /* 面子の関係ない部分での翻数を加算 */
-  MJScore_AppendMergedHandHan(info, &merged_count, &tmp_score);
+  /* 切り分けが不要な役の判定/翻を計算し合算 */
+  {
+    uint64_t tmp_yaku_flags;
+    int32_t tmp_han;
+    MJScore_CalculateYakuHanForMergedHand(info, &merged_count, &tmp_yaku_flags, &tmp_han);
+    tmp_score.yaku_flags |= tmp_yaku_flags;
+    tmp_score.han += tmp_han;
+  }
 
   /* 翻/符から実際の得点計算へ */
 CALCULATE_SCORE:
 
-  /* 役がついていない（おそらく実装ミス） */
+  /* 役がついていない */
   if (tmp_score.han == 0) {
     return MJSCORE_CALCRESULT_NOT_YAKU;
   }
@@ -354,7 +360,6 @@ CALCULATE_SCORE:
 
   /* 成功 */
   (*score) = tmp_score;
-
   return MJSCORE_CALCRESULT_OK;
 }
 
@@ -791,132 +796,136 @@ static void MJScore_CalculateFu(
   (*fu) = tmp_fu;
 }
 
-/* 面子の組み合わせに関係のない翻数を加算 */
-static void MJScore_AppendMergedHandHan(
-    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score)
+/* 切り分けが不要な役の判定/翻を計算 */
+static void MJScore_CalculateYakuHanForMergedHand(
+    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, uint64_t *yaku_flags, int32_t *han)
 {
-  struct MJScore tmp;
+  uint64_t tmp_yaku_flags;
+  int32_t tmp_han;
 
-  assert((info != NULL) && (merged_count != NULL) && (score != NULL));
+  assert((info != NULL) && (merged_count != NULL) && (yaku_flags != NULL) && (han != NULL));
 
-  tmp = (*score);
+  /* 初期化 */
+  tmp_yaku_flags = 0;
+  tmp_han = 0;
 
   /* 門前自摸 */
   if ((info->hand.num_meld == 0) && (info->tsumo)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TSUMO);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_TSUMO);
+    tmp_han += 1;
   }
   /* 立直/ダブルリーチ */
   if (info->riichi) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_RIICHI);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_RIICHI);
+    tmp_han += 1;
   } else if (info->double_riichi) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_DOUBLERIICHI);
-    tmp.han += 2;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_DOUBLERIICHI);
+    tmp_han += 2;
   }
   /* 一発 */
   if (info->ippatsu && ((info->riichi) || (info->double_riichi))) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_IPPATSU);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_IPPATSU);
+    tmp_han += 1;
   }
   /* ドラ */
   if (info->num_dora > 0) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_DORA);
-    tmp.han += info->num_dora;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_DORA);
+    tmp_han += info->num_dora;
   }
   /* 海底摸月/河底撈魚 */
   if ((info->haitei) && (info->tsumo)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HAITEITSUMO);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_HAITEITSUMO);
+    tmp_han += 1;
   } else if ((info->haitei) && !(info->tsumo)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HOUTEIRON);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_HOUTEIRON);
+    tmp_han += 1;
   }
   /* 混老頭 */
   if (MJScore_IsHonrouto(info, merged_count)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HONROUTO);
-    tmp.han += 2;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_HONROUTO);
+    tmp_han += 2;
   }
   /* 清一色 */
   if (MJScore_IsChinitsu(info, merged_count)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHINITSU);
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_CHINITSU);
     /* 食い下がり */
     if (info->hand.num_meld > 0) {
-      tmp.han += 5;
+      tmp_han += 5;
     } else {
-      tmp.han += 6;
+      tmp_han += 6;
     }
   }
   /* 混一色 */
   if (MJScore_IsHonitsu(info, merged_count)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HONITSU);
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_HONITSU);
     /* 食い下がり */
     if (info->hand.num_meld > 0) {
-      tmp.han += 2;
+      tmp_han += 2;
     } else {
-      tmp.han += 3;
+      tmp_han += 3;
     }
   }
   /* 断么九 */
   if (MJScore_IsTanyao(info, merged_count)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TANYAO);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_TANYAO);
+    tmp_han += 1;
   }
   /* 三槓子 */
   if (MJScore_IsSankantsu(info, merged_count)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SANKANTSU);
-    tmp.han += 2;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_SANKANTSU);
+    tmp_han += 2;
   }
   /* 小三元 */
   if (MJScore_IsSyosangen(info, merged_count)) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_SYOSANGEN);
-    tmp.han += 2;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_SYOSANGEN);
+    tmp_han += 2;
   }
   /* 槍槓 */
   if (info->chankan) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHANKAN);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_CHANKAN);
+    tmp_han += 1;
   }
   /* 嶺上開花 */
   if (info->rinshan) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_RINSHAN);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_RINSHAN);
+    tmp_han += 1;
   }
   /* 役牌 */
   /* 白 */
   if (merged_count->count[MJTILE_HAKU] >= 3) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HAKU);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_HAKU);
+    tmp_han += 1;
   }
   /* 發 */
   if (merged_count->count[MJTILE_HATU] >= 3) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HATU);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_HATU);
+    tmp_han += 1;
   }
   /* 中 */
   if (merged_count->count[MJTILE_CHUN] >= 3) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHUN);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_CHUN);
+    tmp_han += 1;
   }
   /* 場風 */
   if (   ((info->round_wind == MJWIND_TON) && (merged_count->count[MJTILE_TON] >= 3))
       || ((info->round_wind == MJWIND_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
       || ((info->round_wind == MJWIND_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
       || ((info->round_wind == MJWIND_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_BAKAZE);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_BAKAZE);
+    tmp_han += 1;
   }
   /* 自風 */
   if (   ((info->player_wind == MJWIND_TON) && (merged_count->count[MJTILE_TON] >= 3))
       || ((info->player_wind == MJWIND_NAN) && (merged_count->count[MJTILE_NAN] >= 3))
       || ((info->player_wind == MJWIND_SHA) && (merged_count->count[MJTILE_SHA] >= 3))
       || ((info->player_wind == MJWIND_PEE) && (merged_count->count[MJTILE_PEE] >= 3))) {
-    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_JIKAZE);
-    tmp.han += 1;
+    MJSCORE_SET_YAKUFLAG(tmp_yaku_flags, MJSCORE_YAKU_JIKAZE);
+    tmp_han += 1;
   }
 
   /* 成功終了 */
-  (*score) = tmp;
+  (*yaku_flags) = tmp_yaku_flags;
+  (*han) = tmp_han;
 }
 
 /* 翻/符から得点を計算 */
