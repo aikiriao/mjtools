@@ -41,15 +41,15 @@ void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCo
     pmeld = &(hand->meld[i]);
     switch (pmeld->type) {
       case MJMELD_TYPE_CHOW:
-        count[pmeld->minhai]++; count[pmeld->minhai + 1]++; count[pmeld->minhai + 2]++;
+        count[pmeld->min_tile]++; count[pmeld->min_tile + 1]++; count[pmeld->min_tile + 2]++;
         break;
       case MJMELD_TYPE_PUNG:
-        count[pmeld->minhai] += 3;
+        count[pmeld->min_tile] += 3;
         break;
       case MJMELD_TYPE_ANKAN:
       case MJMELD_TYPE_MINKAN:
       case MJMELD_TYPE_KAKAN:
-        count[pmeld->minhai] += 4;
+        count[pmeld->min_tile] += 4;
         break;
       default:
         assert(0);

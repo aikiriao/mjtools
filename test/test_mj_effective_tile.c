@@ -69,8 +69,8 @@ static void MJEffectiveTileTest_ConvertTileInfoToHand(const struct TileInfo *til
   }
 
   /* 副露はなし */
-  hand->meld[0].minhai  = MJTILE_INVALID;
-  hand->meld[0].type    = MJMELD_TYPE_INVALID;
+  hand->meld[0].min_tile  = MJTILE_INVALID;
+  hand->meld[0].type      = MJMELD_TYPE_INVALID;
   hand->num_meld = 0;
 }
 

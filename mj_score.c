@@ -468,7 +468,7 @@ static void MJScore_CalculateDividedHandHanFu(
   /* 副露牌を分割済み手牌に入れる */
   for (i = 0; i < info->hand.num_meld; i++) {
     struct MJMentsu *pmentsu = &(div_hand.mentsu[i]);
-    pmentsu->minhai = info->hand.meld[i].minhai;
+    pmentsu->minhai = info->hand.meld[i].min_tile;
     /* 副露の種類の読み替え */
     switch (info->hand.meld[i].type) {
       case MJMELD_TYPE_PUNG: pmentsu->type = MJMENTSU_TYPE_PUNG; break;
