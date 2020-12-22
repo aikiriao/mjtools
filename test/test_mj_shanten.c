@@ -46,8 +46,8 @@ static int MJShantenTest_Finalize(void *obj)
   return 0;
 }
 
-/* テストケースを手牌に変換 */
-static void MJShantenTest_ConvertTestCaseToHand(const struct MJShantenTestCase *test_case, struct MJTileCount *count)
+/* テストケースを牌カウントに変換 */
+static void MJShantenTest_ConvertTestCaseToTileCount(const struct MJShantenTestCase *test_case, struct MJTileCount *count)
 {
   int32_t i;
 
@@ -204,7 +204,7 @@ static void MJShantenTest_CalculateChitoitsuShantenTest(void *obj)
       int32_t shanten;
       struct MJTileCount count;
       const struct MJShantenTestCase *pcase = &test_cases[i];
-      MJShantenTest_ConvertTestCaseToHand(pcase, &count);
+      MJShantenTest_ConvertTestCaseToTileCount(pcase, &count);
       shanten = MJShanten_CalculateChitoitsuShanten(&count);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n",
@@ -273,7 +273,7 @@ static void MJShantenTest_CalculateKokushimusouShantenTest(void *obj)
       int32_t shanten;
       struct MJTileCount count;
       const struct MJShantenTestCase *pcase = &test_cases[i];
-      MJShantenTest_ConvertTestCaseToHand(pcase, &count);
+      MJShantenTest_ConvertTestCaseToTileCount(pcase, &count);
       shanten = MJShanten_CalculateKokushimusouShanten(&count);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
@@ -362,7 +362,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
       int32_t shanten;
       struct MJTileCount count;
       const struct MJShantenTestCase *pcase = &test_cases[i];
-      MJShantenTest_ConvertTestCaseToHand(pcase, &count);
+      MJShantenTest_ConvertTestCaseToTileCount(pcase, &count);
       shanten = MJShanten_CalculateNormalShanten(&count);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);

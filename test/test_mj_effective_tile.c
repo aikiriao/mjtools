@@ -19,7 +19,7 @@ struct MJEffectiveTileTestCase {
 };
 
 /* 有効牌取得関数型 */
-typedef MJEffectiveTileApiResult (*effective_tiles_getter)(const struct MJHand *hand, struct MJEffectiveTiles *effective_tiles);
+typedef MJEffectiveTileApiResult (*effective_tiles_getter)(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles);
 
 /* 牌の文字列変換テーブル */
 static const char *tile_string_table[MJTILE_MAX] = {
@@ -48,30 +48,24 @@ static int MJEffectiveTileTest_Finalize(void *obj)
   return 0;
 }
 
-/* テストケースを手牌に変換 */
-static void MJEffectiveTileTest_ConvertTileInfoToHand(const struct TileInfo *tile_info, struct MJHand *hand)
+/* テストケースを牌カウントに変換 */
+static void MJEffectiveTIleTest_ConvertTestCaseToTileCount(const struct MJEffectiveTileTestCase *test_case, struct MJTileCount *count)
 {
-  int32_t i, j, pos;
+  int32_t i;
 
-  assert((tile_info != NULL) && (hand != NULL));
+  assert((test_case != NULL) && (count != NULL));
 
-  /* 手牌を変換 */
-  pos = 0;
+  /* 手牌を一旦クリア */
+  memset(count, 0, sizeof(struct MJTileCount));
+
+  /* テストケースから変換 */
   for (i = 0; i < 14; i++) {
-    const struct TileInfo *pinfo = &tile_info[i];
-    if (!MJTILE_IS_VALID(pinfo->type)) {
+    const struct TileInfo *info = &test_case->tiles[i];
+    if (info->type < 0) {
       break;
     }
-    for (j = 0; j < pinfo->maisu; j++) {
-      hand->hand[pos] = pinfo->type;
-      pos++;
-    }
+    count->count[info->type] = info->maisu;
   }
-
-  /* 副露はなし */
-  hand->meld[0].min_tile  = MJTILE_INVALID;
-  hand->meld[0].type      = MJMELD_TYPE_INVALID;
-  hand->num_meld = 0;
 }
 
 /* 引数のテストケース配列に対してテスト 成功時は1, 失敗がある場合は0を返す */
@@ -86,14 +80,14 @@ static int MJEffectiveTiles_TestForTestCases(
   is_ok = 1;
   for (i = 0; i < num_test_cases; i++) {
     int32_t t;
-    struct MJHand hand;
+    struct MJTileCount count;
     struct MJEffectiveTiles get;
     MJEffectiveTileApiResult ret;
     const struct MJEffectiveTileTestCase *pcase = &test_cases[i];
     /* 牌出現カウントに変換 */
-    MJEffectiveTileTest_ConvertTileInfoToHand(&(pcase->tiles[0]), &hand);
+    MJEffectiveTIleTest_ConvertTestCaseToTileCount(pcase, &count);
     /* 有効牌取得 */
-    if ((ret = getter_function(&hand, &get)) != MJEFFECTIVETILE_APIRESULT_OK) {
+    if ((ret = getter_function(&count, &get)) != MJEFFECTIVETILE_APIRESULT_OK) {
       printf("NG at test case index:%d api result:%d \n", i, ret);
       is_ok = 0;
       break;

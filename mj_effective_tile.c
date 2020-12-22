@@ -1,4 +1,3 @@
-#include "mj_effective_tile.h"
 #include "mj_shanten.h"
 
 #include <assert.h>
@@ -170,67 +169,55 @@ static MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTilesCore(const stru
 }
 
 /* 通常手の有効牌リストアップ */
-MJEffectiveTileApiResult MJEffectiveTile_GetNormalEffectiveTiles(const struct MJHand *hand, struct MJEffectiveTiles *effective_tiles)
+MJEffectiveTileApiResult MJEffectiveTile_GetNormalEffectiveTiles(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles)
 {
-  struct MJTileCount count;
   bool candidate_effective_tile_flag[MJTILE_MAX];
 
   /* 引数チェック */
-  if ((hand == NULL) || (effective_tiles == NULL)) {
+  if ((count == NULL) || (effective_tiles == NULL)) {
     return MJEFFECTIVETILE_APIRESULT_INVALID_ARGUMENT;
   }
 
-  /* 手牌をカウントに変換 */
-  MJShanten_ConvertHandToTileCount(hand, &count);
-
   /* 有効牌候補をリストアップ */
-  MJEffectiveTile_SetNormalCandidateEffectiveTileFlag(&count, candidate_effective_tile_flag);
+  MJEffectiveTile_SetNormalCandidateEffectiveTileFlag(count, candidate_effective_tile_flag);
   
   /* コア処理実行 */
-  return MJEffectiveTile_GetEffectiveTilesCore(&count,
+  return MJEffectiveTile_GetEffectiveTilesCore(count,
       candidate_effective_tile_flag, MJShanten_CalculateNormalShanten, effective_tiles);
 }
 
 /* 七対子手の有効牌リストアップ */
-MJEffectiveTileApiResult MJEffectiveTile_GetChitoitsuEffectiveTiles(const struct MJHand *hand, struct MJEffectiveTiles *effective_tiles)
+MJEffectiveTileApiResult MJEffectiveTile_GetChitoitsuEffectiveTiles(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles)
 {
-  struct MJTileCount count;
   bool candidate_effective_tile_flag[MJTILE_MAX];
 
   /* 引数チェック */
-  if ((hand == NULL) || (effective_tiles == NULL)) {
+  if ((count == NULL) || (effective_tiles == NULL)) {
     return MJEFFECTIVETILE_APIRESULT_INVALID_ARGUMENT;
   }
 
-  /* 手牌をカウントに変換 */
-  MJShanten_ConvertHandToTileCount(hand, &count);
-
   /* 有効牌候補をリストアップ */
-  MJEffectiveTile_SetChitoitsuCandidateEffectiveTileFlag(&count, candidate_effective_tile_flag);
+  MJEffectiveTile_SetChitoitsuCandidateEffectiveTileFlag(count, candidate_effective_tile_flag);
   
   /* コア処理実行 */
-  return MJEffectiveTile_GetEffectiveTilesCore(&count,
+  return MJEffectiveTile_GetEffectiveTilesCore(count,
       candidate_effective_tile_flag, MJShanten_CalculateChitoitsuShanten, effective_tiles);
 }
 
 /* 国士無双手の有効牌リストアップ */
-MJEffectiveTileApiResult MJEffectiveTile_GetKokushimusouEffectiveTiles(const struct MJHand *hand, struct MJEffectiveTiles *effective_tiles)
+MJEffectiveTileApiResult MJEffectiveTile_GetKokushimusouEffectiveTiles(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles)
 {
-  struct MJTileCount count;
   bool candidate_effective_tile_flag[MJTILE_MAX];
 
   /* 引数チェック */
-  if ((hand == NULL) || (effective_tiles == NULL)) {
+  if ((count == NULL) || (effective_tiles == NULL)) {
     return MJEFFECTIVETILE_APIRESULT_INVALID_ARGUMENT;
   }
 
-  /* 手牌をカウントに変換 */
-  MJShanten_ConvertHandToTileCount(hand, &count);
-
   /* 有効牌候補をリストアップ */
-  MJEffectiveTile_SetKokushimusouCandidateEffectiveTileFlag(&count, candidate_effective_tile_flag);
+  MJEffectiveTile_SetKokushimusouCandidateEffectiveTileFlag(count, candidate_effective_tile_flag);
   
   /* コア処理実行 */
-  return MJEffectiveTile_GetEffectiveTilesCore(&count,
+  return MJEffectiveTile_GetEffectiveTilesCore(count,
       candidate_effective_tile_flag, MJShanten_CalculateKokushimusouShanten, effective_tiles);
 }
