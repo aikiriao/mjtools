@@ -9,8 +9,6 @@ struct MJTileCount {
   int32_t count[MJTILE_MAX];
 };
 
-/* TODO: 有効牌リストアップ関数追加 */
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

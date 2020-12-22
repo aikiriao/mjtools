@@ -9,6 +9,7 @@ void MJDeckTest_Setup(void);
 void MJPlayerTest_Setup(void);
 void MJPlayerTsumogiriTest_Setup(void);
 void MJRiverTest_Setup(void);
+void MJEffectiveTileTest_Setup(void);
 
 /* テスト実行 */
 int main(int argc, char **argv)
@@ -21,6 +22,7 @@ int main(int argc, char **argv)
   Test_Initialize();
 
   MJShantenTest_Setup();
+  MJEffectiveTileTest_Setup();
   MJTileTest_Setup();
   MJScoreTest_Setup();
   MJRandomXoshiro256ppTest_Setup();
