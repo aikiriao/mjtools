@@ -8,9 +8,6 @@
 /* 役の成立フラグをセットする（立たせる）マクロ */
 #define MJSCORE_SET_YAKUFLAG(flag, yaku)  ((flag) |= MJSCORE_YAKU_FLAG(yaku))
 
-/* nの倍数に切り上げ */
-#define MJSCORE_ROUND_UP(val, n)          ((((val) + ((n) - 1)) / (n)) * (n))
-
 /* 役満の翻数 */
 #define MJSCORE_HAN_YAKUMAN    13
 #define MJSCORE_HAN_2YAKUMAN   26
@@ -790,7 +787,7 @@ static void MJScore_CalculateFu(
     tmp_fu = 30;
   }
   /* 1の位を切り上げる */
-  tmp_fu = MJSCORE_ROUND_UP(tmp_fu, 10);
+  tmp_fu = MJUTILITY_ROUND_UP(tmp_fu, 10);
 
   /* 結果の反映 */
   (*fu) = tmp_fu;
@@ -1002,11 +999,11 @@ static void MJScore_CalculatePointFromHanFu(
   }
 
   /* 支払う点数の振り分け(100点切り上げ) */
-  payment.oya_ron      = MJSCORE_ROUND_UP(6 * basic_point, 100);
-  payment.ko_ron       = MJSCORE_ROUND_UP(4 * basic_point, 100);
-  payment.oya_tsumo    = MJSCORE_ROUND_UP(2 * basic_point, 100);
-  payment.ko_tsumo.oya = MJSCORE_ROUND_UP(2 * basic_point, 100);
-  payment.ko_tsumo.ko  = MJSCORE_ROUND_UP(1 * basic_point, 100);
+  payment.oya_ron      = MJUTILITY_ROUND_UP(6 * basic_point, 100);
+  payment.ko_ron       = MJUTILITY_ROUND_UP(4 * basic_point, 100);
+  payment.oya_tsumo    = MJUTILITY_ROUND_UP(2 * basic_point, 100);
+  payment.ko_tsumo.oya = MJUTILITY_ROUND_UP(2 * basic_point, 100);
+  payment.ko_tsumo.ko  = MJUTILITY_ROUND_UP(1 * basic_point, 100);
 
   /* 積み棒を加算 */
   payment.oya_ron      += tsumibo_point;
