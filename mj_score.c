@@ -35,7 +35,7 @@ typedef enum MJMentsuTypeTag {
 /* 面子の情報 */
 struct MJMentsu {
   MJMentsuType  type;
-  MJTile        minhai;       /* 面子を構成する最小の牌 */
+  MJTile        min_tile;       /* 面子を構成する最小の牌 */
 };
 
 /* 面子が切り分けられた手牌 */
@@ -473,7 +473,7 @@ static void MJScore_CalculateDividedHandHanFu(
   /* 副露牌を分割済み手牌に入れる */
   for (i = 0; i < info->hand.num_meld; i++) {
     struct MJMentsu *pmentsu = &(div_hand.mentsu[i]);
-    pmentsu->minhai = info->hand.meld[i].min_tile;
+    pmentsu->min_tile = info->hand.meld[i].min_tile;
     /* 副露の種類の読み替え */
     switch (info->hand.meld[i].type) {
       case MJMELD_TYPE_PUNG: pmentsu->type = MJMENTSU_TYPE_PUNG; break;
@@ -533,7 +533,7 @@ static void MJScore_DivideMentsu(
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 暗刻を抜き出して調べる */
     if (hai[i] >= 3) {
-      pmentsu->minhai = (MJTile)i;
+      pmentsu->min_tile = (MJTile)i;
       if ((i == info->winning_tile) && !(info->tsumo)) {
         /* 和了牌の場合は明刻に */
         pmentsu->type = MJMENTSU_TYPE_PUNG;
@@ -543,18 +543,18 @@ static void MJScore_DivideMentsu(
       hai[i] -= 3;
       MJScore_DivideMentsu(info, remain_count, div_hand, num_mentsu + 1, score);
       hai[i] += 3;
-      pmentsu->minhai = 0;
+      pmentsu->min_tile = 0;
       pmentsu->type = MJMENTSU_TYPE_INVALID;
     }
     /* 順子を抜き出して調べる */
     if (MJTILE_IS_SUHAI(i) && (hai[i] > 0)
         && (hai[i + 1] > 0) && (hai[i + 2] > 0)) {
-      pmentsu->minhai = (MJTile)i;
+      pmentsu->min_tile = (MJTile)i;
       pmentsu->type = MJMENTSU_TYPE_SYUNTSU;
       hai[i]--; hai[i + 1]--; hai[i + 2]--;
       MJScore_DivideMentsu(info, remain_count, div_hand, num_mentsu + 1, score);
       hai[i]++; hai[i + 1]++; hai[i + 2]++;
-      pmentsu->minhai = 0;
+      pmentsu->min_tile = 0;
       pmentsu->type = MJMENTSU_TYPE_INVALID;
     }
   }
@@ -720,9 +720,9 @@ static void MJScore_CalculateFu(
       pmentsu = &(div_hand->mentsu[i]);
       /* 辺張/嵌張待ち */
       if (pmentsu->type == MJMENTSU_TYPE_SYUNTSU) {
-        if ((MJTILE_NUMBER_IS(info->winning_tile, 3) && (info->winning_tile == (pmentsu->minhai + 2)))
-            || (MJTILE_NUMBER_IS(info->winning_tile, 7) && (info->winning_tile == pmentsu->minhai))
-            || (info->winning_tile == (pmentsu->minhai + 1))) {
+        if ((MJTILE_NUMBER_IS(info->winning_tile, 3) && (info->winning_tile == (pmentsu->min_tile + 2)))
+            || (MJTILE_NUMBER_IS(info->winning_tile, 7) && (info->winning_tile == pmentsu->min_tile))
+            || (info->winning_tile == (pmentsu->min_tile + 1))) {
           tmp_fu += 2;
           break;
         }
@@ -751,7 +751,7 @@ static void MJScore_CalculateFu(
     switch (pmentsu->type) {
       /* 暗刻 */
       case MJMENTSU_TYPE_ANKO:
-        if (MJTILE_IS_YAOCHU(pmentsu->minhai)) {
+        if (MJTILE_IS_YAOCHU(pmentsu->min_tile)) {
           tmp_fu += 8;
         } else {
           tmp_fu += 4;
@@ -759,7 +759,7 @@ static void MJScore_CalculateFu(
         break;
         /* 明刻（ポン） */
       case MJMENTSU_TYPE_PUNG:
-        if (MJTILE_IS_YAOCHU(pmentsu->minhai)) {
+        if (MJTILE_IS_YAOCHU(pmentsu->min_tile)) {
           tmp_fu += 4;
         } else {
           tmp_fu += 2;
@@ -767,7 +767,7 @@ static void MJScore_CalculateFu(
         break;
         /* 暗槓 */
       case MJMENTSU_TYPE_ANKAN:
-        if (MJTILE_IS_YAOCHU(pmentsu->minhai)) {
+        if (MJTILE_IS_YAOCHU(pmentsu->min_tile)) {
           tmp_fu += 32;
         } else {
           tmp_fu += 16;
@@ -775,7 +775,7 @@ static void MJScore_CalculateFu(
         break;
         /* 明槓（加槓） */
       case MJMENTSU_TYPE_MINKAN:
-        if (MJTILE_IS_YAOCHU(pmentsu->minhai)) {
+        if (MJTILE_IS_YAOCHU(pmentsu->min_tile)) {
           tmp_fu += 16;
         } else {
           tmp_fu += 8;
@@ -1056,7 +1056,7 @@ static int32_t MJScore_CountNumPeko(const struct MJDividedHand *hand)
   /* 順子の出現パターンをカウント */
   for (i = 0; i < 4; i++) {
     if (hand->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) {
-      syuntsu_count[hand->mentsu[i].minhai]++;
+      syuntsu_count[hand->mentsu[i].min_tile]++;
     }
   }
 
@@ -1130,8 +1130,8 @@ static bool MJScore_IsPinfu(
   for (i = 0; i < 4; i++) {
     pmentsu = &hand->mentsu[i];
     /* 辺張待ちは弾く */
-    if (((info->winning_tile == pmentsu->minhai) && !MJTILE_NUMBER_IS(pmentsu->minhai + 1, 8))
-        || ((info->winning_tile == (pmentsu->minhai + 2)) && !MJTILE_NUMBER_IS(pmentsu->minhai, 1))) {
+    if (((info->winning_tile == pmentsu->min_tile) && !MJTILE_NUMBER_IS(pmentsu->min_tile + 1, 8))
+        || ((info->winning_tile == (pmentsu->min_tile + 2)) && !MJTILE_NUMBER_IS(pmentsu->min_tile, 1))) {
       return true;
     }
   }
@@ -1164,14 +1164,14 @@ static bool MJScore_IsSansyokudoujyun(
 
   /* 数牌かつ同じ3つの並びを探す */
   for (i = 0; i < 2; i++) {
-    if (MJTILE_IS_SUHAI(hand->mentsu[i].minhai)
-        && MJTILE_IS_SUHAI(hand->mentsu[i + 1].minhai)
-        && MJTILE_IS_SUHAI(hand->mentsu[i + 2].minhai)) {
-      if (MJTILE_IS_SAME_NUMBER(hand->mentsu[i].minhai, hand->mentsu[i + 1].minhai)
-          && MJTILE_IS_SAME_NUMBER(hand->mentsu[i].minhai, hand->mentsu[i + 2].minhai)
-          && (hand->mentsu[i].minhai != hand->mentsu[i + 1].minhai)
-          && (hand->mentsu[i].minhai != hand->mentsu[i + 2].minhai)
-          && (hand->mentsu[i + 1].minhai != hand->mentsu[i + 2].minhai)) {
+    if (MJTILE_IS_SUHAI(hand->mentsu[i].min_tile)
+        && MJTILE_IS_SUHAI(hand->mentsu[i + 1].min_tile)
+        && MJTILE_IS_SUHAI(hand->mentsu[i + 2].min_tile)) {
+      if (MJTILE_IS_SAME_NUMBER(hand->mentsu[i].min_tile, hand->mentsu[i + 1].min_tile)
+          && MJTILE_IS_SAME_NUMBER(hand->mentsu[i].min_tile, hand->mentsu[i + 2].min_tile)
+          && (hand->mentsu[i].min_tile != hand->mentsu[i + 1].min_tile)
+          && (hand->mentsu[i].min_tile != hand->mentsu[i + 2].min_tile)
+          && (hand->mentsu[i + 1].min_tile != hand->mentsu[i + 2].min_tile)) {
         return true;
       }
     }
@@ -1198,10 +1198,10 @@ static bool MJScore_IsIkkitsukan(
 
   /* 数牌の出現数をカウント */
   for (i = 0; i < 4; i++) {
-    MJTile minhai = hand->mentsu[i].minhai;
-    if (MJTILE_IS_SUHAI(minhai)
+    MJTile min_tile = hand->mentsu[i].min_tile;
+    if (MJTILE_IS_SUHAI(min_tile)
         && ((hand->mentsu[i].type == MJMENTSU_TYPE_SYUNTSU) || (hand->mentsu[i].type == MJMENTSU_TYPE_CHOW))) {
-      suhai_count[minhai]++; suhai_count[minhai + 1]++; suhai_count[minhai + 2]++;
+      suhai_count[min_tile]++; suhai_count[min_tile + 1]++; suhai_count[min_tile + 2]++;
     }
   }
 
@@ -1245,13 +1245,13 @@ static bool MJScore_IsChantaCore(const struct MJAgariInformation *info, const st
         || (pmentsu->type == MJMENTSU_TYPE_MINKAN) || (pmentsu->type == MJMENTSU_TYPE_ANKO)
         || (pmentsu->type == MJMENTSU_TYPE_TOITSU)) {
       /* 構成牌が么九牌でない */
-      if (!MJTILE_IS_YAOCHU(pmentsu->minhai)) {
+      if (!MJTILE_IS_YAOCHU(pmentsu->min_tile)) {
         return false;
       }
     } else {
       /* チー/順子の構成牌が么九牌に絡んでいない */
       assert((pmentsu->type == MJMENTSU_TYPE_CHOW) || (pmentsu->type == MJMENTSU_TYPE_SYUNTSU));
-      if (!MJTILE_NUMBER_IS(pmentsu->minhai, 1) && !MJTILE_NUMBER_IS(pmentsu->minhai, 7)) {
+      if (!MJTILE_NUMBER_IS(pmentsu->min_tile, 1) && !MJTILE_NUMBER_IS(pmentsu->min_tile, 7)) {
         return false;
       }
       /* 順子の出現をマーク（混老頭との複合防止） */
@@ -1281,7 +1281,7 @@ static bool MJScore_IsChanta(const struct MJAgariInformation *info, const struct
 
   /* 字牌の出現をチェック */
   for (i = 0; i < 4; i++) {
-    if (MJTILE_IS_JIHAI(hand->mentsu[i].minhai)) {
+    if (MJTILE_IS_JIHAI(hand->mentsu[i].min_tile)) {
       jihai = true;
     }
   }
@@ -1338,11 +1338,11 @@ static bool MJScore_IsSansyokudoukoku(const struct MJAgariInformation *info, con
 
   /* 3種類の面子が同じ牌からなるポン/暗刻/カンか？ */
   for (i = 0; i < 4; i++) {
-    if (MJTILE_IS_SUHAI(hand->mentsu[i].minhai)) {
+    if (MJTILE_IS_SUHAI(hand->mentsu[i].min_tile)) {
       /* 同刻数を数える */
       num_dokoku = 0;
       for (j = i + 1; j < 4; j++) {
-        if (MJTILE_IS_SAME_NUMBER(hand->mentsu[i].minhai, hand->mentsu[j].minhai)
+        if (MJTILE_IS_SAME_NUMBER(hand->mentsu[i].min_tile, hand->mentsu[j].min_tile)
             && ((hand->mentsu[i].type != MJMENTSU_TYPE_CHOW) && (hand->mentsu[i].type != MJMENTSU_TYPE_SYUNTSU))
             && ((hand->mentsu[j].type != MJMENTSU_TYPE_CHOW) && (hand->mentsu[j].type != MJMENTSU_TYPE_SYUNTSU))) {
           num_dokoku++;
@@ -1372,7 +1372,7 @@ static bool MJScore_IsJyunchanta(const struct MJAgariInformation *info, const st
 
   /* 字牌が出現していないか確認 */
   for (i = 0; i < 4; i++) {
-    if (MJTILE_IS_JIHAI(hand->mentsu[i].minhai)) {
+    if (MJTILE_IS_JIHAI(hand->mentsu[i].min_tile)) {
       return false;
     }
   }
