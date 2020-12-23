@@ -26,7 +26,8 @@ static void MJEffectiveTile_SetChitoitsuCandidateEffectiveTileFlag(const struct 
 /* 国士無双手の有効牌候補の列挙 */
 static void MJEffectiveTile_SetKokushimusouCandidateEffectiveTileFlag(const struct MJTileCount *count, bool *candidate_effective_tile_flag);
 /* 有効牌リストアップ処理コア */
-static MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTilesCore(const struct MJTileCount *count, const bool *candidate_effective_tile_flag, ShantenCalculatorFunction shanten_calculator, struct MJEffectiveTiles *effective_tiles);
+static MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTilesCore(const struct MJTileCount *count,
+    const bool *candidate_effective_tile_flag, ShantenCalculatorFunction shanten_calculator, struct MJEffectiveTiles *effective_tiles);
 
 /* 手牌（副露含む）をカウントに変換 */
 void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCount *tile_count)
@@ -385,7 +386,8 @@ static void MJEffectiveTile_SetKokushimusouCandidateEffectiveTileFlag(const stru
 }
 
 /* 有効牌リストアップ処理コア */
-static MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTilesCore(const struct MJTileCount *count, const bool *candidate_effective_tile_flag, ShantenCalculatorFunction shanten_calculator, struct MJEffectiveTiles *effective_tiles)
+static MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTilesCore(const struct MJTileCount *count,
+    const bool *candidate_effective_tile_flag, ShantenCalculatorFunction shanten_calculator, struct MJEffectiveTiles *effective_tiles)
 {
   int32_t t, current_shanten;
   struct MJTileCount count_work;
