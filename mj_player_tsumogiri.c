@@ -14,20 +14,21 @@ struct MJPlayerTsumogiri {
   int32_t       rel_score;  /* 相対スコア */
   int32_t       total_rank;   /* 合計ランク */
   int64_t       total_score;  /* 合計スコア */
+  const struct MJGameStateGetterInterface *game_state_getter; /* ゲーム状態取得インターフェース */
 };
 
 /* インターフェース名の取得 */
-static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion2Tag *version_tag);
+static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion3Tag *version_tag);
 /* ワークサイズ計算 */
-static int32_t MJPlayerTsumogiri_CalculateWorkSize(void);
+static int32_t MJPlayerTsumogiri_CalculateWorkSize(const struct MJPlayerConfig *config);
 /* インスタンス生成 */
-static void *MJPlayerTsumogiri_Create(void *work, int32_t work_size);
+static void *MJPlayerTsumogiri_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size);
 /* インスタンス破棄 */
 static void MJPlayerTsumogiri_Destroy(void *player);
 /* 誰かのアクション時の対応 */
 static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
 /* 自摸時の対応 */
-static void MJPlayerTsumogiri_OnDraw(void *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action);
+static void MJPlayerTsumogiri_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時の対応 */
 static void MJPlayerTsumogiri_OnStartHand(void *player, int32_t hand_no, MJWind player_wind);
 /* 局終了時の対応 */
@@ -58,26 +59,33 @@ const struct MJPlayerInterface *MJPlayerTsumogiri_GetInterface(void)
 }
 
 /* インターフェース名の取得 */
-static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion2Tag *version_tag)
+static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion3Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return "Tsumogiri-Kun";
 }
 
 /* ワークサイズ計算 */
-static int32_t MJPlayerTsumogiri_CalculateWorkSize(void)
+static int32_t MJPlayerTsumogiri_CalculateWorkSize(const struct MJPlayerConfig *config)
 {
+  /* 引数チェック */
+  if (config == NULL) {
+    return -1;
+  } else if (config->game_state_getter_if == NULL) {
+    return -1;
+  }
+
   return sizeof(struct MJPlayerTsumogiri) + MJPLAYER_TSUMOGIRI_ALIGNMENT;
 }
 
 /* インスタンス生成 */
-static void *MJPlayerTsumogiri_Create(void *work, int32_t work_size)
+static void *MJPlayerTsumogiri_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size)
 {
   struct MJPlayerTsumogiri *player;
   uint8_t *work_ptr;
 
   /* 引数チェック */
-  if ((work == NULL) || (work_size < MJPlayerTsumogiri_CalculateWorkSize())) {
+  if ((work == NULL) || (work_size < MJPlayerTsumogiri_CalculateWorkSize(config))) {
     return NULL;
   }
 
@@ -92,6 +100,9 @@ static void *MJPlayerTsumogiri_Create(void *work, int32_t work_size)
   /* トータル情報の初期化 */
   player->total_rank = 0;
   player->total_score = 0;
+
+  /* 状態取得インターフェース取得 */
+  player->game_state_getter = config->game_state_getter_if;
 
   return player;
 }
@@ -122,16 +133,14 @@ static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, cons
 }
 
 /* 自摸時の対応 */
-static void MJPlayerTsumogiri_OnDraw(void *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action)
+static void MJPlayerTsumogiri_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   struct MJPlayerTsumogiri *tgiri = (struct MJPlayerTsumogiri *)player;
 
   assert(player != NULL);
-  assert(hand != NULL);
   assert(player_action != NULL);
 
-  /* 手牌の情報取得 */
-  tgiri->hand = (*hand);
+  MJUTILITY_UNUSED_ARGUMENT(tgiri);
 
   /* ツモ切り */
   player_action->type = MJPLAYER_ACTIONTYPE_DISCARD;

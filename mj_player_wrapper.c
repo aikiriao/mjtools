@@ -1,4 +1,4 @@
-#include "mj_player.h"
+#include "mj_player_wrapper.h"
 #include "mj_utility.h"
 
 #include <assert.h>
@@ -8,7 +8,7 @@
 #define MJPLAYER_ALIGNMENT  16
 
 /* プレーヤー構造体 */
-struct MJPlayer {
+struct MJPlayerWrapper {
   const struct MJPlayerInterface *player_interface;
   void *player_instance;
   bool alloced_by_own;
@@ -16,31 +16,37 @@ struct MJPlayer {
 };
 
 /* プレーヤーハンドル作成に必要なワークサイズ計算 */
-int32_t MJPlayer_CalculateWorkSize(const struct MJPlayerConfig *config)
+int32_t MJPlayerWrapper_CalculateWorkSize(const struct MJPlayerWrapperConfig *config)
 {
-  int32_t work_size;
+  int32_t ret, work_size;
 
   /* 引数チェック */
   if ((config == NULL) || (config->player_interface == NULL)) {
     return -1;
   }
 
-  work_size = sizeof(struct MJPlayer) + MJPLAYER_ALIGNMENT;
-  work_size += config->player_interface->CalculateWorkSize();
+  /* ラッパー構造体分 */
+  work_size = sizeof(struct MJPlayerWrapper) + MJPLAYER_ALIGNMENT;
+
+  /* ユーザ定義分 */
+  if ((ret = config->player_interface->CalculateWorkSize(&config->player_config)) < 0) {
+    return -1;
+  }
+  work_size += ret;
 
   return work_size;
 }
 
 /* プレーヤーハンドル作成 */
-struct MJPlayer *MJPlayer_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size)
+struct MJPlayerWrapper *MJPlayerWrapper_Create(const struct MJPlayerWrapperConfig *config, void *work, int32_t work_size)
 {
-  struct MJPlayer *player;
+  struct MJPlayerWrapper *player;
   uint8_t *work_ptr;
   bool tmp_alloced_by_own = false;
 
   /* ワーク領域自前確保の場合 */
   if ((work == NULL) && (work_size == 0)) {
-    work_size = MJPlayer_CalculateWorkSize(config);
+    work_size = MJPlayerWrapper_CalculateWorkSize(config);
     if (work_size < 0) {
       return NULL;
     }
@@ -49,7 +55,7 @@ struct MJPlayer *MJPlayer_Create(const struct MJPlayerConfig *config, void *work
   }
 
   /* 引数チェック */
-  if ((work == NULL) || (work_size < MJPlayer_CalculateWorkSize(config))
+  if ((work == NULL) || (work_size < MJPlayerWrapper_CalculateWorkSize(config))
       || (config == NULL) || (config->player_interface == NULL)) {
     return NULL;
   }
@@ -59,13 +65,13 @@ struct MJPlayer *MJPlayer_Create(const struct MJPlayerConfig *config, void *work
   work_ptr = (uint8_t *)MJUTILITY_ROUND_UP((uintptr_t)work_ptr, MJPLAYER_ALIGNMENT);
 
   /* 構造体配置 */
-  player = (struct MJPlayer *)work_ptr;
-  work_ptr += sizeof(struct MJPlayer);
+  player = (struct MJPlayerWrapper *)work_ptr;
+  work_ptr += sizeof(struct MJPlayerWrapper);
 
   /* ユーザ定義のプレーヤー作成 */
   {
-    int32_t coreplayer_size = config->player_interface->CalculateWorkSize();
-    void *player_instance = config->player_interface->Create(work_ptr, coreplayer_size);
+    int32_t coreplayer_size = config->player_interface->CalculateWorkSize(&config->player_config);
+    void *player_instance = config->player_interface->Create(&config->player_config, work_ptr, coreplayer_size);
     if (player_instance == NULL) {
       return NULL;
     }
@@ -84,7 +90,7 @@ struct MJPlayer *MJPlayer_Create(const struct MJPlayerConfig *config, void *work
 }
 
 /* プレーヤーハンドル破棄 */
-void MJPlayer_Destroy(struct MJPlayer *player)
+void MJPlayerWrapper_Destroy(struct MJPlayerWrapper *player)
 {
   if (player != NULL) {
     /* インスタンス破棄 */
@@ -98,14 +104,14 @@ void MJPlayer_Destroy(struct MJPlayer *player)
 }
 
 /* インターフェース名取得 */
-const char *MJPlayer_GetName(const struct MJPlayer *player)
+const char *MJPlayerWrapper_GetName(const struct MJPlayerWrapper *player)
 {
   assert(player != NULL);
   return player->player_interface->GetName(NULL);
 }
 
 /* 誰かのアクション時 */
-void MJPlayer_OnAction(struct MJPlayer *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action)
+void MJPlayerWrapper_OnAction(struct MJPlayerWrapper *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action)
 {
   assert(player != NULL);
   assert(trigger_action != NULL);
@@ -115,23 +121,22 @@ void MJPlayer_OnAction(struct MJPlayer *player, MJWind trigger_player, const str
 }
 
 /* 自摸時 */
-void MJPlayer_OnDraw(struct MJPlayer *player, const struct MJHand *hand, MJTile draw_tile, struct MJPlayerAction *player_action)
+void MJPlayerWrapper_OnDraw(struct MJPlayerWrapper *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   assert(player != NULL);
-  assert(hand != NULL);
   assert(player_action != NULL);
-  player->player_interface->OnDraw(player->player_instance, hand, draw_tile, player_action);
+  player->player_interface->OnDraw(player->player_instance, draw_tile, player_action);
 }
 
 /* 局開始時 */
-void MJPlayer_OnStartHand(struct MJPlayer *player, int32_t hand_no, MJWind player_wind)
+void MJPlayerWrapper_OnStartHand(struct MJPlayerWrapper *player, int32_t hand_no, MJWind player_wind)
 {
   assert(player != NULL);
   player->player_interface->OnStartHand(player->player_instance, hand_no, player_wind);
 }
 
 /* 局終了時 */
-void MJPlayer_OnEndHand(struct MJPlayer *player, MJHandEndReason reason, const int32_t *score_diff)
+void MJPlayerWrapper_OnEndHand(struct MJPlayerWrapper *player, MJHandEndReason reason, const int32_t *score_diff)
 {
   assert(player != NULL);
   assert(score_diff != NULL);
@@ -139,14 +144,14 @@ void MJPlayer_OnEndHand(struct MJPlayer *player, MJHandEndReason reason, const i
 }
 
 /* 対戦開始時 */
-void MJPlayer_OnStartGame(struct MJPlayer *player)
+void MJPlayerWrapper_OnStartGame(struct MJPlayerWrapper *player)
 {
   assert(player != NULL);
   player->player_interface->OnStartGame(player->player_instance);
 }
 
 /* 対戦終了時 */
-void MJPlayer_OnEndGame(struct MJPlayer *player, int32_t player_rank, int32_t player_score)
+void MJPlayerWrapper_OnEndGame(struct MJPlayerWrapper *player, int32_t player_rank, int32_t player_score)
 {
   assert(player != NULL);
   player->player_interface->OnEndGame(player->player_instance, player_rank, player_score);

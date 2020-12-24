@@ -3,9 +3,6 @@
 
 #include "mj_types.h"
 
-/* 河に捨てられる最大牌数 */
-#define MJTYPES_MAX_NUM_DISCARDED_TILES  25
-
 /* API結果型 */
 typedef enum MJRiverApiResultTag {
   MJRIVER_APIRESULT_OK = 0,
@@ -14,19 +11,6 @@ typedef enum MJRiverApiResultTag {
   MJRIVER_APIRESULT_CANNOT_MELD,      /* 鳴けない */
   MJRIVER_APIRESULT_NG,
 } MJRiverApiResult;
-
-/* 河牌 */
-struct MJDiscardedTile {
-  MJTile  tile;         /* 牌 */
-  bool    riichi;       /* リーチ？ */
-  MJWind  meld_player;  /* 鳴いたプレーヤー 鳴いていない場合はMJWIND_INVALID */
-};
-
-/* 各プレーヤーの河牌 */
-struct MJPlayerRiver {
-  struct MJDiscardedTile tiles[MJTYPES_MAX_NUM_DISCARDED_TILES];  /* 河牌の配列 */
-  int32_t num_tiles;                                              /* 捨てられた牌の数 */
-};
 
 /* 河 */
 struct MJRiver {
