@@ -138,7 +138,7 @@ static void MJRiverTest_PungTest(void *obj)
   /* ポンしてみる */
   {
     struct MJRiver river, river_backup;
-    struct MJHand hand = { { 0, }, { 0, }, 0 };
+    struct MJHand hand = { { 0, }, 0, { 0, }, 0 };
 
     MJRiver_Initialize(&river);
 
@@ -173,7 +173,7 @@ static void MJRiverTest_PungTest(void *obj)
   /* ポンAPIに不正な引数を渡す */
   {
     struct MJRiver river;
-    struct MJHand hand = { { 0, }, { 0, }, 0 };
+    struct MJHand hand = { { 0, }, 0, { 0, }, 0 };
 
     MJRiver_Initialize(&river);
 
@@ -199,7 +199,7 @@ static void MJRiverTest_ChowTest(void *obj)
   /* チーしてみる */
   {
     struct MJRiver river;
-    struct MJHand hand = { { 0, }, { 0, }, 0 };
+    struct MJHand hand = { { 0, }, 0, { 0, }, 0 };
 
     /* 辺張ケース1 */
     hand.hand[0] = MJTILE_1MAN;
@@ -304,7 +304,7 @@ static void MJRiverTest_ChowTest(void *obj)
   /* チーAPIに不正な引数を渡す */
   {
     struct MJRiver river;
-    struct MJHand hand = { { 0, }, { 0, }, 0 };
+    struct MJHand hand = { { 0, }, 0, { 0, }, 0 };
 
     hand.hand[0] = MJTILE_1MAN;
     hand.hand[1] = MJTILE_2MAN;
@@ -326,7 +326,7 @@ static void MJRiverTest_KanTest(void *obj)
   /* カンしてみる */
   {
     struct MJRiver river, river_backup;
-    struct MJHand hand = { { 0, }, { 0, }, 0 };
+    struct MJHand hand = { { 0, }, 0, { 0, }, 0 };
 
     MJRiver_Initialize(&river);
 
@@ -367,7 +367,7 @@ static void MJRiverTest_KanTest(void *obj)
   /* カンAPIに不正な引数を渡す */
   {
     struct MJRiver river;
-    struct MJHand hand = { { 0, }, { 0, }, 0 };
+    struct MJHand hand = { { 0, }, 0, { 0, }, 0 };
 
     MJRiver_Initialize(&river);
 
