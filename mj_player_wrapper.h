@@ -16,6 +16,7 @@ struct MJPlayerWrapperConfig {
 /* プレーヤーハンドル */
 struct MJPlayerWrapper;
 
+/* インターフェースラッパー */
 /* プレーヤーハンドル作成に必要なワークサイズ計算 */
 int32_t MJPlayerWrapper_CalculateWorkSize(const struct MJPlayerWrapperConfig *config);
 /* プレーヤーハンドル作成 */
@@ -36,5 +37,9 @@ void MJPlayerWrapper_OnEndHand(struct MJPlayerWrapper *player, MJHandEndReason r
 void MJPlayerWrapper_OnStartGame(struct MJPlayerWrapper *player);
 /* 対戦終了時 */
 void MJPlayerWrapper_OnEndGame(struct MJPlayerWrapper *player, int32_t player_rank, int32_t player_score);
+
+/* 固有関数 */
+/* ハンドル取得 */
+const void *MJPlayerWrapper_GetPlayerHandle(const struct MJPlayerWrapper *player);
 
 #endif /* MJPLAYERWRAPPER_H_INCLUDED */

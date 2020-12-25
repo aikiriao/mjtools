@@ -156,3 +156,10 @@ void MJPlayerWrapper_OnEndGame(struct MJPlayerWrapper *player, int32_t player_ra
   assert(player != NULL);
   player->player_interface->OnEndGame(player->player_instance, player_rank, player_score);
 }
+
+/* プレーヤーハンドル取得 */
+const void *MJPlayerWrapper_GetPlayerHandle(const struct MJPlayerWrapper *player)
+{
+  assert(player != NULL);
+  return player->player_instance;
+}
