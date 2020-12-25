@@ -121,7 +121,6 @@ static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, cons
   MJUTILITY_UNUSED_ARGUMENT(trigger_player);
   MJUTILITY_UNUSED_ARGUMENT(trigger_action);
   MJUTILITY_UNUSED_ARGUMENT(action_player);
-  MJUTILITY_UNUSED_ARGUMENT(action);
 
   /* デバッグ向けにアサート */
   assert(player != NULL);

@@ -13,6 +13,7 @@
 struct MJPlayerShanten {
   MJWind        wind;       /* 家 */
   struct MJHand hand;       /* 手牌 */
+  bool          riichi;     /* 立直中？ */
   int32_t       rel_score;  /* 相対スコア */
   int32_t       total_rank;   /* 合計ランク */
   int64_t       total_score;  /* 合計スコア */
@@ -123,9 +124,7 @@ static void MJPlayerShanten_OnAction(void *player,
 {
   struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
 
-  MJUTILITY_UNUSED_ARGUMENT(trigger_player);
   MJUTILITY_UNUSED_ARGUMENT(action_player);
-  MJUTILITY_UNUSED_ARGUMENT(action);
 
   /* デバッグ向けにアサート */
   assert(player != NULL);
@@ -133,7 +132,7 @@ static void MJPlayerShanten_OnAction(void *player,
   assert(action != NULL);
 
   /* 自分自身のアクションには反応しない */
-  if (action_player == shan->wind) {
+  if (trigger_player == shan->wind) {
     action->type = MJPLAYER_ACTIONTYPE_NONE;
     return;
   }
@@ -154,11 +153,11 @@ static void MJPlayerShanten_OnAction(void *player,
         }
       }
       break;
-    default:
-      /* 何もしない */
-      action->type = MJPLAYER_ACTIONTYPE_NONE;
-      return;
+    default: break;
   }
+
+  /* 何もしない */
+  action->type = MJPLAYER_ACTIONTYPE_NONE;
 }
 
 /* 自摸時の対応 */
@@ -186,10 +185,18 @@ static void MJPlayerShanten_OnDraw(void *player, MJTile draw_tile, struct MJPlay
     return;
   }
 
+  /* 立直中ならツモ切り */
+  if (shan->riichi) {
+    player_action->type = MJPLAYER_ACTIONTYPE_DISCARD;
+    player_action->tile = draw_tile;
+    return;
+  }
+
   /* 捨て牌選択: 1枚ずつ牌を抜き向聴数が最も低い牌姿を選ぶ */
   min_shanten = 8;
   min_tile = draw_tile;
-  for (t = 0; t < MJTILE_MAX; t++) {
+  /* 字牌を優先して捨てにかかる */
+  for (t = MJTILE_MAX - 1; t > 0; t--) {
     if (tile_count.count[t] > 0) {
       int32_t shanten;
       tile_count.count[t]--;
@@ -202,6 +209,15 @@ static void MJPlayerShanten_OnDraw(void *player, MJTile draw_tile, struct MJPlay
     }
   }
 
+  /* もし向聴数が0（テンパイ）なら立直 */
+  if (min_shanten == 0) {
+    player_action->type = MJPLAYER_ACTIONTYPE_RIICHI;
+    player_action->tile = min_tile;
+    shan->riichi = true;
+    return;
+  }
+
+  /* 普通の捨て牌処理 */
   player_action->type = MJPLAYER_ACTIONTYPE_DISCARD;
   player_action->tile = min_tile;
 }
@@ -216,6 +232,7 @@ static void MJPlayerShanten_OnStartHand(void *player, int32_t hand_no, MJWind pl
   assert(player != NULL);
 
   shan->wind = player_wind;
+  shan->riichi = false;
 }
 
 /* 局終了時の対応 */
