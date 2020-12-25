@@ -140,13 +140,12 @@ static void MJPlayerTsumogiri_OnDraw(void *player, MJTile draw_tile, struct MJPl
   assert(player != NULL);
   assert(player_action != NULL);
 
-  MJUTILITY_UNUSED_ARGUMENT(tgiri);
+  /* 手牌取得 */
+  tgiri->game_state_getter->GetHand(player, tgiri->wind, &tgiri->hand);
 
   /* ツモ切り */
   player_action->type = MJPLAYER_ACTIONTYPE_DISCARD;
   player_action->tile = draw_tile;
-
-  return;
 }
 
 /* 局開始時の対応 */

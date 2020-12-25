@@ -7,7 +7,7 @@
 /* プレーヤーインターフェースバージョン番号 */
 #define MJPLAYER_INTERFACE_VERSION             3
 /* ゲーム状態取得インターフェースバージョン番号 */
-#define MJGAMESTATEGETTER_INTERFACE_VERSION    1
+#define MJGAMESTATEGETTER_INTERFACE_VERSION    2
 
 /* トークン3連結マクロ */
 #define MJPLAYERINTERFACE_CAT3_SUB(x, y, z) x ## y ## z
@@ -53,15 +53,15 @@ struct MJPlayerAction {
 /* ゲームの状態取得インターフェース */
 struct MJGameStateGetterInterface {
   /* インターフェースバージョン取得 */
-  uint32_t (*GetVersion)(const MJGameStateGetterInterfaceVersion1Tag *version_tag);
+  uint32_t (*GetVersion)(const MJGameStateGetterInterfaceVersion2Tag *version_tag);
   /* 手牌の取得 自分以外の場合は副露のみ見え、純手牌はINVALIDがセットされる */
-  void (*GetHand)(MJWind player, struct MJHand *hand);
+  void (*GetHand)(void *player, MJWind player_wind, struct MJHand *hand);
   /* 指定したプレーヤーの河の取得 */
-  void (*GetRiver)(MJWind player, struct MJPlayerRiver *river);
+  void (*GetRiver)(MJWind player_wind, struct MJPlayerRiver *river);
   /* ドラ表示牌の取得(裏ドラはINVALIDがセットされる) */
   void (*GetDora)(struct MJDoraTile *dora);
   /* 指定したプレーヤーの現得点の取得 */
-  int32_t (*GetScore)(MJWind player);
+  int32_t (*GetScore)(MJWind player_wind);
   /* 局番号を取得 */
   int32_t (*GetHandNumber)(void);
   /* 本場を取得 */

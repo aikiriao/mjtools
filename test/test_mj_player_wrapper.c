@@ -10,19 +10,20 @@
 #include "../mj_player_tsumogiri.h"
 
 /* ゲーム状態取得関数のスタブ */
-static uint32_t MJGameStateGetterStub_GetVersion(const MJGameStateGetterInterfaceVersion1Tag *version_tag)
+static uint32_t MJGameStateGetterStub_GetVersion(const MJGameStateGetterInterfaceVersion2Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return MJGAMESTATEGETTER_INTERFACE_VERSION;
 }
-static void MJGameStateGetterStub_GetHand(MJWind player, struct MJHand *hand)
+static void MJGameStateGetterStub_GetHand(void *player, MJWind player_wind, struct MJHand *hand)
 {
   MJUTILITY_UNUSED_ARGUMENT(player);
+  MJUTILITY_UNUSED_ARGUMENT(player_wind);
   MJUTILITY_UNUSED_ARGUMENT(hand);
 }
-static void MJGameStateGetterStub_GetRiver(MJWind player, struct MJPlayerRiver *river)
+static void MJGameStateGetterStub_GetRiver(MJWind player_wind, struct MJPlayerRiver *river)
 {
-  MJUTILITY_UNUSED_ARGUMENT(player);
+  MJUTILITY_UNUSED_ARGUMENT(player_wind);
   MJUTILITY_UNUSED_ARGUMENT(river);
 }
 static void MJGameStateGetterStub_GetDora(struct MJDoraTile *dora)
