@@ -42,6 +42,9 @@ int32_t MJShanten_CalculateChitoitsuShanten(const struct MJTileCount *count);
 /* 国士無双の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateKokushimusouShanten(const struct MJTileCount *count);
 
+/* 向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
+int32_t MJShanten_CalculateShanten(const struct MJTileCount *count);
+
 /* 通常手の有効牌（向聴数を下げる牌）リストアップ */
 MJEffectiveTileApiResult MJEffectiveTile_GetNormalEffectiveTiles(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles);
 
@@ -50,6 +53,9 @@ MJEffectiveTileApiResult MJEffectiveTile_GetChitoitsuEffectiveTiles(const struct
 
 /* 国士無双手の有効牌（向聴数を下げる牌）リストアップ */
 MJEffectiveTileApiResult MJEffectiveTile_GetKokushimusouEffectiveTiles(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles);
+
+/* 有効牌（向聴数を下げる牌）リストアップ */
+MJEffectiveTileApiResult MJEffectiveTile_GetEffectiveTiles(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles);
 
 #ifdef __cplusplus
 }
