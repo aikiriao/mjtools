@@ -10,12 +10,12 @@
 #include "../mj_player_tsumogiri.h"
 
 /* ゲーム状態取得関数のスタブ */
-static uint32_t MJGameStateGetterStub_GetVersion(const MJGameStateGetterInterfaceVersion2Tag *version_tag)
+static uint32_t MJGameStateGetterStub_GetVersion(const MJGameStateGetterInterfaceVersion3Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return MJGAMESTATEGETTER_INTERFACE_VERSION;
 }
-static void MJGameStateGetterStub_GetHand(void *player, MJWind player_wind, struct MJHand *hand)
+static void MJGameStateGetterStub_GetHand(const void *player, MJWind player_wind, struct MJHand *hand)
 {
   MJUTILITY_UNUSED_ARGUMENT(player);
   MJUTILITY_UNUSED_ARGUMENT(player_wind);
@@ -56,6 +56,13 @@ static int32_t MJGameStateGetterStub_GetNumVisibleTiles(MJTile tile)
   MJUTILITY_UNUSED_ARGUMENT(tile);
   return 0;
 }
+static int32_t MJGameStateGetterStub_GetAgariScore(const void *player, const struct MJHand *hand, MJTile winning_tile)
+{
+  MJUTILITY_UNUSED_ARGUMENT(player);
+  MJUTILITY_UNUSED_ARGUMENT(hand);
+  MJUTILITY_UNUSED_ARGUMENT(winning_tile);
+  return 0;
+}
 
 /* ゲーム状態取得のインターフェースのスタブ */
 static const struct MJGameStateGetterInterface st_stub_game_state_if = {
@@ -68,7 +75,8 @@ static const struct MJGameStateGetterInterface st_stub_game_state_if = {
   MJGameStateGetterStub_GetHonba,
   MJGameStateGetterStub_GetNumRiichibou,
   MJGameStateGetterStub_GetNumRemainTilesInDeck,
-  MJGameStateGetterStub_GetNumVisibleTiles
+  MJGameStateGetterStub_GetNumVisibleTiles,
+  MJGameStateGetterStub_GetAgariScore
 };
 
 /* テストのセットアップ関数 */

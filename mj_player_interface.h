@@ -7,7 +7,7 @@
 /* プレーヤーインターフェースバージョン番号 */
 #define MJPLAYER_INTERFACE_VERSION             3
 /* ゲーム状態取得インターフェースバージョン番号 */
-#define MJGAMESTATEGETTER_INTERFACE_VERSION    2
+#define MJGAMESTATEGETTER_INTERFACE_VERSION    3
 
 /* トークン3連結マクロ */
 #define MJPLAYERINTERFACE_CAT3_SUB(x, y, z) x ## y ## z
@@ -53,9 +53,9 @@ struct MJPlayerAction {
 /* ゲームの状態取得インターフェース */
 struct MJGameStateGetterInterface {
   /* インターフェースバージョン取得 */
-  uint32_t (*GetVersion)(const MJGameStateGetterInterfaceVersion2Tag *version_tag);
+  uint32_t (*GetVersion)(const MJGameStateGetterInterfaceVersion3Tag *version_tag);
   /* 手牌の取得 自分以外の場合は副露のみ見え、純手牌はINVALIDがセットされる */
-  void (*GetHand)(void *player, MJWind player_wind, struct MJHand *hand);
+  void (*GetHand)(const void *player, MJWind player_wind, struct MJHand *hand);
   /* 指定したプレーヤーの河の取得 */
   void (*GetRiver)(MJWind player_wind, struct MJPlayerRiver *river);
   /* ドラ表示牌の取得(裏ドラはINVALIDがセットされる) */
@@ -72,6 +72,9 @@ struct MJGameStateGetterInterface {
   int32_t (*GetNumRemainTilesInDeck)(void);
   /* 指定した牌が場に出ている数の取得 */
   int32_t (*GetNumVisibleTiles)(MJTile tile);
+  /* 指定した手牌/和了牌で和了ったときの得点を計算 和了ってない/役がない/チョンボのときは0が返る */
+  /* 門前ツモ・裏ドラなどの偶然役は考慮されない */
+  int32_t (*GetAgariScore)(const void *player, const struct MJHand *hand, MJTile winning_tile);
 };
 
 /* プレーヤー生成コンフィグ */
