@@ -388,7 +388,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 2, .fu = 40,
       .point = {
-        .point = 2600,
+        .point = 2700,
         .feed.tsumo.oya = 1300,
         .feed.tsumo.ko = 700,
       },
@@ -413,7 +413,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 3, .fu = 30,
       .point = {
-        .point = 3900,
+        .point = 4000,
         .feed.tsumo.oya = 2000,
         .feed.tsumo.ko = 1000,
       },
@@ -514,7 +514,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 3, .fu = 30,
       .point = {
-        .point = 3900,
+        .point = 4000,
         .feed.tsumo.oya = 2000,
         .feed.tsumo.ko = 1000,
       },
@@ -970,7 +970,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 4, .fu = 30,
       .point = {
-        .point = 7700,
+        .point = 7900,
         .feed.tsumo.oya = 3900,
         .feed.tsumo.ko = 2000,
       },
@@ -1118,7 +1118,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 3, .fu = 30,
       .point = {
-        .point = 3900,
+        .point = 4000,
         .feed.tsumo.oya = 2000,
         .feed.tsumo.ko = 1000,
       },
@@ -1241,7 +1241,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 3, .fu = 30,
       .point = {
-        .point = 3900,
+        .point = 4000,
         .feed.tsumo.oya = 2000,
         .feed.tsumo.ko = 1000,
       },
@@ -1290,7 +1290,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 1, .fu = 30,
       .point = {
-        .point = 1000,
+        .point = 1100,
         .feed.tsumo.oya = 500,
         .feed.tsumo.ko = 300,
       },
@@ -1366,7 +1366,7 @@ static const struct MJScoreTestCase normal_test_cases[] = {
     .answer = {
       .han = 1, .fu = 30,
       .point = {
-        .point = 1000,
+        .point = 1100,
         .feed.tsumo.oya = 500,
         .feed.tsumo.ko = 300,
       },
@@ -2042,6 +2042,9 @@ static bool MJScoreTest_CheckScoreResult(bool tsumo, const struct MJScore *get, 
     return false;
   }
   if (get->yaku_flags != answer->yaku_flags) {
+    return false;
+  }
+  if (get->point.point != answer->point.point) {
     return false;
   }
   if (tsumo) {

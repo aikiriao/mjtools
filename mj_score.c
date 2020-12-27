@@ -929,7 +929,6 @@ static void MJScore_CalculateYakuHanForMergedHand(
 static void MJScore_CalculatePointFromHanFu(
     const struct MJAgariInformation *info, int32_t han, int32_t fu, struct MJPoint *point)
 {
-  int32_t oya_point, ko_point;
   int32_t basic_point, tsumibo_point;
   struct MJPoint tmp;
   /* 支払い情報 */
@@ -944,13 +943,6 @@ static void MJScore_CalculatePointFromHanFu(
   } payment;
 
   assert((info != NULL) && (point != NULL));
-
-  /* 積み棒 */
-  if (st_rule_config.ba1500) {
-    tsumibo_point = 1500 * info->num_honba;
-  } else {
-    tsumibo_point = 300 * info->num_honba;
-  }
 
   /* 基本点の決定 */
   switch (han) {
@@ -1005,6 +997,13 @@ static void MJScore_CalculatePointFromHanFu(
   payment.ko_tsumo.oya = MJUTILITY_ROUND_UP(2 * basic_point, 100);
   payment.ko_tsumo.ko  = MJUTILITY_ROUND_UP(1 * basic_point, 100);
 
+  /* 積み棒得点 */
+  if (st_rule_config.ba1500) {
+    tsumibo_point = 1500 * info->num_honba;
+  } else {
+    tsumibo_point = 300 * info->num_honba;
+  }
+
   /* 積み棒を加算 */
   payment.oya_ron      += tsumibo_point;
   payment.ko_ron       += tsumibo_point;
@@ -1012,31 +1011,32 @@ static void MJScore_CalculatePointFromHanFu(
   payment.ko_tsumo.oya += tsumibo_point / 3;
   payment.ko_tsumo.ko  += tsumibo_point / 3;
 
-  /* 得点には供託リーチ棒を加算 */
-  oya_point = payment.oya_ron + 1000 * info->num_riichibo;
-  ko_point  = payment.ko_ron  + 1000 * info->num_riichibo;
-
   /* 出力バッファに結果を設定 */
   memset(&tmp, 0, sizeof(struct MJPoint));
   if (info->player_wind == MJWIND_TON) {
     /* 親 */
-    tmp.point             = oya_point;
     if (info->tsumo) {
+      tmp.point           = 3 * payment.oya_tsumo;
       tmp.feed.tsumo.ko   = payment.oya_tsumo;
       tmp.feed.tsumo.oya  = 0;
     } else {
+      tmp.point           = payment.oya_ron;
       tmp.feed.point      = payment.oya_ron;
     }
   } else {
     /* 子 */
-    tmp.point             = ko_point;
     if (info->tsumo) {
+      tmp.point           = payment.ko_tsumo.oya + 2 * payment.ko_tsumo.ko;
       tmp.feed.tsumo.ko   = payment.ko_tsumo.ko;
       tmp.feed.tsumo.oya  = payment.ko_tsumo.oya;
     } else {
+      tmp.point           = payment.ko_ron;
       tmp.feed.point      = payment.ko_ron;
     }
   }
+
+  /* 供託リーチ棒を加算 */
+  tmp.point += 1000 * info->num_riichibo;
 
   /* 成功終了 */
   (*point) = tmp;
