@@ -7,7 +7,8 @@ void MJScoreTest_Setup(void);
 void MJRandomXoshiro256ppTest_Setup(void);
 void MJDeckTest_Setup(void);
 void MJPlayerTsumogiriTest_Setup(void);
-void MJPlayerShantenTest_Setup(void);
+void MJPlayerShantenmanTest_Setup(void);
+void MJPlayerFuromanTest_Setup(void);
 void MJPlayerWrapperTest_Setup(void);
 void MJRiverTest_Setup(void);
 
@@ -27,7 +28,8 @@ int main(int argc, char **argv)
   MJRandomXoshiro256ppTest_Setup();
   MJDeckTest_Setup();
   MJPlayerTsumogiriTest_Setup();
-  MJPlayerShantenTest_Setup();
+  MJPlayerShantenmanTest_Setup();
+  MJPlayerFuromanTest_Setup();
   MJPlayerWrapperTest_Setup();
   MJRiverTest_Setup();
 

@@ -8,7 +8,7 @@ ARFLAGS		= r
 
 SRCS      	= mj_shanten.c mj_score.c mj_random_xoshiro256pp.c mj_deck.c mj_shanten_use_table.c
 SRCS      	+= mj_player_wrapper.c mj_river.c 
-SRCS      	+= mj_player_tsumogiri.c mj_player_shanten.c
+SRCS      	+= mj_player_tsumogiri.c mj_player_shantenman.c mj_player_furoman.c
 OBJS		= $(SRCS:%.c=%.o)
 TARGETS   	= libmjtools.a
 

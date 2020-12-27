@@ -1,4 +1,4 @@
-#include "mj_player_shanten.h"
+#include "mj_player_shantenman.h"
 
 #include "mj_utility.h"
 #include "mj_shanten.h"
@@ -7,10 +7,10 @@
 #include <assert.h>
 
 /* メモリアラインメント */
-#define MJPLAYER_SHANTEN_ALIGNMENT 16
+#define MJPLAYER_SHANTENMAN_ALIGNMENT 16
 
 /* 向聴マン構造体 */
-struct MJPlayerShanten {
+struct MJPlayerShantenman {
   MJWind        wind;       /* 家 */
   struct MJHand hand;       /* 手牌 */
   bool          riichi;     /* 立直中？ */
@@ -21,55 +21,55 @@ struct MJPlayerShanten {
 };
 
 /* インターフェース名の取得 */
-static const char *MJPlayerShanten_GetName(const MJPlayerInterfaceVersion3Tag *version_tag);
+static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion3Tag *version_tag);
 /* ワークサイズ計算 */
-static int32_t MJPlayerShanten_CalculateWorkSize(const struct MJPlayerConfig *config);
+static int32_t MJPlayerShantenman_CalculateWorkSize(const struct MJPlayerConfig *config);
 /* インスタンス生成 */
-static void *MJPlayerShanten_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size);
+static void *MJPlayerShantenman_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size);
 /* インスタンス破棄 */
-static void MJPlayerShanten_Destroy(void *player);
+static void MJPlayerShantenman_Destroy(void *player);
 /* 誰かのアクション時の対応 */
-static void MJPlayerShanten_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
+static void MJPlayerShantenman_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
 /* 自摸時の対応 */
-static void MJPlayerShanten_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
+static void MJPlayerShantenman_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時の対応 */
-static void MJPlayerShanten_OnStartHand(void *player, int32_t hand_no, MJWind player_wind);
+static void MJPlayerShantenman_OnStartHand(void *player, int32_t hand_no, MJWind player_wind);
 /* 局終了時の対応 */
-static void MJPlayerShanten_OnEndHand(void *player, MJHandEndReason reason, const int32_t *score_diff);
+static void MJPlayerShantenman_OnEndHand(void *player, MJHandEndReason reason, const int32_t *score_diff);
 /* ゲーム開始時の対応 */
-static void MJPlayerShanten_OnStartGame(void *player);
+static void MJPlayerShantenman_OnStartGame(void *player);
 /* ゲーム終了時の対応 */
-static void MJPlayerShanten_OnEndGame(void *player, int32_t player_rank, int32_t player_score);
+static void MJPlayerShantenman_OnEndGame(void *player, int32_t player_rank, int32_t player_score);
 
 /* インターフェース定義 */
 static const struct MJPlayerInterface st_tsumogiri_player_interface = {
-  MJPlayerShanten_GetName,
-  MJPlayerShanten_CalculateWorkSize,
-  MJPlayerShanten_Create,
-  MJPlayerShanten_Destroy,
-  MJPlayerShanten_OnAction,
-  MJPlayerShanten_OnDraw,
-  MJPlayerShanten_OnStartHand,
-  MJPlayerShanten_OnEndHand,
-  MJPlayerShanten_OnStartGame,
-  MJPlayerShanten_OnEndGame,
+  MJPlayerShantenman_GetName,
+  MJPlayerShantenman_CalculateWorkSize,
+  MJPlayerShantenman_Create,
+  MJPlayerShantenman_Destroy,
+  MJPlayerShantenman_OnAction,
+  MJPlayerShantenman_OnDraw,
+  MJPlayerShantenman_OnStartHand,
+  MJPlayerShantenman_OnEndHand,
+  MJPlayerShantenman_OnStartGame,
+  MJPlayerShantenman_OnEndGame,
 };
 
 /* インターフェース取得 */
-const struct MJPlayerInterface *MJPlayerShanten_GetInterface(void)
+const struct MJPlayerInterface *MJPlayerShantenman_GetInterface(void)
 {
   return &st_tsumogiri_player_interface;
 }
 
 /* インターフェース名の取得 */
-static const char *MJPlayerShanten_GetName(const MJPlayerInterfaceVersion3Tag *version_tag)
+static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion3Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return "Shanten-Man";
 }
 
 /* ワークサイズ計算 */
-static int32_t MJPlayerShanten_CalculateWorkSize(const struct MJPlayerConfig *config)
+static int32_t MJPlayerShantenman_CalculateWorkSize(const struct MJPlayerConfig *config)
 {
   /* 引数チェック */
   if (config == NULL) {
@@ -78,27 +78,27 @@ static int32_t MJPlayerShanten_CalculateWorkSize(const struct MJPlayerConfig *co
     return -1;
   }
 
-  return sizeof(struct MJPlayerShanten) + MJPLAYER_SHANTEN_ALIGNMENT;
+  return sizeof(struct MJPlayerShantenman) + MJPLAYER_SHANTENMAN_ALIGNMENT;
 }
 
 /* インスタンス生成 */
-static void *MJPlayerShanten_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size)
+static void *MJPlayerShantenman_Create(const struct MJPlayerConfig *config, void *work, int32_t work_size)
 {
-  struct MJPlayerShanten *player;
+  struct MJPlayerShantenman *player;
   uint8_t *work_ptr;
 
   /* 引数チェック */
-  if ((work == NULL) || (work_size < MJPlayerShanten_CalculateWorkSize(config))) {
+  if ((work == NULL) || (work_size < MJPlayerShantenman_CalculateWorkSize(config))) {
     return NULL;
   }
 
   /* メモリアラインメント */
   work_ptr = work;
-  work_ptr = (uint8_t *)MJUTILITY_ROUND_UP((uintptr_t)work_ptr, MJPLAYER_SHANTEN_ALIGNMENT);
+  work_ptr = (uint8_t *)MJUTILITY_ROUND_UP((uintptr_t)work_ptr, MJPLAYER_SHANTENMAN_ALIGNMENT);
 
   /* 構造体配置 */
-  player = (struct MJPlayerShanten *)work_ptr;
-  work_ptr += sizeof(struct MJPlayerShanten);
+  player = (struct MJPlayerShantenman *)work_ptr;
+  work_ptr += sizeof(struct MJPlayerShantenman);
 
   /* トータル情報の初期化 */
   player->total_rank = 0;
@@ -111,18 +111,18 @@ static void *MJPlayerShanten_Create(const struct MJPlayerConfig *config, void *w
 }
 
 /* インスタンス破棄 */
-static void MJPlayerShanten_Destroy(void *player)
+static void MJPlayerShantenman_Destroy(void *player)
 {
   /* 特に何もしない */
   MJUTILITY_UNUSED_ARGUMENT(player);
 }
 
 /* 誰かのアクション時の対応 */
-static void MJPlayerShanten_OnAction(void *player,
+static void MJPlayerShantenman_OnAction(void *player,
     MJWind trigger_player, const struct MJPlayerAction *trigger_action,
     MJWind action_player, struct MJPlayerAction *action)
 {
-  struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
+  struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
 
   MJUTILITY_UNUSED_ARGUMENT(action_player);
 
@@ -145,7 +145,7 @@ static void MJPlayerShanten_OnAction(void *player,
         shan->game_state_getter->GetHand(player, shan->wind, &shan->hand);
         MJShanten_ConvertHandToTileCount(&shan->hand, &tile_count);
         tile_count.count[trigger_action->tile]++;
-        /* 和了っていたらチョンボ気にせず倒す */
+        /* 和了っていて得点がつくなら即倒す */
         if (MJShanten_CalculateShanten(&tile_count) == -1) {
           action->type = MJPLAYER_ACTIONTYPE_RON;
           action->tile = trigger_action->tile;
@@ -161,11 +161,11 @@ static void MJPlayerShanten_OnAction(void *player,
 }
 
 /* 自摸時の対応 */
-static void MJPlayerShanten_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
+static void MJPlayerShantenman_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   int32_t t, min_shanten;
   MJTile min_tile;
-  struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
+  struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
   struct MJTileCount tile_count;
 
   assert(player != NULL);
@@ -223,9 +223,9 @@ static void MJPlayerShanten_OnDraw(void *player, MJTile draw_tile, struct MJPlay
 }
 
 /* 局開始時の対応 */
-static void MJPlayerShanten_OnStartHand(void *player, int32_t hand_no, MJWind player_wind)
+static void MJPlayerShantenman_OnStartHand(void *player, int32_t hand_no, MJWind player_wind)
 {
-  struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
+  struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
 
   MJUTILITY_UNUSED_ARGUMENT(hand_no);
 
@@ -236,9 +236,9 @@ static void MJPlayerShanten_OnStartHand(void *player, int32_t hand_no, MJWind pl
 }
 
 /* 局終了時の対応 */
-static void MJPlayerShanten_OnEndHand(void *player, MJHandEndReason reason, const int32_t *score_diff)
+static void MJPlayerShantenman_OnEndHand(void *player, MJHandEndReason reason, const int32_t *score_diff)
 {
-  struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
+  struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
 
   MJUTILITY_UNUSED_ARGUMENT(reason);
 
@@ -249,18 +249,18 @@ static void MJPlayerShanten_OnEndHand(void *player, MJHandEndReason reason, cons
 }
 
 /* ゲーム開始時の対応 */
-static void MJPlayerShanten_OnStartGame(void *player)
+static void MJPlayerShantenman_OnStartGame(void *player)
 {
-  struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
+  struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
 
   /* 相対スコアを0に初期化 */
   shan->rel_score = 0;
 }
 
 /* ゲーム終了時の対応 */
-static void MJPlayerShanten_OnEndGame(void *player, int32_t player_rank, int32_t player_score)
+static void MJPlayerShantenman_OnEndGame(void *player, int32_t player_rank, int32_t player_score)
 {
-  struct MJPlayerShanten *shan = (struct MJPlayerShanten *)player;
+  struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
 
   assert(player != NULL);
 
