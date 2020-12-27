@@ -516,14 +516,14 @@ static void MJScore_CalculateDividedHandHanFu(
     const struct MJAgariInformation *info, struct MJScore *score)
 {
   int32_t i;
-  struct MJTileCount purehand;
+  struct MJTileCount pure_tile_count;
   struct MJDividedHand div_hand;
 
   assert((info != NULL) && (score != NULL));
 
   /* 手牌カウントのクリア */
   memset(&div_hand, 0, sizeof(struct MJDividedHand));
-  memset(&purehand, 0, sizeof(struct MJTileCount));
+  memset(&pure_tile_count, 0, sizeof(struct MJTileCount));
 
   /* 副露牌を分割済み手牌に入れる */
   for (i = 0; i < info->hand.num_meld; i++) {
@@ -542,24 +542,20 @@ static void MJScore_CalculateDividedHandHanFu(
     }
   }
 
-  /* 純手牌をカウント */
-  purehand.count[info->winning_tile]++;
-  for (i = 0; i < 13; i++) {
-    if (MJTILE_IS_VALID(info->hand.hand[i])) {
-      purehand.count[info->hand.hand[i]]++;
-    }
-  }
+  /* 純手牌+和了牌をカウント */
+  MJShanten_ConvertHandToTileCount(&info->hand, &pure_tile_count);
+  pure_tile_count.count[info->winning_tile]++;
 
   /* 手牌の面子を切り分けつつ翻/符の計算へ */
   for (i = 0; i < MJTILE_MAX; i++) {
     /* 頭を抜いて調べる */
-    if (purehand.count[i] >= 2) {
-      purehand.count[i] -= 2;
+    if (pure_tile_count.count[i] >= 2) {
+      pure_tile_count.count[i] -= 2;
       div_hand.atama = (MJTile)i;
       /* 面子の切り分けに進む */
-      MJScore_DivideMentsu(info, &purehand, &div_hand, info->hand.num_meld, score);
+      MJScore_DivideMentsu(info, &pure_tile_count, &div_hand, info->hand.num_meld, score);
       div_hand.atama = 0;
-      purehand.count[i] += 2;
+      pure_tile_count.count[i] += 2;
     }
   }
 }
