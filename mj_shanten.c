@@ -8,7 +8,7 @@
 typedef int32_t (*ShantenCalculatorFunction)(const struct MJTileCount *count);
 
 /* ナイーブな（バックトラック法を使用した）向聴数の計算コア処理 */
-static int32_t MJShanten_CalculateNormalShantenNaive(struct MJTileCount *count);
+static int32_t MJShanten_CalculateNormalShantenCore(struct MJTileCount *count);
 /* 面子を含めた向聴数計算 */
 static void MJShanten_CalculateNormalShantenMentsu(
     struct MJTileCount *count, int32_t pos, 
@@ -138,8 +138,8 @@ int32_t MJShanten_CalculateKokushimusouShanten(const struct MJTileCount *count)
   return shanten;
 }
 
-/* 通常手の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
-int32_t MJShanten_CalculateNormalShanten(const struct MJTileCount *count)
+/* 通常手の向聴数を計算（バックトラック法） 1で一向聴, 0で聴牌, -1で和了 */
+int32_t MJShanten_CalculateNormalShantenBackTrack(const struct MJTileCount *count)
 {
   struct MJTileCount tmp;
   int32_t i, shanten, min_shanten;
@@ -156,22 +156,22 @@ int32_t MJShanten_CalculateNormalShanten(const struct MJTileCount *count)
     if (tmp.count[i] >= 2) {            
       tmp.count[i] -= 2;
       /* 頭を抜いている分1減らす */
-      shanten = MJShanten_CalculateNormalShantenNaive(&tmp) - 1;
+      shanten = MJShanten_CalculateNormalShantenCore(&tmp) - 1;
       if (shanten < min_shanten) { min_shanten = shanten; }
       tmp.count[i] += 2;
     }
   }
 
   /* 雀頭がない場合を含めるため、頭を抜かずに調べる */
-  shanten = MJShanten_CalculateNormalShantenNaive(&tmp);
+  shanten = MJShanten_CalculateNormalShantenCore(&tmp);
   if (shanten < min_shanten) { min_shanten = shanten; }
 
   /* 最終結果 */
   return min_shanten;
 }
 
-/* ナイーブな向聴数の計算処理 */
-static int32_t MJShanten_CalculateNormalShantenNaive(struct MJTileCount *count)
+/* バックトラック法コア処理 */
+static int32_t MJShanten_CalculateNormalShantenCore(struct MJTileCount *count)
 {
   int32_t min_shanten;
 

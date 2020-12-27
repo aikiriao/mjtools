@@ -372,7 +372,7 @@ static void MJShantenTest_CalculateNormalShantenTest(void *obj)
       struct MJTileCount count;
       const struct MJShantenTestCase *pcase = &test_cases[i];
       MJShantenTest_ConvertTestCaseToTileCount(pcase, &count);
-      shanten = MJShanten_CalculateNormalShanten(&count);
+      shanten = MJShanten_CalculateNormalShantenBackTrack(&count);
       if (shanten != pcase->answer) {
         printf("NG at test case index:%d get:%d answer:%d \n", i, shanten, pcase->answer);
         is_ok = 0;
@@ -464,7 +464,7 @@ static int32_t MJShantenTest_CalculateShantenForProblemFile(const char *filename
   normal_ok = normal_usetable_ok = kokusi_ok = chitoi_ok = 0;
   while (fgets(linebuf, sizeof(linebuf), fp) != NULL) {
     MJShantenTest_ParseLine(linebuf, &count, &normal_answer, &kokushi_answer, &chitoi_answer);
-    normal_shanten  = MJShanten_CalculateNormalShanten(&count);
+    normal_shanten  = MJShanten_CalculateNormalShantenBackTrack(&count);
     normal_usetable_shanten = MJShanten_CalculateNormalShantenUseTable(&count);
     chitoi_shanten  = MJShanten_CalculateChitoitsuShanten(&count);
     kokushi_shanten = MJShanten_CalculateKokushimusouShanten(&count);
