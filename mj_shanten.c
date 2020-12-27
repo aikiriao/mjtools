@@ -35,7 +35,6 @@ void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCo
   int32_t i;
   struct MJTileCount tmp;
   int32_t *count;
-  const struct MJMeld *pmeld;
 
   assert((hand != NULL) && (tile_count != NULL));
 
@@ -44,31 +43,14 @@ void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCo
   count = &(tmp.count[0]);
 
   /* 副露以外をカウント */
-  for (i = 0; i < 13; i++) {
+  for (i = 0; i < hand->num_hand_tiles; i++) {
     if (MJTILE_IS_VALID(hand->hand[i])) {
       count[hand->hand[i]]++;
     }
   }
   
-  /* 副露牌をカウント */
-  for (i = 0; i < hand->num_meld; i++) {
-    pmeld = &(hand->meld[i]);
-    switch (pmeld->type) {
-      case MJMELD_TYPE_CHOW:
-        count[pmeld->min_tile]++; count[pmeld->min_tile + 1]++; count[pmeld->min_tile + 2]++;
-        break;
-      case MJMELD_TYPE_PUNG:
-        count[pmeld->min_tile] += 3;
-        break;
-      case MJMELD_TYPE_ANKAN:
-      case MJMELD_TYPE_MINKAN:
-      case MJMELD_TYPE_KAKAN:
-        count[pmeld->min_tile] += 4;
-        break;
-      default:
-        assert(0);
-    }
-  }
+  /* 副露数をカウント */
+  tmp.num_meld = hand->num_meld;
 
   /* 成功終了 */
   (*tile_count) = tmp;
@@ -166,8 +148,8 @@ int32_t MJShanten_CalculateNormalShantenBackTrack(const struct MJTileCount *coun
   shanten = MJShanten_CalculateNormalShantenCore(&tmp);
   if (shanten < min_shanten) { min_shanten = shanten; }
 
-  /* 最終結果 */
-  return min_shanten;
+  /* 最終結果: 2*副露数 を減じる */
+  return min_shanten - 2 * count->num_meld;
 }
 
 /* バックトラック法コア処理 */

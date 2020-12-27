@@ -41,6 +41,8 @@ struct MJDividedHand {
   struct MJMentsu mentsu[4];    /* 面子 */
 };
 
+/* 手牌（副露含む）をカウントに変換 副露も全てカウントに変換 */
+static void MJScore_ConvertHandToMergedCount(const struct MJHand *hand, struct MJTileCount *merged_count);
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */
 static bool MJScore_CalculateYakuman(
   const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
@@ -187,33 +189,41 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
 
   /* 和了牌含めて14枚あるかチェック */
   {
-    int32_t i, num_hai;
-    num_hai = 1;
+    int32_t i, sum_num_tiles;
+    sum_num_tiles = 1;
     for (i = 0; i < 13; i++) {
       if (MJTILE_IS_VALID(info->hand.hand[i])) {
-        num_hai++;
+        sum_num_tiles++;
       }
     }
-    num_hai += 3 * info->hand.num_meld; /* カンも3枚で数える */
-    if (num_hai != 14) {
+    sum_num_tiles += 3 * info->hand.num_meld; /* カンも3枚で数える */
+    if (sum_num_tiles != 14) {
       return MJSCORE_CALCRESULT_INVALID_NUM_HAND;
     }
   }
 
-  /* 手牌をカウントに変換 */
-  MJShanten_ConvertHandToTileCount(&info->hand, &merged_count);
-  /* 和了牌をカウント */
-  merged_count.count[info->winning_tile]++;
+  /* 向聴数チェック */
+  {
+    struct MJTileCount tile_count;
 
-  /* 向聴数取得 */
-  normal_shanten = MJShanten_CalculateNormalShanten(&merged_count);
-  chitoi_shanten = MJShanten_CalculateChitoitsuShanten(&merged_count);
-  kokusi_shanten = MJShanten_CalculateKokushimusouShanten(&merged_count);
-  /* 和了ってない */
-  if ((normal_shanten != -1)
-      && (chitoi_shanten != -1) && (kokusi_shanten != -1)) {
-    return MJSCORE_CALCRESULT_NOT_AGARI;
+    /* 手牌をカウントに変換 */
+    MJShanten_ConvertHandToTileCount(&info->hand, &tile_count);
+    /* 和了牌をカウント */
+    tile_count.count[info->winning_tile]++;
+
+    normal_shanten = MJShanten_CalculateNormalShanten(&tile_count);
+    chitoi_shanten = MJShanten_CalculateChitoitsuShanten(&tile_count);
+    kokusi_shanten = MJShanten_CalculateKokushimusouShanten(&tile_count);
+    /* 和了ってない */
+    if ((normal_shanten != -1)
+        && (chitoi_shanten != -1) && (kokusi_shanten != -1)) {
+      return MJSCORE_CALCRESULT_NOT_AGARI;
+    }
   }
+
+  /* 副露結合済みのカウントを作成 */
+  MJScore_ConvertHandToMergedCount(&info->hand, &merged_count);
+  merged_count.count[info->winning_tile]++;
 
   /* カン無しで嶺上開花 */
   if (info->rinshan && (MJScore_CountNumKan(&merged_count) == 0)) {
@@ -358,6 +368,54 @@ CALCULATE_SCORE:
   /* 成功 */
   (*score) = tmp_score;
   return MJSCORE_CALCRESULT_OK;
+}
+
+/* 手牌（副露含む）をカウントに変換 副露も全てカウントに変換 */
+static void MJScore_ConvertHandToMergedCount(const struct MJHand *hand, struct MJTileCount *merged_count)
+{
+  int32_t i;
+  struct MJTileCount tmp;
+  int32_t *count;
+  const struct MJMeld *pmeld;
+
+  assert((hand != NULL) && (merged_count != NULL));
+
+  /* カウントを0クリア */
+  memset(&tmp, 0, sizeof(struct MJTileCount));
+  count = &(tmp.count[0]);
+
+  /* 副露以外をカウント */
+  for (i = 0; i < hand->num_hand_tiles; i++) {
+    if (MJTILE_IS_VALID(hand->hand[i])) {
+      count[hand->hand[i]]++;
+    }
+  }
+  
+  /* 副露牌をカウント */
+  for (i = 0; i < hand->num_meld; i++) {
+    pmeld = &(hand->meld[i]);
+    switch (pmeld->type) {
+      case MJMELD_TYPE_CHOW:
+        count[pmeld->min_tile]++; count[pmeld->min_tile + 1]++; count[pmeld->min_tile + 2]++;
+        break;
+      case MJMELD_TYPE_PUNG:
+        count[pmeld->min_tile] += 3;
+        break;
+      case MJMELD_TYPE_ANKAN:
+      case MJMELD_TYPE_MINKAN:
+      case MJMELD_TYPE_KAKAN:
+        count[pmeld->min_tile] += 4;
+        break;
+      default:
+        assert(0);
+    }
+  }
+
+  /* 副露数は0に */
+  tmp.num_meld = 0;
+
+  /* 成功終了 */
+  (*merged_count) = tmp;
 }
 
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */

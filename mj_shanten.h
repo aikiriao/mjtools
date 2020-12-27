@@ -18,6 +18,7 @@ typedef enum MJEffectiveTileApiResultTag {
 /* 各牌の所持数が並んだ配列 */
 struct MJTileCount {
   int32_t count[MJTILE_MAX];
+  int32_t num_meld;
 };
 
 /* 有効牌（向聴数を下げる牌）リスト */

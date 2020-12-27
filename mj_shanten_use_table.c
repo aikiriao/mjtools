@@ -55,7 +55,7 @@ int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJTileCount *count
   shanten = MJShanten_CalculateNormalShantenUseTableCore(&tmp);
   if (shanten < min_shanten) { min_shanten = shanten; }
 
-  return min_shanten;
+  return min_shanten - 2 * count->num_meld;
 }
 
 /* 数牌の並びを頼りにテーブル探索 */

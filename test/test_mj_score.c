@@ -1972,6 +1972,7 @@ static void MJScoreTest_ConvertTestCaseToAgariInformation(const struct MJScoreTe
       pos++;
     }
   }
+  agari_info->hand.num_hand_tiles = pos;
 
   /* 副露を変換 */
   for (i = 0; i < 4; i++) {
