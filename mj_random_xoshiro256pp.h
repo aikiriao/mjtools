@@ -1,5 +1,5 @@
-#ifndef MJRANDOM_XOSHRO256PP_H_INCLUDED
-#define MJRANDOM_XOSHRO256PP_H_INCLUDED
+#ifndef MJRANDOM_XOSHIRO256PP_H_INCLUDED
+#define MJRANDOM_XOSHIRO256PP_H_INCLUDED
 
 #include "mj_random.h"
 #include <stdint.h>
@@ -21,4 +21,4 @@ const struct MJRandomGeneratorInterface *MJRandomXoshiro256pp_GetInterface(void)
 #endif /* __cplusplus */
 
 
-#endif /* MJRANDOM_XOSHRO256PP_H_INCLUDED */
+#endif /* MJRANDOM_XOSHIRO256PP_H_INCLUDED */
