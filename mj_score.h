@@ -1,5 +1,5 @@
-#ifndef MJ_SCORE_H_INCLUDED
-#define MJ_SCORE_H_INCLUDED
+#ifndef MJSCORE_H_INCLUDED
+#define MJSCORE_H_INCLUDED
 
 #include "mj_types.h"
 #include <stdint.h>
@@ -143,4 +143,4 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
 }
 #endif /* __cplusplus */
 
-#endif /* MJ_SCORE_H_INCLUDED */
+#endif /* MJSCORE_H_INCLUDED */
