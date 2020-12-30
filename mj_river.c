@@ -146,7 +146,7 @@ bool MJRiver_CanChow(const struct MJRiver *river, MJWind player_wind, const stru
     int32_t syuntu_count[4] = { 0, 0, 0, 0 };
 
     /* 近隣牌の出現回数をカウント */
-    for (i = 0; i < 13; i++) {
+    for (i = 0; i < player_hand->num_hand_tiles; i++) {
       if (!MJTILE_NUMBER_IS(river->last_discard_tile, 1)
           && (player_hand->hand[i] == (river->last_discard_tile - 2))) {
         syuntu_count[0]++;

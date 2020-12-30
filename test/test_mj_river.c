@@ -145,6 +145,7 @@ static void MJRiverTest_PungTest(void *obj)
     /* 一萬を2枚持っている */
     hand.hand[0] = MJTILE_1MAN;
     hand.hand[1] = MJTILE_1MAN;
+    hand.num_hand_tiles = 2;
     /* 一萬が捨てられた */
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_1MAN, false);
 
@@ -180,6 +181,7 @@ static void MJRiverTest_PungTest(void *obj)
     /* 一萬を2枚持っている */
     hand.hand[0] = MJTILE_1MAN;
     hand.hand[1] = MJTILE_1MAN;
+    hand.num_hand_tiles = 2;
     /* 一萬が捨てられた */
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_1MAN, false);
 
@@ -204,6 +206,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 辺張ケース1 */
     hand.hand[0] = MJTILE_1MAN;
     hand.hand[1] = MJTILE_2MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_3MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -233,6 +236,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 辺張ケース2 */
     hand.hand[0] = MJTILE_8MAN;
     hand.hand[1] = MJTILE_9MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_7MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -243,6 +247,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 嵌張ケース1 */
     hand.hand[0] = MJTILE_1MAN;
     hand.hand[1] = MJTILE_3MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_2MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -253,6 +258,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 嵌張ケース2 */
     hand.hand[0] = MJTILE_2MAN;
     hand.hand[1] = MJTILE_4MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_3MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -263,6 +269,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 両面ケース1 */
     hand.hand[0] = MJTILE_2MAN;
     hand.hand[1] = MJTILE_3MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_1MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -273,6 +280,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 両面ケース2 */
     hand.hand[0] = MJTILE_2MAN;
     hand.hand[1] = MJTILE_3MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_4MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -283,6 +291,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 両面ケース3 */
     hand.hand[0] = MJTILE_7MAN;
     hand.hand[1] = MJTILE_8MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_6MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -293,6 +302,7 @@ static void MJRiverTest_ChowTest(void *obj)
     /* 両面ケース4 */
     hand.hand[0] = MJTILE_7MAN;
     hand.hand[1] = MJTILE_8MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_9MAN, false);
     Test_AssertEqual(MJRiver_CanChow(&river, MJWIND_TON, &hand), false);  /* 上家ではない */
@@ -308,6 +318,7 @@ static void MJRiverTest_ChowTest(void *obj)
 
     hand.hand[0] = MJTILE_1MAN;
     hand.hand[1] = MJTILE_2MAN;
+    hand.num_hand_tiles = 2;
     MJRiver_Initialize(&river);
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_3MAN, false);
 
@@ -334,6 +345,7 @@ static void MJRiverTest_KanTest(void *obj)
     hand.hand[0] = MJTILE_CHUN;
     hand.hand[1] = MJTILE_CHUN;
     hand.hand[2] = MJTILE_CHUN;
+    hand.num_hand_tiles = 3;
     /* 中が捨てられた */
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_CHUN, false);
 
@@ -375,6 +387,7 @@ static void MJRiverTest_KanTest(void *obj)
     hand.hand[0] = MJTILE_CHUN;
     hand.hand[1] = MJTILE_CHUN;
     hand.hand[2] = MJTILE_CHUN;
+    hand.num_hand_tiles = 3;
     /* 中が捨てられた */
     MJRiver_DiscardTile(&river, MJWIND_SHA, MJTILE_CHUN, false);
 
