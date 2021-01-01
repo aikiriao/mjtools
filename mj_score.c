@@ -223,7 +223,7 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
 
   /* 副露結合済みのカウントを作成 */
   MJScore_ConvertHandToMergedCount(&info->hand, &merged_count);
-  merged_count.count[info->winning_tile]++;
+  merged_count.count[MJTILE_FLAG_MASK(info->winning_tile)]++;
 
   /* カン無しで嶺上開花 */
   if (info->rinshan && (MJScore_CountNumKan(&merged_count) == 0)) {
@@ -387,24 +387,26 @@ static void MJScore_ConvertHandToMergedCount(const struct MJHand *hand, struct M
   /* 副露以外をカウント */
   for (i = 0; i < hand->num_hand_tiles; i++) {
     if (MJTILE_IS_VALID(hand->hand[i])) {
-      count[hand->hand[i]]++;
+      count[MJTILE_FLAG_MASK(hand->hand[i])]++;
     }
   }
   
   /* 副露牌をカウント */
   for (i = 0; i < hand->num_meld; i++) {
+    MJTile min_tile;
     pmeld = &(hand->meld[i]);
+    min_tile = MJTILE_FLAG_MASK(pmeld->min_tile);
     switch (pmeld->type) {
       case MJMELD_TYPE_CHOW:
-        count[pmeld->min_tile]++; count[pmeld->min_tile + 1]++; count[pmeld->min_tile + 2]++;
+        count[min_tile]++; count[min_tile + 1]++; count[min_tile + 2]++;
         break;
       case MJMELD_TYPE_PUNG:
-        count[pmeld->min_tile] += 3;
+        count[min_tile] += 3;
         break;
       case MJMELD_TYPE_ANKAN:
       case MJMELD_TYPE_MINKAN:
       case MJMELD_TYPE_KAKAN:
-        count[pmeld->min_tile] += 4;
+        count[min_tile] += 4;
         break;
       default:
         assert(0);

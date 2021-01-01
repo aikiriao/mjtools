@@ -45,7 +45,7 @@ void MJShanten_ConvertHandToTileCount(const struct MJHand *hand, struct MJTileCo
   /* 副露以外をカウント */
   for (i = 0; i < hand->num_hand_tiles; i++) {
     if (MJTILE_IS_VALID(hand->hand[i])) {
-      count[hand->hand[i]]++;
+      count[MJTILE_FLAG_MASK(hand->hand[i])]++;
     }
   }
   
