@@ -10,7 +10,8 @@ struct MJDeck;
 
 /* インスタンス生成コンフィグ */
 struct MJDeckConfig {
-  const struct MJRandomGeneratorInterface *random_if;  /* 乱数生成インターフェース(NULLでデフォルトの乱数生成器を使用) */
+  const struct MJRandomGeneratorInterface *random_if;   /* 乱数生成インターフェース(NULLでデフォルトの乱数生成器を使用) */
+  int32_t akadora_count[MJTILE_MAX];                    /* 各牌に赤ドラを含める枚数 */
 };
 
 /* API結果型 */
@@ -25,6 +26,9 @@ typedef enum MJDeckApiResultTag {
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+/* デフォルトのコンフィグを設定 */
+void MJDeck_SetDefaultConfig(struct MJDeckConfig *config);
 
 /* 牌山ハンドル作成に必要なワークサイズの計算 */
 int32_t MJDeck_CalculateWorkSize(const struct MJDeckConfig *config);

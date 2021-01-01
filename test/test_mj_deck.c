@@ -34,6 +34,7 @@ static void MJDeckTest_CreateDestroyTest(void *obj)
     Test_AssertCondition(MJDeck_CalculateWorkSize(NULL) > 0);
 
     /* インターフェース設定 */
+    MJDeck_SetDefaultConfig(&config);
     config.random_if = MJRandomXoshiro256pp_GetInterface();
     Test_AssertCondition(MJDeck_CalculateWorkSize(&config) > 0);
   }
@@ -68,6 +69,9 @@ static void MJDeckTest_CreateDestroyTest(void *obj)
     void *work;
     struct MJDeck *deck = NULL;
     struct MJDeckConfig config;
+
+    /* デフォルトのコンフィグを一旦セット */
+    MJDeck_SetDefaultConfig(&config);
 
     /* インターフェース設定 */
     config.random_if = MJRandomXoshiro256pp_GetInterface();
@@ -108,6 +112,9 @@ static void MJDeckTest_CreateDestroyTest(void *obj)
     struct MJDeck *deck = NULL;
     struct MJDeckConfig config;
 
+    /* デフォルトのコンフィグを一旦セット */
+    MJDeck_SetDefaultConfig(&config);
+
     /* インターフェース設定 */
     config.random_if = MJRandomXoshiro256pp_GetInterface();
 
@@ -122,6 +129,43 @@ static void MJDeckTest_CreateDestroyTest(void *obj)
     MJDeck_Destroy(deck);
   }
 
+  /* ワークサイズ計算失敗ケース */
+  {
+    void *work;
+    int32_t work_size;
+    struct MJDeckConfig config;
+
+    MJDeck_SetDefaultConfig(&config);
+
+    /* 有効なワークサイズと領域を確保 */
+    work_size = MJDeck_CalculateWorkSize(&config);
+    work = malloc(work_size);
+
+    /* イカれた赤ドラ枚数設定: 負値 */
+    config.akadora_count[MJTILE_1MAN] = -1;
+    /* 失敗を確認 */
+    Test_AssertCondition(MJDeck_CalculateWorkSize(&config) < 0);
+    Test_AssertCondition(MJDeck_Create(&config, NULL, 0) == NULL);
+    Test_AssertCondition(MJDeck_Create(&config, work, work_size) == NULL);
+
+    /* イカれた赤ドラ枚数設定: 5枚以上 */
+    config.akadora_count[MJTILE_1MAN] = 5;
+    /* 失敗を確認 */
+    Test_AssertCondition(MJDeck_CalculateWorkSize(&config) < 0);
+    Test_AssertCondition(MJDeck_Create(&config, NULL, 0) == NULL);
+    Test_AssertCondition(MJDeck_Create(&config, work, work_size) == NULL);
+
+    free(work);
+  }
+
+}
+
+/* 牌の比較関数 */
+static int compare_tile(const void *a, const void *b)
+{
+  const int32_t ia = (int32_t)(*(MJTile *)a);
+  const int32_t ib = (int32_t)(*(MJTile *)b);
+  return ia - ib;
 }
 
 /* シャッフルテスト */
@@ -208,7 +252,7 @@ CHECK_END:
 
   /* 生成直後にシャッフルしても、並びが変わってほしい */
   {
-    MJTile shufffled_deck[136];
+    MJTile shufffled_deck[MJDECK_NUM_TILES];
     struct MJDeck *deck;
 
     deck = MJDeck_Create(NULL, NULL, 0);
@@ -219,7 +263,7 @@ CHECK_END:
     memcpy(&shufffled_deck[131], deck->dora.ura,    sizeof(MJTile) *   5);
     MJDeck_Destroy(deck);
 
-    Test_AssertNotEqual(memcmp(shufffled_deck, default_deck, sizeof(MJTile) * 136), 0);
+    Test_AssertNotEqual(memcmp(shufffled_deck, initial_deck, sizeof(MJTile) * MJDECK_NUM_TILES), 0);
   }
 
   /* シードを揃えたときに、同一の並びになるか？ */
@@ -227,7 +271,7 @@ CHECK_END:
 #define NUM_TRIALS 10
     struct MJDeck *deck;
     int32_t trial, is_ok;
-    MJTile decks[NUM_TRIALS][136];
+    MJTile decks[NUM_TRIALS][MJDECK_NUM_TILES];
     struct MJRandomXoshiro256ppSeed xor_seed = {
       .seed = { ~1, 2, ~3, 4 },
     };
@@ -247,7 +291,7 @@ CHECK_END:
     /* 全て同じ並びになることを期待 */
     is_ok = 1;
     for (trial = 1; trial < NUM_TRIALS; trial++) {
-      if (memcmp(decks[0], decks[trial], sizeof(MJTile) * 136) != 0) {
+      if (memcmp(decks[0], decks[trial], sizeof(MJTile) * MJDECK_NUM_TILES) != 0) {
         is_ok = 0;
         break;
       }
@@ -255,6 +299,159 @@ CHECK_END:
     Test_AssertEqual(is_ok, 1);
       
 #undef NUM_TRIALS
+  }
+
+  /* 赤ドラ注入ケース: 1枚だけ */
+  {
+    int32_t t, count;
+    struct MJDeck *deck;
+    struct MJDeckConfig config;
+    MJTile deck_tile[MJDECK_NUM_TILES];
+    MJTile akadora_tile;
+
+    /* 5筒を1枚赤ドラにしてみる */
+    MJDeck_SetDefaultConfig(&config);
+    config.akadora_count[MJTILE_5PIN] = 1;
+
+    deck = MJDeck_Create(&config, NULL, 0);
+
+    /* シャッフルしてから牌を配列として取得 */
+    Test_AssertEqual(MJDeck_Shuffle(deck), MJDECK_APIRESULT_OK);
+    memcpy(&deck_tile[0],   deck->deck,        sizeof(MJTile) * 122);
+    memcpy(&deck_tile[122], deck->rinshan,     sizeof(MJTile) *   4);
+    memcpy(&deck_tile[126], deck->dora.omote,  sizeof(MJTile) *   5);
+    memcpy(&deck_tile[131], deck->dora.ura,    sizeof(MJTile) *   5);
+
+    /* どこかに赤ドラが1枚入っているはず */
+    count = 0;
+    for (t = 0; t < MJDECK_NUM_TILES; t++) {
+      if (MJTILE_IS_AKADORA(deck_tile[t])) {
+        akadora_tile = deck_tile[t];
+        count++;
+      }
+    }
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tile), MJTILE_5PIN);
+    Test_AssertEqual(count, 1);
+
+    MJDeck_Destroy(deck);
+  }
+
+  /* 赤ドラ注入ケース: 一般的な3枚設定 */
+  {
+    int32_t t, count;
+    struct MJDeck *deck;
+    struct MJDeckConfig config;
+    MJTile deck_tile[MJDECK_NUM_TILES];
+    MJTile akadora_tiles[3];
+
+    /* 3枚赤ドラにしてみる */
+    MJDeck_SetDefaultConfig(&config);
+    config.akadora_count[MJTILE_5MAN] = 1;
+    config.akadora_count[MJTILE_5PIN] = 1;
+    config.akadora_count[MJTILE_5SOU] = 1;
+
+    deck = MJDeck_Create(&config, NULL, 0);
+
+    /* シャッフルしてから牌を配列として取得 */
+    Test_AssertEqual(MJDeck_Shuffle(deck), MJDECK_APIRESULT_OK);
+    memcpy(&deck_tile[0],   deck->deck,        sizeof(MJTile) * 122);
+    memcpy(&deck_tile[122], deck->rinshan,     sizeof(MJTile) *   4);
+    memcpy(&deck_tile[126], deck->dora.omote,  sizeof(MJTile) *   5);
+    memcpy(&deck_tile[131], deck->dora.ura,    sizeof(MJTile) *   5);
+
+    /* 赤ドラ3枚を確認 */
+    count = 0;
+    for (t = 0; t < MJDECK_NUM_TILES; t++) {
+      if (MJTILE_IS_AKADORA(deck_tile[t])) {
+        if (count < 3) {
+          akadora_tiles[count] = deck_tile[t];
+        }
+        count++;
+      }
+    }
+    Test_AssertEqual(count, 3);
+    qsort(akadora_tiles, 3, sizeof(MJTile), compare_tile);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[0]), MJTILE_5MAN);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[1]), MJTILE_5PIN);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[2]), MJTILE_5SOU);
+
+    MJDeck_Destroy(deck);
+  }
+
+  /* 赤ドラ注入ケース: 4枚設定 */
+  {
+    int32_t t, count;
+    struct MJDeck *deck;
+    struct MJDeckConfig config;
+    MJTile deck_tile[MJDECK_NUM_TILES];
+    MJTile akadora_tiles[4];
+
+    /* 4枚赤ドラにしてみる */
+    MJDeck_SetDefaultConfig(&config);
+    config.akadora_count[MJTILE_5MAN] = 1;
+    config.akadora_count[MJTILE_5PIN] = 2;
+    config.akadora_count[MJTILE_5SOU] = 1;
+
+    deck = MJDeck_Create(&config, NULL, 0);
+
+    /* シャッフルしてから牌を配列として取得 */
+    Test_AssertEqual(MJDeck_Shuffle(deck), MJDECK_APIRESULT_OK);
+    memcpy(&deck_tile[0],   deck->deck,        sizeof(MJTile) * 122);
+    memcpy(&deck_tile[122], deck->rinshan,     sizeof(MJTile) *   4);
+    memcpy(&deck_tile[126], deck->dora.omote,  sizeof(MJTile) *   5);
+    memcpy(&deck_tile[131], deck->dora.ura,    sizeof(MJTile) *   5);
+
+    /* 赤ドラ4枚を確認 */
+    count = 0;
+    for (t = 0; t < MJDECK_NUM_TILES; t++) {
+      if (MJTILE_IS_AKADORA(deck_tile[t])) {
+        if (count < 4) {
+          akadora_tiles[count] = deck_tile[t];
+        }
+        count++;
+      }
+    }
+    Test_AssertEqual(count, 4);
+    qsort(akadora_tiles, 4, sizeof(MJTile), compare_tile);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[0]), MJTILE_5MAN);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[1]), MJTILE_5PIN);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[2]), MJTILE_5PIN);
+    Test_AssertEqual(MJTILE_FLAG_MASK(akadora_tiles[3]), MJTILE_5SOU);
+
+    MJDeck_Destroy(deck);
+  }
+
+  /* 赤ドラ注入ケース: 全て赤ドラ */
+  {
+    int32_t t, count;
+    struct MJDeck *deck;
+    struct MJDeckConfig config;
+    MJTile deck_tile[MJDECK_NUM_TILES];
+
+    MJDeck_SetDefaultConfig(&config);
+    for (t = 0; t < MJTILE_MAX; t++) {
+      config.akadora_count[t] = 4;
+    }
+
+    deck = MJDeck_Create(&config, NULL, 0);
+
+    /* シャッフルしてから牌を配列として取得 */
+    Test_AssertEqual(MJDeck_Shuffle(deck), MJDECK_APIRESULT_OK);
+    memcpy(&deck_tile[0],   deck->deck,        sizeof(MJTile) * 122);
+    memcpy(&deck_tile[122], deck->rinshan,     sizeof(MJTile) *   4);
+    memcpy(&deck_tile[126], deck->dora.omote,  sizeof(MJTile) *   5);
+    memcpy(&deck_tile[131], deck->dora.ura,    sizeof(MJTile) *   5);
+
+    /* 赤ドラ枚数を数え上げ */
+    count = 0;
+    for (t = 0; t < MJDECK_NUM_TILES; t++) {
+      if (MJTILE_IS_AKADORA(deck_tile[t])) {
+        count++;
+      }
+    }
+    Test_AssertEqual(count, MJDECK_NUM_TILES);
+
+    MJDeck_Destroy(deck);
   }
 
   /* 失敗ケース */

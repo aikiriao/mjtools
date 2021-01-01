@@ -9,29 +9,28 @@
 #include <stdbool.h>
 
 /* アラインメント */
-#define MJDECK_ALIGNMENT 16
+#define MJDECK_ALIGNMENT  16
+
+/* 配山の牌数 */
+#define MJDECK_NUM_TILES  136
 
 /* 牌山ハンドル */
 struct MJDeck {
-  void              *random;        /* 乱数生成インスタンス */
-  const struct MJRandomGeneratorInterface *random_if; /* 乱数生成インターフェース */
   MJTile            deck[122];      /* 牌山 */
   MJTile            rinshan[4];     /* 嶺上牌 */
   int32_t           tsumo_pos;      /* ツモ位置 */
   int32_t           rinshan_pos;    /* 嶺上ツモ位置 */
   struct MJDoraTile dora;           /* ドラ牌 */
+  MJTile            unshuffled_deck[MJDECK_NUM_TILES];  /* シャッフル前の牌山 */
+  void              *random;        /* 乱数生成インスタンス */
+  const struct MJRandomGeneratorInterface *random_if; /* 乱数生成インターフェース */
   bool              shufffled;      /* シャッフル済み？ */
   bool              alloced_by_own; /* メモリは自前確保か？ */
   void              *work;          /* ワークメモリ先頭アドレス */
 };
 
-/* デフォルトコンフィグ */
-static const struct MJDeckConfig default_config = {
-  .random_if = NULL,
-};
-
-/* 並び替える前の牌山 */
-static const MJTile default_deck[136] = {
+/* シャッフル/赤ドラ注入前の牌山 */
+static const MJTile initial_deck[MJDECK_NUM_TILES] = {
   MJTILE_1MAN, MJTILE_1MAN, MJTILE_1MAN, MJTILE_1MAN,
   MJTILE_2MAN, MJTILE_2MAN, MJTILE_2MAN, MJTILE_2MAN,
   MJTILE_3MAN, MJTILE_3MAN, MJTILE_3MAN, MJTILE_3MAN,
@@ -68,29 +67,89 @@ static const MJTile default_deck[136] = {
   MJTILE_CHUN, MJTILE_CHUN, MJTILE_CHUN, MJTILE_CHUN, 
 };
 
+/* 赤ドラの設定をチェック true:OK, false:NG */
+static bool MJDeck_CheckAkadoraCount(const int32_t *akadora_count)
+{
+  int32_t t;
+
+  /* 引数チェック */
+  if (akadora_count == NULL) {
+    return false;
+  }
+
+  /* 赤ドラの設定をチェック */
+  for (t = 0; t < MJTILE_MAX; t++) {
+    if ((akadora_count[t] < 0) || (akadora_count[t] > 4)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/* 赤ドラ注入 */
+static void MJDeck_PutAkadoraToDeck(const int32_t *akadora_count, MJTile *deck)
+{
+  int32_t t, i;
+  int32_t count;
+
+  assert((akadora_count != NULL) && (deck != NULL));
+
+  /* 赤ドラ枚数分だけフラグを立てる */
+  for (t = 0; t < MJTILE_MAX; t++) {
+    count = akadora_count[t];
+    for (i = 0; i < MJDECK_NUM_TILES; i++) {
+      if (count == 0) {
+        break;
+      }
+      if ((deck[i] == t) && !MJTILE_IS_AKADORA(deck[i])) {
+        deck[i] |= MJTILE_FLAG_AKADORA;
+        count--;
+      }
+    }
+  }
+}
+
+/* デフォルトのコンフィグを設定 */
+void MJDeck_SetDefaultConfig(struct MJDeckConfig *config)
+{
+  assert(config != NULL);
+
+  /* デフォルトの乱数生成器のインターフェースをセット */
+  config->random_if = MJRandomXoshiro256pp_GetInterface();
+
+  /* 赤ドラ枚数設定 */
+  memset(config->akadora_count, 0, sizeof(int32_t) * MJTILE_MAX);
+}
+
 /* 牌山ハンドル作成に必要なワークサイズの計算 */
 int32_t MJDeck_CalculateWorkSize(const struct MJDeckConfig *config)
 {
   int32_t work_size;
-  const struct MJRandomGeneratorInterface *rng_if;
+  struct MJDeckConfig apply_config;
 
   /* コンフィグが指定されなければデフォルトコンフィグに差し替え */
   if (config == NULL) {
-    config = &default_config;
+    MJDeck_SetDefaultConfig(&apply_config);
+  } else {
+    apply_config = (*config);
   }
 
-  /* 乱数生成インターフェースの取得 */
-  if (config->random_if == NULL) {
-    rng_if = MJRandomXoshiro256pp_GetInterface();
-  } else {
-    rng_if = config->random_if;
+  /* 乱数生成インターフェースのチェック */
+  if (apply_config.random_if == NULL) {
+    return -1;
+  }
+
+  /* 赤ドラ枚数設定チェック */
+  if (!MJDeck_CheckAkadoraCount(apply_config.akadora_count)) {
+    return -1;
   }
 
   /* ハンドルサイズ */
   work_size = sizeof(struct MJDeck) + MJDECK_ALIGNMENT;
 
   /* 乱数生成器のワークサイズを加算 */
-  work_size += rng_if->CalculateWorkSize();
+  work_size += apply_config.random_if->CalculateWorkSize();
 
   return work_size;
 }
@@ -99,13 +158,20 @@ int32_t MJDeck_CalculateWorkSize(const struct MJDeckConfig *config)
 struct MJDeck *MJDeck_Create(const struct MJDeckConfig *config, void *work, int32_t work_size)
 {
   struct MJDeck *deck;
-  const struct MJRandomGeneratorInterface *rng_if;
   uint8_t *work_ptr;
   bool tmp_alloced_by_own = false;
+  struct MJDeckConfig apply_config;
+
+  /* コンフィグが指定されなければデフォルトコンフィグに差し替え */
+  if (config == NULL) {
+    MJDeck_SetDefaultConfig(&apply_config);
+  } else {
+    apply_config = (*config);
+  }
 
   /* 領域自前確保の場合 */
   if ((work == NULL) && (work_size == 0)) {
-    if ((work_size = MJDeck_CalculateWorkSize(config)) < 0) {
+    if ((work_size = MJDeck_CalculateWorkSize(&apply_config)) < 0) {
       return NULL;
     }
     work = malloc((size_t)work_size);
@@ -113,20 +179,21 @@ struct MJDeck *MJDeck_Create(const struct MJDeckConfig *config, void *work, int3
   }
 
   /* 引数チェック */
-  if ((work == NULL) || (work_size < MJDeck_CalculateWorkSize(config))) {
+  if ((work == NULL) || (work_size < MJDeck_CalculateWorkSize(&apply_config))) {
     return NULL;
   }
 
-  /* コンフィグが指定されなければデフォルトコンフィグに差し替え */
-  if (config == NULL) {
-    config = &default_config;
+  /* 乱数生成インターフェースのチェック */
+  if (apply_config.random_if == NULL) {
+    return NULL;
   }
 
-  /* 乱数生成インターフェースの取得 */
-  if (config->random_if == NULL) {
-    rng_if = MJRandomXoshiro256pp_GetInterface();
-  } else {
-    rng_if = config->random_if;
+  /* 赤ドラ枚数設定チェック */
+  if (!MJDeck_CheckAkadoraCount(apply_config.akadora_count)) {
+    if (tmp_alloced_by_own) {
+      free(work);
+    }
+    return NULL;
   }
 
   /* アラインメント調整 */
@@ -141,16 +208,22 @@ struct MJDeck *MJDeck_Create(const struct MJDeckConfig *config, void *work, int3
   /* 自前確保フラグを記録 */
   deck->alloced_by_own = tmp_alloced_by_own;
   /* 乱数生成インターフェースの記録 */
-  deck->random_if = rng_if;
+  deck->random_if = apply_config.random_if;
   /* シャッフル済フラグは落とす */
   deck->shufffled = false;
 
   /* 乱数生成器の作成 */
-  deck->random = rng_if->Create(work_ptr, rng_if->CalculateWorkSize());
+  deck->random = apply_config.random_if->Create(work_ptr, apply_config.random_if->CalculateWorkSize());
   if (deck->random == NULL) {
     return NULL;
   }
-  work_ptr += rng_if->CalculateWorkSize();
+  work_ptr += apply_config.random_if->CalculateWorkSize();
+
+  /* 初期の配山をコピー */
+  memcpy(deck->unshuffled_deck, initial_deck, sizeof(deck->unshuffled_deck));
+
+  /* 赤ドラ注入 */
+  MJDeck_PutAkadoraToDeck(apply_config.akadora_count, deck->unshuffled_deck);
 
   return deck;
 }
@@ -244,18 +317,18 @@ MJDeckApiResult MJDeck_SetRandomSeed(struct MJDeck *deck, const void *seed)
 MJDeckApiResult MJDeck_Shuffle(struct MJDeck *deck)
 {
   int32_t i;
-  MJTile deck_work[136]; /* シャッフル用一時領域 */
+  MJTile deck_work[MJDECK_NUM_TILES]; /* シャッフル用一時領域 */
 
   /* 引数チェック */
   if (deck == NULL) {
     return MJDECK_APIRESULT_INVALID_ARGUMENT;
   }
 
-  /* デフォルトの山をコピー */
-  memcpy(deck_work, default_deck, sizeof(deck_work));
+  /* シャッフル前の山をコピー */
+  memcpy(deck_work, deck->unshuffled_deck, sizeof(deck_work));
 
   /* シャッフル（Fisher-Yatesのシャッフル） */
-  for (i = 136; i > 1; i--) {
+  for (i = MJDECK_NUM_TILES; i > 1; i--) {
     int32_t j;
     MJTile tmp;
     j = deck->random_if->GetRandom(deck->random, 0, i - 1);
