@@ -1282,7 +1282,7 @@ static void MJScore_CalculatePointFromHanFu(
   memset(&tmp, 0, sizeof(struct MJPoint));
   if (info->player_wind == MJWIND_TON) {
     /* 親 */
-    if (info->tsumo) {
+    if (info->tsumo || info->rinshan) {
       tmp.point           = 3 * payment.oya_tsumo;
       tmp.feed.tsumo.ko   = payment.oya_tsumo;
       tmp.feed.tsumo.oya  = 0;
@@ -1292,7 +1292,7 @@ static void MJScore_CalculatePointFromHanFu(
     }
   } else {
     /* 子 */
-    if (info->tsumo) {
+    if (info->tsumo || info->rinshan) {
       tmp.point           = payment.ko_tsumo.oya + 2 * payment.ko_tsumo.ko;
       tmp.feed.tsumo.ko   = payment.ko_tsumo.ko;
       tmp.feed.tsumo.oya  = payment.ko_tsumo.oya;
