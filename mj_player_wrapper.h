@@ -10,8 +10,19 @@ struct MJPlayerWrapperConfig {
   struct MJPlayerConfig player_config;                /* プレーヤー生成コンフィグ */
 };
 
-/* プレーヤーハンドル */
-struct MJPlayerWrapper;
+/* プレーヤー構造体 */
+struct MJPlayerWrapper {
+  const struct MJPlayerInterface *player_interface;
+  void *player_instance;
+  bool alloced_by_own;
+  void *work;
+
+  /* 公開メンバ */
+  MJWind wind;          /* 家 */
+  struct MJHand hand;   /* 手牌 */
+  bool riichi;          /* リーチしたか？ */
+  int32_t score;        /* 現在のスコア */
+};
 
 /* インターフェースラッパー */
 /* プレーヤーハンドル作成に必要なワークサイズ計算 */
@@ -34,9 +45,5 @@ void MJPlayerWrapper_OnEndHand(struct MJPlayerWrapper *player, MJHandEndReason r
 void MJPlayerWrapper_OnStartGame(struct MJPlayerWrapper *player);
 /* 対戦終了時 */
 void MJPlayerWrapper_OnEndGame(struct MJPlayerWrapper *player, int32_t player_rank, int32_t player_score);
-
-/* 固有関数 */
-/* ハンドル取得 */
-const void *MJPlayerWrapper_GetPlayerHandle(const struct MJPlayerWrapper *player);
 
 #endif /* MJPLAYERWRAPPER_H_INCLUDED */

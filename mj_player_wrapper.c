@@ -7,14 +7,6 @@
 /* メモリアラインメント */
 #define MJPLAYER_ALIGNMENT  16
 
-/* プレーヤー構造体 */
-struct MJPlayerWrapper {
-  const struct MJPlayerInterface *player_interface;
-  void *player_instance;
-  bool alloced_by_own;
-  void *work;
-};
-
 /* プレーヤーハンドル作成に必要なワークサイズ計算 */
 int32_t MJPlayerWrapper_CalculateWorkSize(const struct MJPlayerWrapperConfig *config)
 {
@@ -154,11 +146,4 @@ void MJPlayerWrapper_OnEndGame(struct MJPlayerWrapper *player, int32_t player_ra
 {
   assert(player != NULL);
   player->player_interface->OnEndGame(player->player_instance, player_rank, player_score);
-}
-
-/* プレーヤーハンドル取得 */
-const void *MJPlayerWrapper_GetPlayerHandle(const struct MJPlayerWrapper *player)
-{
-  assert(player != NULL);
-  return player->player_instance;
 }
