@@ -2202,16 +2202,25 @@ static void MJScoreTest_CalculateForOcassionalcases(void *obj)
 
       /* 嶺上開花 */
       {
-        struct MJTileCount merged_count;
+        int32_t i;
+        bool has_kan;
 
-        /* カンが含まれているか確かめるために手牌にマージ */
-        MJShanten_ConvertHandToTileCount(&agari_info.hand, &merged_count);
-        merged_count.count[agari_info.winning_tile]++;
+        /* カンの存在確認 */
+        has_kan = false;
+        for (i = 0; i < agari_info.hand.num_meld; i++) {
+          if ((agari_info.hand.meld[i].type == MJMELD_TYPE_ANKAN)
+              || (agari_info.hand.meld[i].type == MJMELD_TYPE_MINKAN)
+              || (agari_info.hand.meld[i].type == MJMELD_TYPE_KAKAN)) {
+            has_kan = true;
+            break;
+          }
+        }
 
         /* カンが含まれていれば嶺上開花を加えてテスト */
-        if (MJScore_CountNumKan(&merged_count) > 0) {
+        if (has_kan) {
           modified_info = agari_info;
           modified_info.rinshan = true;
+          modified_info.tsumo = true;
           if ((ret = MJScore_CalculateScore(&modified_info, &modified_score)) != MJSCORE_CALCRESULT_OK) {
             printf("%d: NG at test case index:%d api result:%d \n", __LINE__, i, ret);
             is_ok = 0;

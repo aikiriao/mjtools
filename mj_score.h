@@ -70,6 +70,7 @@ typedef enum MJScoreCalculationResultTag {
   MJSCORE_CALCRESULT_NOT_AGARI,               /* 和了っていない */
   MJSCORE_CALCRESULT_NOT_YAKU,                /* 役がつかなかった */
   MJSCORE_CALCRESULT_RINSHAN_WITHOUT_KAN,     /* カン無しで嶺上開花 */
+  MJSCORE_CALCRESULT_RINSHAN_WITHOUT_TSUMO,   /* 自摸無しで嶺上開花 */
   MJSCORE_CALCRESULT_RIICHI_AND_DOUBLERIICHI, /* 立直とダブルリーチが両立している */
   MJSCORE_CALCRESULT_INVALID_WIND,            /* 無効な風情報が指定されている */
   MJSCORE_CALCRESULT_INVALID_HAND,            /* 手牌が不正 */

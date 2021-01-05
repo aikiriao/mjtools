@@ -310,6 +310,11 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
     return MJSCORE_CALCRESULT_INVALID_WIND;
   }
 
+  /* 嶺上開花に自摸和了がついていない */
+  if (info->rinshan && !info->tsumo) {
+    return MJSCORE_CALCRESULT_RINSHAN_WITHOUT_TSUMO;
+  }
+
   /* 和了牌含めて14枚あるかチェック */
   {
     int32_t i, sum_num_tiles;
@@ -1282,7 +1287,7 @@ static void MJScore_CalculatePointFromHanFu(
   memset(&tmp, 0, sizeof(struct MJPoint));
   if (info->player_wind == MJWIND_TON) {
     /* 親 */
-    if (info->tsumo || info->rinshan) {
+    if (info->tsumo) {
       tmp.point           = 3 * payment.oya_tsumo;
       tmp.feed.tsumo.ko   = payment.oya_tsumo;
       tmp.feed.tsumo.oya  = 0;
@@ -1292,7 +1297,7 @@ static void MJScore_CalculatePointFromHanFu(
     }
   } else {
     /* 子 */
-    if (info->tsumo || info->rinshan) {
+    if (info->tsumo) {
       tmp.point           = payment.ko_tsumo.oya + 2 * payment.ko_tsumo.ko;
       tmp.feed.tsumo.ko   = payment.ko_tsumo.ko;
       tmp.feed.tsumo.oya  = payment.ko_tsumo.oya;
