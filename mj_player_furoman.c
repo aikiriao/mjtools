@@ -20,7 +20,7 @@ struct MJPlayerFuroman {
 };
 
 /* インターフェース名の取得 */
-static const char *MJPlayerFuroman_GetName(const MJPlayerInterfaceVersion3Tag *version_tag);
+static const char *MJPlayerFuroman_GetName(const MJPlayerInterfaceVersion4Tag *version_tag);
 /* ワークサイズ計算 */
 static int32_t MJPlayerFuroman_CalculateWorkSize(const struct MJPlayerConfig *config);
 /* インスタンス生成 */
@@ -28,9 +28,9 @@ static void *MJPlayerFuroman_Create(const struct MJPlayerConfig *config, void *w
 /* インスタンス破棄 */
 static void MJPlayerFuroman_Destroy(void *player);
 /* 誰かのアクション時の対応 */
-static void MJPlayerFuroman_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
+static void MJPlayerFuroman_OnAction(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action);
 /* 自摸時の対応 */
-static void MJPlayerFuroman_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
+static void MJPlayerFuroman_OnDiscard(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時の対応 */
 static void MJPlayerFuroman_OnStartHand(void *player, int32_t hand_no, MJWind player_wind);
 /* 局終了時の対応 */
@@ -47,7 +47,7 @@ static const struct MJPlayerInterface st_tsumogiri_player_interface = {
   MJPlayerFuroman_Create,
   MJPlayerFuroman_Destroy,
   MJPlayerFuroman_OnAction,
-  MJPlayerFuroman_OnDraw,
+  MJPlayerFuroman_OnDiscard,
   MJPlayerFuroman_OnStartHand,
   MJPlayerFuroman_OnEndHand,
   MJPlayerFuroman_OnStartGame,
@@ -61,7 +61,7 @@ const struct MJPlayerInterface *MJPlayerFuroman_GetInterface(void)
 }
 
 /* インターフェース名の取得 */
-static const char *MJPlayerFuroman_GetName(const MJPlayerInterfaceVersion3Tag *version_tag)
+static const char *MJPlayerFuroman_GetName(const MJPlayerInterfaceVersion4Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return "Furo-Man";
@@ -117,21 +117,19 @@ static void MJPlayerFuroman_Destroy(void *player)
 }
 
 /* 誰かのアクション時の対応 */
-static void MJPlayerFuroman_OnAction(void *player,
-    MJWind trigger_player, const struct MJPlayerAction *trigger_action,
-    MJWind action_player, struct MJPlayerAction *action)
+static void MJPlayerFuroman_OnAction(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action)
 {
   struct MJPlayerFuroman *furoman = (struct MJPlayerFuroman *)player;
-
-  MJUTILITY_UNUSED_ARGUMENT(action_player);
 
   /* デバッグ向けにアサート */
   assert(player != NULL);
   assert(trigger_action != NULL);
   assert(action != NULL);
 
+  assert(furoman->wind == action->player);
+
   /* 自分自身のアクションには反応しない */
-  if (trigger_player == furoman->wind) {
+  if (trigger_action->player == furoman->wind) {
     action->type = MJPLAYER_ACTIONTYPE_NONE;
     return;
   }
@@ -140,29 +138,85 @@ static void MJPlayerFuroman_OnAction(void *player,
     case MJPLAYER_ACTIONTYPE_DISCARD:
       {
         struct MJTileCount tile_count;
+        MJTile trig_tile = trigger_action->tile;
         /* 手牌取得 */
         furoman->game_state_getter->GetHand(player, furoman->wind, &furoman->hand);
         MJShanten_ConvertHandToTileCount(&furoman->hand, &tile_count);
-        tile_count.count[trigger_action->tile]++;
+        tile_count.count[trig_tile]++;
         /* 和了っていて得点がつくなら倒す */
         if ((MJShanten_CalculateShanten(&tile_count) == -1)
-            && (furoman->game_state_getter->GetAgariScore(player, &furoman->hand, trigger_action->tile) > 0)) {
+            && (furoman->game_state_getter->GetAgariScore(player, &furoman->hand, trig_tile) > 0)) {
           action->type = MJPLAYER_ACTIONTYPE_RON;
-          action->tile = trigger_action->tile;
+          action->tile = trig_tile;
           return;
         }
         /* 副露判定 */
         /* カン/ポン */
-        if (tile_count.count[trigger_action->tile] == 4) {
+        if (tile_count.count[trig_tile] == 4) {
           action->type = MJPLAYER_ACTIONTYPE_MINKAN;
-          action->tile = trigger_action->tile;
+          action->tile = trig_tile;
           return;
-        } else if (tile_count.count[trigger_action->tile] == 3) {
+        } else if (tile_count.count[trig_tile] == 3) {
           action->type = MJPLAYER_ACTIONTYPE_PUNG;
-          action->tile = trigger_action->tile;
+          action->tile = trig_tile;
           return;
         }
-        /* TODO:チー */
+        /* チー */
+        /* TODO: 判定辛いっすね... */
+        if (MJTILE_IS_SUHAI(trig_tile)) {
+          if (((furoman->wind == MJWIND_TON) && (trigger_action->player == MJWIND_PEE))
+              || ((furoman->wind == MJWIND_NAN) && (trigger_action->player == MJWIND_TON))
+              || ((furoman->wind == MJWIND_SHA) && (trigger_action->player == MJWIND_NAN))
+              || ((furoman->wind == MJWIND_PEE) && (trigger_action->player == MJWIND_SHA))) {
+            if (MJTILE_NUMBER_IS(trig_tile, 1)) {
+              if ((tile_count.count[trig_tile + 1] > 0) && (tile_count.count[trig_tile + 2] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW1;
+                action->tile = trig_tile;
+                return;
+              }
+            } else if (MJTILE_NUMBER_IS(trig_tile, 2)) {
+              if ((tile_count.count[trig_tile + 1] > 0) && (tile_count.count[trig_tile + 2] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW1;
+                action->tile = trig_tile;
+                return;
+              } else if ((tile_count.count[trig_tile - 1] > 0) && (tile_count.count[trig_tile + 1] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW2;
+                action->tile = trig_tile;
+                return;
+              }
+            } else if (MJTILE_NUMBER_IS(trig_tile, 8)) {
+              if ((tile_count.count[trig_tile - 2] > 0) && (tile_count.count[trig_tile - 1] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW3;
+                action->tile = trig_tile;
+                return;
+              } else if ((tile_count.count[trig_tile - 1] > 0) && (tile_count.count[trig_tile + 1] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW2;
+                action->tile = trig_tile;
+                return;
+              }
+            } else if (MJTILE_NUMBER_IS(trig_tile, 9)) {
+              if ((tile_count.count[trig_tile - 2] > 0) && (tile_count.count[trig_tile - 1] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW3;
+                action->tile = trig_tile;
+                return;
+              }
+            } else {
+              if ((tile_count.count[trig_tile + 1] > 0) && (tile_count.count[trig_tile + 2] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW1;
+                action->tile = trig_tile;
+                return;
+              } else if ((tile_count.count[trig_tile - 1] > 0) && (tile_count.count[trig_tile + 1] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW2;
+                action->tile = trig_tile;
+                return;
+              } else if ((tile_count.count[trig_tile - 2] > 0) && (tile_count.count[trig_tile - 1] > 0)) {
+                action->type = MJPLAYER_ACTIONTYPE_CHOW3;
+                action->tile = trig_tile;
+                return;
+              }
+            }
+          }
+        }
       }
       break;
     default: break;
@@ -173,7 +227,7 @@ static void MJPlayerFuroman_OnAction(void *player,
 }
 
 /* 自摸時の対応 */
-static void MJPlayerFuroman_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
+static void MJPlayerFuroman_OnDiscard(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   int32_t t, min_shanten;
   MJTile min_tile;
@@ -182,6 +236,8 @@ static void MJPlayerFuroman_OnDraw(void *player, MJTile draw_tile, struct MJPlay
 
   assert(player != NULL);
   assert(player_action != NULL);
+
+  assert(furoman->wind == player_action->player);
 
   /* 手牌取得 */
   furoman->game_state_getter->GetHand(player, furoman->wind, &furoman->hand);

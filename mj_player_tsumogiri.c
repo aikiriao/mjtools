@@ -18,7 +18,7 @@ struct MJPlayerTsumogiri {
 };
 
 /* インターフェース名の取得 */
-static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion3Tag *version_tag);
+static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion4Tag *version_tag);
 /* ワークサイズ計算 */
 static int32_t MJPlayerTsumogiri_CalculateWorkSize(const struct MJPlayerConfig *config);
 /* インスタンス生成 */
@@ -26,9 +26,9 @@ static void *MJPlayerTsumogiri_Create(const struct MJPlayerConfig *config, void 
 /* インスタンス破棄 */
 static void MJPlayerTsumogiri_Destroy(void *player);
 /* 誰かのアクション時の対応 */
-static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
+static void MJPlayerTsumogiri_OnAction(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action);
 /* 自摸時の対応 */
-static void MJPlayerTsumogiri_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
+static void MJPlayerTsumogiri_OnDiscard(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時の対応 */
 static void MJPlayerTsumogiri_OnStartHand(void *player, int32_t hand_no, MJWind player_wind);
 /* 局終了時の対応 */
@@ -45,7 +45,7 @@ static const struct MJPlayerInterface st_tsumogiri_player_interface = {
   MJPlayerTsumogiri_Create,
   MJPlayerTsumogiri_Destroy,
   MJPlayerTsumogiri_OnAction,
-  MJPlayerTsumogiri_OnDraw,
+  MJPlayerTsumogiri_OnDiscard,
   MJPlayerTsumogiri_OnStartHand,
   MJPlayerTsumogiri_OnEndHand,
   MJPlayerTsumogiri_OnStartGame,
@@ -59,7 +59,7 @@ const struct MJPlayerInterface *MJPlayerTsumogiri_GetInterface(void)
 }
 
 /* インターフェース名の取得 */
-static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion3Tag *version_tag)
+static const char *MJPlayerTsumogiri_GetName(const MJPlayerInterfaceVersion4Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return "Tsumogiri-Kun";
@@ -115,29 +115,32 @@ static void MJPlayerTsumogiri_Destroy(void *player)
 }
 
 /* 誰かのアクション時の対応 */
-static void MJPlayerTsumogiri_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action)
+static void MJPlayerTsumogiri_OnAction(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action)
 {
-  MJUTILITY_UNUSED_ARGUMENT(player);
-  MJUTILITY_UNUSED_ARGUMENT(trigger_player);
+  struct MJPlayerTsumogiri *tgiri = (struct MJPlayerTsumogiri *)player;
+
   MJUTILITY_UNUSED_ARGUMENT(trigger_action);
-  MJUTILITY_UNUSED_ARGUMENT(action_player);
 
   /* デバッグ向けにアサート */
   assert(player != NULL);
   assert(trigger_action != NULL);
   assert(action != NULL);
 
+  assert(tgiri->wind == action->player);
+
   /* 何もしない */
   action->type = MJPLAYER_ACTIONTYPE_NONE;
 }
 
 /* 自摸時の対応 */
-static void MJPlayerTsumogiri_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
+static void MJPlayerTsumogiri_OnDiscard(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   struct MJPlayerTsumogiri *tgiri = (struct MJPlayerTsumogiri *)player;
 
   assert(player != NULL);
   assert(player_action != NULL);
+
+  assert(tgiri->wind == player_action->player);
 
   /* 手牌取得 */
   tgiri->game_state_getter->GetHand(player, tgiri->wind, &tgiri->hand);

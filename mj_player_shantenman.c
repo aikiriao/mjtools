@@ -21,7 +21,7 @@ struct MJPlayerShantenman {
 };
 
 /* インターフェース名の取得 */
-static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion3Tag *version_tag);
+static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion4Tag *version_tag);
 /* ワークサイズ計算 */
 static int32_t MJPlayerShantenman_CalculateWorkSize(const struct MJPlayerConfig *config);
 /* インスタンス生成 */
@@ -29,9 +29,9 @@ static void *MJPlayerShantenman_Create(const struct MJPlayerConfig *config, void
 /* インスタンス破棄 */
 static void MJPlayerShantenman_Destroy(void *player);
 /* 誰かのアクション時の対応 */
-static void MJPlayerShantenman_OnAction(void *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
+static void MJPlayerShantenman_OnAction(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action);
 /* 自摸時の対応 */
-static void MJPlayerShantenman_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
+static void MJPlayerShantenman_OnDiscard(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時の対応 */
 static void MJPlayerShantenman_OnStartHand(void *player, int32_t hand_no, MJWind player_wind);
 /* 局終了時の対応 */
@@ -48,7 +48,7 @@ static const struct MJPlayerInterface st_tsumogiri_player_interface = {
   MJPlayerShantenman_Create,
   MJPlayerShantenman_Destroy,
   MJPlayerShantenman_OnAction,
-  MJPlayerShantenman_OnDraw,
+  MJPlayerShantenman_OnDiscard,
   MJPlayerShantenman_OnStartHand,
   MJPlayerShantenman_OnEndHand,
   MJPlayerShantenman_OnStartGame,
@@ -62,7 +62,7 @@ const struct MJPlayerInterface *MJPlayerShantenman_GetInterface(void)
 }
 
 /* インターフェース名の取得 */
-static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion3Tag *version_tag)
+static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion4Tag *version_tag)
 {
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return "Shanten-Man";
@@ -118,21 +118,19 @@ static void MJPlayerShantenman_Destroy(void *player)
 }
 
 /* 誰かのアクション時の対応 */
-static void MJPlayerShantenman_OnAction(void *player,
-    MJWind trigger_player, const struct MJPlayerAction *trigger_action,
-    MJWind action_player, struct MJPlayerAction *action)
+static void MJPlayerShantenman_OnAction(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action)
 {
   struct MJPlayerShantenman *shan = (struct MJPlayerShantenman *)player;
-
-  MJUTILITY_UNUSED_ARGUMENT(action_player);
 
   /* デバッグ向けにアサート */
   assert(player != NULL);
   assert(trigger_action != NULL);
   assert(action != NULL);
 
+  assert(action->player == shan->wind);
+
   /* 自分自身のアクションには反応しない */
-  if (trigger_player == shan->wind) {
+  if (trigger_action->player == shan->wind) {
     action->type = MJPLAYER_ACTIONTYPE_NONE;
     return;
   }
@@ -161,7 +159,7 @@ static void MJPlayerShantenman_OnAction(void *player,
 }
 
 /* 自摸時の対応 */
-static void MJPlayerShantenman_OnDraw(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
+static void MJPlayerShantenman_OnDiscard(void *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   int32_t t, min_shanten;
   MJTile min_tile;
@@ -170,6 +168,8 @@ static void MJPlayerShantenman_OnDraw(void *player, MJTile draw_tile, struct MJP
 
   assert(player != NULL);
   assert(player_action != NULL);
+
+  assert(shan->wind == player_action->player);
 
   /* 手牌取得 */
   shan->game_state_getter->GetHand(player, shan->wind, &shan->hand);

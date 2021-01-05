@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /* プレーヤーインターフェースバージョン番号 */
-#define MJPLAYER_INTERFACE_VERSION             3
+#define MJPLAYER_INTERFACE_VERSION             4
 /* ゲーム状態取得インターフェースバージョン番号 */
 #define MJGAMESTATEGETTER_INTERFACE_VERSION    3
 
@@ -46,8 +46,9 @@ typedef enum MJPlayerActionTypeTag {
 
 /* プレーヤーのアクション */
 struct MJPlayerAction {
-  MJPlayerActionType  type; /* アクション種別 */
-  MJTile              tile; /* 関連する牌 */
+  MJWind              player; /* アクションを起こしたプレーヤー */
+  MJPlayerActionType  type;   /* アクション種別 */
+  MJTile              tile;   /* 関連する牌 */
 };
 
 /* ゲームの状態取得インターフェース */
@@ -85,7 +86,7 @@ struct MJPlayerConfig {
 /* プレーヤーインターフェース */
 struct MJPlayerInterface {
   /* プレーヤーインターフェース名の取得 引数は無視してください */
-  const char *(*GetName)(const MJPlayerInterfaceVersion3Tag *version_tag);
+  const char *(*GetName)(const MJPlayerInterfaceVersion4Tag *version_tag);
   /* ワークサイズ計算 */
   int32_t (*CalculateWorkSize)(const struct MJPlayerConfig *config);
   /* プレーヤーインスタンス作成 */
@@ -93,11 +94,9 @@ struct MJPlayerInterface {
   /* プレーヤーインスタンス破棄 */
   void (*Destroy)(void *player);
   /* 自分含む誰かのアクション時 */
-  void (*OnAction)(void *player, 
-      MJWind trigger_player, const struct MJPlayerAction *trigger_action,
-      MJWind action_player, struct MJPlayerAction *action);
-  /* 自摸時 */
-  void (*OnDraw)(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
+  void (*OnAction)(void *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action);
+  /* 捨て牌時 ポン・チーで捨て牌のみを要求する場合はdraw_tileがINVALIDになる */
+  void (*OnDiscard)(void *player, MJTile draw_tile, struct MJPlayerAction *player_action);
   /* 局開始時 */
   void (*OnStartHand)(void *player, int32_t hand_no, MJWind player_wind);
   /* 局終了時 */

@@ -4,9 +4,6 @@
 #include "mj_player_interface.h"
 #include <stdint.h>
 
-/* ユーザ定義のインターフェースを薄くラップして
- * ゲーム管理者側が使いやすく（MJPlayerに対して操作するだけでよく）するためのモジュール */
-
 /* インスタンス生成コンフィグ */
 struct MJPlayerWrapperConfig {
   const struct MJPlayerInterface *player_interface;   /* ユーザ定義のプレーヤーインターフェース */
@@ -26,9 +23,9 @@ void MJPlayerWrapper_Destroy(struct MJPlayerWrapper *player);
 /* インターフェース名取得 */
 const char *MJPlayerWrapper_GetName(const struct MJPlayerWrapper *player);
 /* 誰かのアクション時 */
-void MJPlayerWrapper_OnAction(struct MJPlayerWrapper *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action);
+void MJPlayerWrapper_OnAction(struct MJPlayerWrapper *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action);
 /* 自摸時 */
-void MJPlayerWrapper_OnDraw(struct MJPlayerWrapper *player, MJTile draw_tile, struct MJPlayerAction *player_action);
+void MJPlayerWrapper_OnDiscard(struct MJPlayerWrapper *player, MJTile draw_tile, struct MJPlayerAction *player_action);
 /* 局開始時 */
 void MJPlayerWrapper_OnStartHand(struct MJPlayerWrapper *player, int32_t hand_no, MJWind player_wind);
 /* 局終了時 */

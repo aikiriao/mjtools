@@ -111,21 +111,20 @@ const char *MJPlayerWrapper_GetName(const struct MJPlayerWrapper *player)
 }
 
 /* 誰かのアクション時 */
-void MJPlayerWrapper_OnAction(struct MJPlayerWrapper *player, MJWind trigger_player, const struct MJPlayerAction *trigger_action, MJWind action_player, struct MJPlayerAction *action)
+void MJPlayerWrapper_OnAction(struct MJPlayerWrapper *player, const struct MJPlayerAction *trigger_action, struct MJPlayerAction *action)
 {
   assert(player != NULL);
   assert(trigger_action != NULL);
   assert(action != NULL);
-  player->player_interface->OnAction(player->player_instance,
-      trigger_player, trigger_action, action_player, action);
+  player->player_interface->OnAction(player->player_instance, trigger_action, action);
 }
 
-/* 自摸時 */
-void MJPlayerWrapper_OnDraw(struct MJPlayerWrapper *player, MJTile draw_tile, struct MJPlayerAction *player_action)
+/* 捨て牌時 */
+void MJPlayerWrapper_OnDiscard(struct MJPlayerWrapper *player, MJTile draw_tile, struct MJPlayerAction *player_action)
 {
   assert(player != NULL);
   assert(player_action != NULL);
-  player->player_interface->OnDraw(player->player_instance, draw_tile, player_action);
+  player->player_interface->OnDiscard(player->player_instance, draw_tile, player_action);
 }
 
 /* 局開始時 */
