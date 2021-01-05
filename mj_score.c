@@ -41,8 +41,21 @@ struct MJDividedHand {
   struct MJMentsu mentsu[4];    /* 面子 */
 };
 
+/* 特定の牌はドラか？ */
+static bool MJScore_TileIsDora(MJTile dora, MJTile tile);
+/* 1つの牌のドラ数を数え上げ */
+static int32_t MJScore_CountNumDorasCore(const struct MJDoraTile *dora, MJTile tile);
+
+/* 牌の余計なフラグを落とす 不正を検出した場合はfalseを返す */
+static bool MJScore_NormalizeTileInAgariInfo(const struct MJAgariInformation *info, struct MJAgariInformation *normalized_info);
 /* 手牌（副露含む）をカウントに変換 副露も全てカウントに変換 */
 static void MJScore_ConvertHandToMergedCount(const struct MJHand *hand, struct MJTileCount *merged_count);
+/* 国士無双の翻/複合役計算 */
+static void MJScore_CalculateKokushimusou(
+  const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
+/* 七対子の翻/複合役計算 */
+static void MJScore_CalculateChitoitsu(
+  const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */
 static bool MJScore_CalculateYakuman(
   const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score);
@@ -121,6 +134,25 @@ static struct MJScoreRuleConfig st_rule_config = {
   .nagashimangan = true,
 };
 
+/* ドラの対応テーブル */
+static const MJTile st_dora_table[MJTILE_MAX] = {
+  MJTILE_INVALID, 
+  MJTILE_2MAN, MJTILE_3MAN, MJTILE_4MAN,
+  MJTILE_5MAN, MJTILE_6MAN, MJTILE_7MAN,
+  MJTILE_8MAN, MJTILE_9MAN, MJTILE_1MAN,
+  MJTILE_INVALID,
+  MJTILE_2PIN, MJTILE_3PIN, MJTILE_4PIN,
+  MJTILE_5PIN, MJTILE_6PIN, MJTILE_7PIN,
+  MJTILE_8PIN, MJTILE_9PIN, MJTILE_1PIN,
+  MJTILE_INVALID,
+  MJTILE_2SOU, MJTILE_3SOU, MJTILE_4SOU,
+  MJTILE_5SOU, MJTILE_6SOU, MJTILE_7SOU,
+  MJTILE_8SOU, MJTILE_9SOU, MJTILE_1SOU,
+  MJTILE_INVALID,
+  MJTILE_NAN, MJTILE_SHA, MJTILE_PEE, MJTILE_TON,
+  MJTILE_HATU, MJTILE_CHUN, MJTILE_HAKU,
+};
+
 /* ルールコンフィグの取得 */
 void MJScore_GetRuleConfig(struct MJScoreRuleConfig *rule_config)
 {
@@ -143,11 +175,102 @@ void MJScore_SetRuleConfig(const struct MJScoreRuleConfig *rule_config)
   st_rule_config = (*rule_config);
 }
 
+/* 特定の牌はドラか？ */
+static bool MJScore_TileIsDora(MJTile dora, MJTile tile)
+{
+  /* 無効な牌 */
+  if (!MJTILE_IS_VALID(dora) || !MJTILE_IS_VALID(tile)) {
+    return false;
+  }
+
+  /* フラグは消す */
+  dora = MJTILE_FLAG_MASK(dora);
+  tile = MJTILE_FLAG_MASK(tile);
+
+  /* テーブルと照合 */
+  return (st_dora_table[dora] == tile);
+}
+
+/* 1つの牌のドラ数を数え上げ */
+static int32_t MJScore_CountNumDorasCore(const struct MJDoraTile *dora, MJTile tile)
+{
+  int32_t i, num_dora;
+
+  /* 引数チェック */
+  assert(dora != NULL);
+
+  num_dora = 0;
+
+  /* 表/裏ドラを数え上げ */
+  for (i = 0; i < dora->num_dora; i++) {
+    if (MJScore_TileIsDora(dora->omote[i], tile)) {
+      num_dora++;
+    }
+    if (MJScore_TileIsDora(dora->ura[i], tile)) {
+      num_dora++;
+    }
+  }
+
+  /* 赤ドラか？ */
+  if (MJTILE_IS_AKADORA(tile)) {
+    num_dora++;
+  }
+
+  return num_dora;
+}
+
+/* ドラ数の数え上げ */
+int32_t MJScore_CountNumDoras(const struct MJDoraTile *dora, const struct MJHand *hand, MJTile winning_tile)
+{
+  int32_t i, num_dora;
+  const struct MJMeld *pmeld;
+
+  /* 引数チェック */
+  assert((dora != NULL) && (hand != NULL) && MJTILE_IS_VALID(winning_tile));
+
+  num_dora = 0;
+
+  /* 手牌のドラ数を数え上げ */
+  for (i = 0; i < hand->num_hand_tiles; i++) {
+    num_dora += MJScore_CountNumDorasCore(dora, hand->hand[i]);
+  }
+
+  /* 副露のドラ数を数え上げ */
+  assert(hand->num_meld <= 4);
+  for (i = 0; i < hand->num_meld; i++) {
+    int32_t j;
+    pmeld = &(hand->meld[i]);
+    switch (pmeld->type) {
+      case MJMELD_TYPE_PUNG:
+      case MJMELD_TYPE_CHOW:
+        for (j = 0; j < 3; j++) {
+          num_dora += MJScore_CountNumDorasCore(dora, pmeld->tiles[j]);
+        }
+        break;
+      case MJMELD_TYPE_ANKAN:
+      case MJMELD_TYPE_KAKAN:
+      case MJMELD_TYPE_MINKAN:
+        for (j = 0; j < 4; j++) {
+          num_dora += MJScore_CountNumDorasCore(dora, pmeld->tiles[j]);
+        }
+        break;
+      default:
+        assert(0);
+    }
+  }
+
+  /* 和了牌のドラ数を数え上げ */
+  num_dora += MJScore_CountNumDorasCore(dora, winning_tile);
+
+  return num_dora;
+}
+
 /* 得点計算 */
 MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation *info, struct MJScore *score)
 {
   struct MJScore tmp_score;
   struct MJTileCount merged_count;
+  struct MJAgariInformation norm_info;  /* 牌の余計な情報を消した和了情報 */
   int32_t normal_shanten, chitoi_shanten, kokusi_shanten;
 
   /* 引数チェック */
@@ -202,14 +325,19 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
     }
   }
 
+  /* 牌の余計な情報を消す */
+  if (!MJScore_NormalizeTileInAgariInfo(info, &norm_info)) {
+    return MJSCORE_CALCRESULT_INVALID_HAND;
+  }
+
   /* 向聴数チェック */
   {
     struct MJTileCount tile_count;
 
     /* 手牌をカウントに変換 */
-    MJShanten_ConvertHandToTileCount(&info->hand, &tile_count);
+    MJShanten_ConvertHandToTileCount(&norm_info.hand, &tile_count);
     /* 和了牌をカウント */
-    tile_count.count[info->winning_tile]++;
+    tile_count.count[norm_info.winning_tile]++;
 
     normal_shanten = MJShanten_CalculateNormalShanten(&tile_count);
     chitoi_shanten = MJShanten_CalculateChitoitsuShanten(&tile_count);
@@ -222,134 +350,44 @@ MJScoreCalculationResult MJScore_CalculateScore(const struct MJAgariInformation 
   }
 
   /* 副露結合済みのカウントを作成 */
-  MJScore_ConvertHandToMergedCount(&info->hand, &merged_count);
-  merged_count.count[MJTILE_FLAG_MASK(info->winning_tile)]++;
+  MJScore_ConvertHandToMergedCount(&norm_info.hand, &merged_count);
+  merged_count.count[norm_info.winning_tile]++;
 
   /* カン無しで嶺上開花 */
-  if (info->rinshan && (MJScore_CountNumKan(&merged_count) == 0)) {
+  if (norm_info.rinshan && (MJScore_CountNumKan(&merged_count) == 0)) {
     return MJSCORE_CALCRESULT_RINSHAN_WITHOUT_KAN;
   }
 
   /* 得点情報の初期化 */
   tmp_score.han = tmp_score.fu = 0;
-  memset(&(tmp_score.point), 0, sizeof(struct MJPoint));
   tmp_score.yaku_flags = 0;
+  memset(&(tmp_score.point), 0, sizeof(struct MJPoint));
 
-  /* 国士無双判定 */
+  /* 国士無双の翻/複合役計算 */
   if (kokusi_shanten == -1) {
-    tmp_score.han = MJSCORE_HAN_YAKUMAN;
-    /* 天和/地和判定 */
-    if (info->tenho) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TENHO);
-      tmp_score.han = MJSCORE_HAN_2YAKUMAN;
-    } else if (info->chiho) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_CHIHO);
-      tmp_score.han = MJSCORE_HAN_2YAKUMAN;
-    }
-    /* 13面待ち */
-    if (MJScore_IsKokushimusou13(info, &merged_count)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_KOKUSHIMUSOU13);
-      if (st_rule_config.kokushi13_as_double) {
-        tmp_score.han = MJSCORE_HAN_2YAKUMAN;
-      }
-    } else {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_KOKUSHIMUSOU);
-    }
-    /* 得点計算へ */
+    MJScore_CalculateKokushimusou(&norm_info, &merged_count, &tmp_score);
     goto CALCULATE_SCORE;
   }
 
-  /* 七対子判定 */
+  /* 七対子の翻/複合役計算 */
   if ((chitoi_shanten == -1) && (normal_shanten > -1)) {
-    /* 天和/地和判定 */
-    if (info->tenho) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TENHO);
-      tmp_score.han = MJSCORE_HAN_YAKUMAN;
-    } else if (info->chiho) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_CHIHO);
-      tmp_score.han = MJSCORE_HAN_YAKUMAN;
-    }
-    /* 字一色 */
-    if (MJScore_IsTsuiso(info, &merged_count)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TSUISO);
-      tmp_score.han = (tmp_score.han == MJSCORE_HAN_YAKUMAN) ? MJSCORE_HAN_2YAKUMAN : MJSCORE_HAN_YAKUMAN;
-    }
-    /* 役満成立時は終わり */
-    if (tmp_score.han >= MJSCORE_HAN_YAKUMAN) {
-      goto CALCULATE_SCORE;
-    }
-    /* 七対子の基本翻/符をセット */
-    MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_CHITOITSU);
-    tmp_score.han = 2; tmp_score.fu = 25;
-    /* 自摸 */
-    if (info->tsumo) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TSUMO);
-      tmp_score.han += 1;
-    }
-    /* 立直/ダブルリーチ */
-    if (info->double_riichi) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_DOUBLERIICHI);
-      tmp_score.han += 2;
-    } else if (info->riichi) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_RIICHI);
-      tmp_score.han += 1;
-    }
-    /* 一発 */
-    if ((info->riichi) && (info->ippatsu)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_IPPATSU);
-      tmp_score.han += 1;
-    }
-    /* 海底摸月/河底撈魚 */
-    if ((info->haitei) && (info->tsumo)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_HAITEITSUMO);
-      tmp_score.han += 1;
-    } else if ((info->haitei) && !(info->tsumo)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_HOUTEIRON);
-      tmp_score.han += 1;
-    }
-    /* ドラ */
-    if (info->num_dora > 0) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_DORA);
-      tmp_score.han += info->num_dora;
-    }
-    /* 混老頭 */
-    if (MJScore_IsHonrouto(info, &merged_count)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_HONROUTO);
-      tmp_score.han += 2;
-    }
-    /* 清一色 */
-    if (MJScore_IsChinitsu(info, &merged_count)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_CHINITSU);
-      tmp_score.han += 6;
-    }
-    /* 混一色 */
-    if (MJScore_IsHonitsu(info, &merged_count)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_HONITSU);
-      tmp_score.han += 3;
-    }
-    /* 断么九 */
-    if (MJScore_IsTanyao(info, &merged_count)) {
-      MJSCORE_SET_YAKUFLAG(tmp_score.yaku_flags, MJSCORE_YAKU_TANYAO);
-      tmp_score.han += 1;
-    }
-    /* 得点計算へ */
+    MJScore_CalculateChitoitsu(&norm_info, &merged_count, &tmp_score);
     goto CALCULATE_SCORE;
   }
 
   /* 国士無双以外の役満判定/翻符計算 */
-  if (MJScore_CalculateYakuman(info, &merged_count, &tmp_score)) {
-    /* 得点計算へ */
+  if (MJScore_CalculateYakuman(&norm_info, &merged_count, &tmp_score)) {
     goto CALCULATE_SCORE;
   }
 
   /* 切り分けが必要な役の判定/翻符計算 */
-  MJScore_CalculateDividedHandHanFu(info, &tmp_score);
+  MJScore_CalculateDividedHandHanFu(&norm_info, &tmp_score);
 
   /* 切り分けが不要な役の判定/翻を計算し合算 */
   {
     uint64_t tmp_yaku_flags;
     int32_t tmp_han;
-    MJScore_CalculateYakuHanForMergedHand(info, &merged_count, &tmp_yaku_flags, &tmp_han);
+    MJScore_CalculateYakuHanForMergedHand(&norm_info, &merged_count, &tmp_yaku_flags, &tmp_han);
     tmp_score.yaku_flags |= tmp_yaku_flags;
     tmp_score.han += tmp_han;
   }
@@ -363,11 +401,56 @@ CALCULATE_SCORE:
   }
 
   /* 得点計算 */
-  MJScore_CalculatePointFromHanFu(info, tmp_score.han, tmp_score.fu, &(tmp_score.point));
+  MJScore_CalculatePointFromHanFu(&norm_info, tmp_score.han, tmp_score.fu, &(tmp_score.point));
 
   /* 成功 */
   (*score) = tmp_score;
   return MJSCORE_CALCRESULT_OK;
+}
+
+/* 牌の余計なフラグを落とす 不正を検出した場合はfalseを返す */
+static bool MJScore_NormalizeTileInAgariInfo(const struct MJAgariInformation *info, struct MJAgariInformation *normalized_info)
+{
+  int32_t i, j;
+  struct MJAgariInformation tmp;
+  struct MJHand *phand = &(tmp.hand);
+
+  /* 一旦全てコピー */
+  tmp = (*info);
+
+  /* 和了牌のフラグを消す */
+  tmp.winning_tile = MJTILE_FLAG_MASK(tmp.winning_tile);
+
+  /* 純手牌のフラグを消す */
+  for (i = 0; i < phand->num_hand_tiles; i++) {
+    phand->hand[i] = MJTILE_FLAG_MASK(phand->hand[i]);
+  }
+
+  /* 副露のフラグを消す */
+  for (i = 0; i < phand->num_meld; i++) {
+    struct MJMeld *pmeld = &phand->meld[i];
+    switch (pmeld->type) {
+      case MJMELD_TYPE_CHOW:
+      case MJMELD_TYPE_PUNG:
+        for (j = 0; j < 3; j++) {
+          pmeld->tiles[j] = MJTILE_FLAG_MASK(pmeld->tiles[j]);
+        }
+        break;
+      case MJMELD_TYPE_MINKAN:
+      case MJMELD_TYPE_ANKAN:
+      case MJMELD_TYPE_KAKAN:
+        for (j = 0; j < 4; j++) {
+          pmeld->tiles[j] = MJTILE_FLAG_MASK(pmeld->tiles[j]);
+        }
+        break;
+      default:
+        return false;
+    }
+  }
+
+  /* 成功終了 */
+  (*normalized_info) = tmp;
+  return true;
 }
 
 /* 手牌（副露含む）をカウントに変換 副露も全てカウントに変換 */
@@ -395,7 +478,7 @@ static void MJScore_ConvertHandToMergedCount(const struct MJHand *hand, struct M
   for (i = 0; i < hand->num_meld; i++) {
     MJTile min_tile;
     pmeld = &(hand->meld[i]);
-    min_tile = MJTILE_FLAG_MASK(pmeld->min_tile);
+    min_tile = MJTILE_FLAG_MASK(pmeld->tiles[0]);
     switch (pmeld->type) {
       case MJMELD_TYPE_CHOW:
         count[min_tile]++; count[min_tile + 1]++; count[min_tile + 2]++;
@@ -420,13 +503,141 @@ static void MJScore_ConvertHandToMergedCount(const struct MJHand *hand, struct M
   (*merged_count) = tmp;
 }
 
+/* 国士無双の翻/複合役計算 */
+static void MJScore_CalculateKokushimusou(
+  const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score)
+{
+  struct MJScore tmp;
+
+  /* 引数チェック */
+  assert((info != NULL) && (merged_count != NULL) && (score != NULL));
+
+  /* 得点の初期化 役満は確定 */
+  tmp.fu = 0;
+  tmp.yaku_flags = 0;
+  tmp.han = MJSCORE_HAN_YAKUMAN;
+
+  /* 天和/地和判定 */
+  if (info->tenho) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TENHO);
+    tmp.han = MJSCORE_HAN_2YAKUMAN;
+  } else if (info->chiho) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHIHO);
+    tmp.han = MJSCORE_HAN_2YAKUMAN;
+  }
+
+  /* 13面待ち */
+  if (MJScore_IsKokushimusou13(info, merged_count)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_KOKUSHIMUSOU13);
+    if (st_rule_config.kokushi13_as_double) {
+      tmp.han = MJSCORE_HAN_2YAKUMAN;
+    }
+  } else {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_KOKUSHIMUSOU);
+  }
+
+  /* 成功終了 */
+  (*score) = tmp;
+}
+
+/* 七対子手のの翻/役計算 */
+static void MJScore_CalculateChitoitsu(
+    const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score)
+{
+  struct MJScore tmp;
+
+  /* 引数チェック */
+  assert((info != NULL) && (merged_count != NULL) && (score != NULL));
+
+  /* 得点の初期化 */
+  tmp.fu = tmp.han = 0;
+  tmp.yaku_flags = 0;
+
+  /* 天和/地和判定 */
+  if (info->tenho) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TENHO);
+    tmp.han = MJSCORE_HAN_YAKUMAN;
+  } else if (info->chiho) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHIHO);
+    tmp.han = MJSCORE_HAN_YAKUMAN;
+  }
+  /* 字一色 */
+  if (MJScore_IsTsuiso(info, merged_count)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TSUISO);
+    tmp.han = (tmp.han == MJSCORE_HAN_YAKUMAN) ? MJSCORE_HAN_2YAKUMAN : MJSCORE_HAN_YAKUMAN;
+  }
+  /* 役満成立時は終わり */
+  if (tmp.han >= MJSCORE_HAN_YAKUMAN) {
+    (*score) = tmp;
+    return;
+  }
+
+  /* 七対子の基本翻/符をセット */
+  MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHITOITSU);
+  tmp.han = 2; tmp.fu = 25;
+  /* 自摸 */
+  if (info->tsumo) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TSUMO);
+    tmp.han += 1;
+  }
+  /* 立直/ダブルリーチ */
+  if (info->double_riichi) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_DOUBLERIICHI);
+    tmp.han += 2;
+  } else if (info->riichi) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_RIICHI);
+    tmp.han += 1;
+  }
+  /* 一発 */
+  if ((info->riichi) && (info->ippatsu)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_IPPATSU);
+    tmp.han += 1;
+  }
+  /* 海底摸月/河底撈魚 */
+  if ((info->haitei) && (info->tsumo)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HAITEITSUMO);
+    tmp.han += 1;
+  } else if ((info->haitei) && !(info->tsumo)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HOUTEIRON);
+    tmp.han += 1;
+  }
+  /* ドラ */
+  if (info->num_dora > 0) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_DORA);
+    tmp.han += info->num_dora;
+  }
+  /* 混老頭 */
+  if (MJScore_IsHonrouto(info, merged_count)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HONROUTO);
+    tmp.han += 2;
+  }
+  /* 清一色 */
+  if (MJScore_IsChinitsu(info, merged_count)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_CHINITSU);
+    tmp.han += 6;
+  }
+  /* 混一色 */
+  if (MJScore_IsHonitsu(info, merged_count)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_HONITSU);
+    tmp.han += 3;
+  }
+  /* 断么九 */
+  if (MJScore_IsTanyao(info, merged_count)) {
+    MJSCORE_SET_YAKUFLAG(tmp.yaku_flags, MJSCORE_YAKU_TANYAO);
+    tmp.han += 1;
+  }
+
+  /* 成功終了 */
+  (*score) = tmp;
+}
+
 /* 役満手の判定 成立していたらtrueを返す 同時に翻数を計算 */
 static bool MJScore_CalculateYakuman(
   const struct MJAgariInformation *info, const struct MJTileCount *merged_count, struct MJScore *score)
 {
   struct MJScore tmp;
 
-  assert((info != NULL) && (score != NULL));
+  assert((info != NULL) && (merged_count != NULL) && (score != NULL));
 
   tmp.han = tmp.fu = 0;
   tmp.yaku_flags = 0;
@@ -530,7 +741,7 @@ static void MJScore_CalculateDividedHandHanFu(
   /* 副露牌を分割済み手牌に入れる */
   for (i = 0; i < info->hand.num_meld; i++) {
     struct MJMentsu *pmentsu = &(div_hand.mentsu[i]);
-    pmentsu->min_tile = info->hand.meld[i].min_tile;
+    pmentsu->min_tile = info->hand.meld[i].tiles[0];
     /* 副露の種類の読み替え */
     switch (info->hand.meld[i].type) {
       case MJMELD_TYPE_PUNG: pmentsu->type = MJMENTSU_TYPE_PUNG; break;

@@ -31,7 +31,7 @@ typedef enum MJWindTag {
 /* 副露の状態 */
 struct MJMeld {
   MJMeldType  type;     /* 種類 */
-  MJTile      min_tile; /* 副露を構成する牌で最小の識別整数を持つ牌 */
+  MJTile      tiles[4]; /* 副露の構成牌 チーの場合は昇順に並ぶ */
 };
 
 /* 手牌 */
