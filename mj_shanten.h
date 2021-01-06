@@ -4,6 +4,9 @@
 #include "mj_types.h"
 #include <stdint.h>
 
+/* 通常手の向聴数計算にテーブルを使うか？ */
+#define MJSHANTEN_USE_TABLE
+
 /* 有効牌計算結果型 */
 typedef enum MJEffectiveTileApiResultTag {
   MJEFFECTIVETILE_APIRESULT_OK = 0,             /* 成功 */
@@ -36,6 +39,13 @@ int32_t MJShanten_CalculateNormalShantenBackTrack(const struct MJTileCount *coun
 
 /* 通常手の向聴数を計算(テーブルを使用した高速実装) 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateNormalShantenUseTable(const struct MJTileCount *count);
+
+/* 通常手の向聴数計算関数の切り分けマクロ */
+#ifdef MJSHANTEN_USE_TABLE
+#define MJShanten_CalculateNormalShanten MJShanten_CalculateNormalShantenUseTable
+#else
+#define MJShanten_CalculateNormalShanten MJShanten_CalculateNormalShantenBackTrack
+#endif
 
 /* 七対子の向聴数を計算 1で一向聴, 0で聴牌, -1で和了 */
 int32_t MJShanten_CalculateChitoitsuShanten(const struct MJTileCount *count);
