@@ -99,7 +99,7 @@ void MJPlayerWrapper_Destroy(struct MJPlayerWrapper *player)
 const char *MJPlayerWrapper_GetName(const struct MJPlayerWrapper *player)
 {
   assert(player != NULL);
-  return player->player_interface->GetName(NULL);
+  return player->player_interface->GetName(player->player_instance, NULL);
 }
 
 /* 誰かのアクション時 */

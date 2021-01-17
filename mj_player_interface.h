@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /* プレーヤーインターフェースバージョン番号 */
-#define MJPLAYER_INTERFACE_VERSION             4
+#define MJPLAYER_INTERFACE_VERSION             5
 /* ゲーム状態取得インターフェースバージョン番号 */
 #define MJGAMESTATEGETTER_INTERFACE_VERSION    3
 
@@ -80,13 +80,14 @@ struct MJGameStateGetterInterface {
 
 /* プレーヤー生成コンフィグ */
 struct MJPlayerConfig {
-  const struct MJGameStateGetterInterface *game_state_getter_if;  /* 状態取得インターフェース */
+  const struct MJGameStateGetterInterface *game_state_getter_if;  /* 状態取得インターフェース     */
+  const void *obj;                                                /* ユーザ定義の任意オブジェクト */
 };
 
 /* プレーヤーインターフェース */
 struct MJPlayerInterface {
-  /* プレーヤーインターフェース名の取得 引数は無視してください */
-  const char *(*GetName)(const MJPlayerInterfaceVersion4Tag *version_tag);
+  /* プレーヤーインターフェース名の取得 version_tagは無視してください */
+  const char *(*GetName)(const void *player, const MJPlayerInterfaceVersion5Tag *version_tag);
   /* ワークサイズ計算 */
   int32_t (*CalculateWorkSize)(const struct MJPlayerConfig *config);
   /* プレーヤーインスタンス作成 */

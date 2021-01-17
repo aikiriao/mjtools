@@ -21,7 +21,7 @@ struct MJPlayerShantenman {
 };
 
 /* インターフェース名の取得 */
-static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion4Tag *version_tag);
+static const char *MJPlayerShantenman_GetName(const void *player, const MJPlayerInterfaceVersion5Tag *version_tag);
 /* ワークサイズ計算 */
 static int32_t MJPlayerShantenman_CalculateWorkSize(const struct MJPlayerConfig *config);
 /* インスタンス生成 */
@@ -62,8 +62,9 @@ const struct MJPlayerInterface *MJPlayerShantenman_GetInterface(void)
 }
 
 /* インターフェース名の取得 */
-static const char *MJPlayerShantenman_GetName(const MJPlayerInterfaceVersion4Tag *version_tag)
+static const char *MJPlayerShantenman_GetName(const void *player, const MJPlayerInterfaceVersion5Tag *version_tag)
 {
+  MJUTILITY_UNUSED_ARGUMENT(player);
   MJUTILITY_UNUSED_ARGUMENT(version_tag);
   return "Shanten-Man";
 }
