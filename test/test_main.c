@@ -9,6 +9,7 @@ void MJDeckTest_Setup(void);
 void MJPlayerTsumogiriTest_Setup(void);
 void MJPlayerShantenmanTest_Setup(void);
 void MJPlayerFuromanTest_Setup(void);
+void MJPlayerCUITest_Setup(void);
 void MJPlayerWrapperTest_Setup(void);
 void MJRiverTest_Setup(void);
 
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
   MJPlayerTsumogiriTest_Setup();
   MJPlayerShantenmanTest_Setup();
   MJPlayerFuromanTest_Setup();
+  MJPlayerCUITest_Setup();
   MJPlayerWrapperTest_Setup();
   MJRiverTest_Setup();
 
