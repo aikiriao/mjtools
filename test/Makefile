@@ -5,7 +5,7 @@ LDFLAGS		= -O0
 LDLIBS    	= -lm
 SRC			= test_main.c test.c test_mj_tile.c test_mj_shanten.c test_mj_score.c test_mj_random_xorshiro256pp.c
 SRC			+= test_mj_deck.c test_mj_player_wrapper.c test_mj_river.c
-SRC			+= test_mj_player_tsumogiri.c test_mj_player_shantenman.c test_mj_player_furoman.c
+SRC			+= test_mj_player_tsumogiri.c test_mj_player_shantenman.c test_mj_player_furoman.c test_mj_player_cui.c
 INCLUDE   	= 
 OBJS	 	= $(SRC:%.c=%.o) 
 TARGET    	= test 
