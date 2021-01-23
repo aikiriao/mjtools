@@ -32,7 +32,6 @@ target_link_libraries(${APP_NAME} m) # math
 target_link_libraries(${APP_NAME} ${CURSES_LIBRARIES})
 
 # コンパイルオプション
-set(CMAKE_C_STANDARD 99)
 if(MSVC)
   target_compile_options(${APP_NAME} PRIVATE /W4 /WX)
 else()
@@ -40,6 +39,7 @@ else()
   set(CMAKE_C_FLAGS_DEBUG "-O0 -g3 -DDEBUG")
   set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 endif()
+set_target_properties(${LIB_NAME} PROPERTIES C_STANDARD 99 C_EXTENSIONS OFF)
 
 # ビルド後にテストリソースを持ってくる
 add_custom_command(

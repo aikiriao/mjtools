@@ -25,7 +25,6 @@ target_include_directories(${LIB_NAME}
 )
 
 # コンパイルオプション
-set(CMAKE_C_STANDARD 99)
 if(MSVC)
   target_compile_options(${LIB_NAME} PRIVATE /W4 /WX)
 else()
@@ -33,3 +32,4 @@ else()
   set(CMAKE_C_FLAGS_DEBUG "-O0 -g3 -DDEBUG")
   set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 endif()
+set_target_properties(${LIB_NAME} PROPERTIES C_STANDARD 99 C_EXTENSIONS OFF)
