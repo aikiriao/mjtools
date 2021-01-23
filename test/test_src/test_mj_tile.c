@@ -1,8 +1,8 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_tile.h"
-#include "../mj_utility.h"
+#include "mj_tile.h"
+#include "mj_utility.h"
 
 #include <stddef.h>
 

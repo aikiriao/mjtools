@@ -1,0 +1,14 @@
+target_sources(${APP_NAME}
+  PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_deck.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_player_cui.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_player_furoman.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_player_shantenman.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_player_tsumogiri.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_player_wrapper.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_random_xorshiro256pp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_river.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_score.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_shanten.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_mj_tile.c
+)

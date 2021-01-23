@@ -4,7 +4,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_river.c"
+#include "../../simulator/src/mj_river.c"
 
 /* テストのセットアップ関数 */
 void MJRiverTest_Setup(void);

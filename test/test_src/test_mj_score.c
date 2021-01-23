@@ -4,7 +4,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_score.c"
+#include "../../core/src/mj_score.c"
 
 /* 役をフラグ化したもの */
 #define MJSCORE_FLAG_RIICHI           MJSCORE_YAKU_FLAG(MJSCORE_YAKU_RIICHI)

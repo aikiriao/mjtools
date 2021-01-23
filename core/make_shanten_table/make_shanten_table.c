@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "../mj_shanten_use_table.c"
+#include "../src/mj_shanten_use_table.h"
 
 /* 出力ファイル名 */
 #define MJSHANTEN_TABLE_FILE_NAME   "mj_shanten_table.c"

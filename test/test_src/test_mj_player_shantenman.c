@@ -1,7 +1,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_player_shantenman.c"
+#include "../../player/src/mj_player_shantenman.c"
 
 /* テストのセットアップ関数 */
 void MJPlayerShantenmanTest_Setup(void);

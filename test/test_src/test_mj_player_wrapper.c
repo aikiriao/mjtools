@@ -4,10 +4,10 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_player_wrapper.c"
+#include "../../simulator/src/mj_player_wrapper.c"
 
 /* 仮のプレーヤーインターフェースにツモ切りくんを使用 */
-#include "../mj_player_tsumogiri.h"
+#include "mj_player_tsumogiri.h"
 
 /* ゲーム状態取得関数のスタブ */
 static uint32_t MJGameStateGetterStub_GetVersion(const MJGameStateGetterInterfaceVersion3Tag *version_tag)

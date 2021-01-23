@@ -1,7 +1,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_player_cui.c"
+#include "../../player/src/mj_player_cui.c"
 
 /* テストのセットアップ関数 */
 void MJPlayerCUITest_Setup(void);

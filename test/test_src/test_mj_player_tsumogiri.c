@@ -1,7 +1,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_player_tsumogiri.c"
+#include "../../player/src/mj_player_tsumogiri.c"
 
 /* テストのセットアップ関数 */
 void MJPlayerTsumogiriTest_Setup(void);

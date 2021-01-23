@@ -5,7 +5,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_random_xoshiro256pp.c"
+#include "../../simulator/src/mj_random_xoshiro256pp.c"
 
 /* テストのセットアップ関数 */
 void MJRandomXoshiro256ppTest_Setup(void);

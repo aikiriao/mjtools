@@ -4,7 +4,7 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_deck.c"
+#include "../../simulator/src/mj_deck.c"
 
 /* テストのセットアップ関数 */
 void MJDeckTest_Setup(void);

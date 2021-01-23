@@ -4,8 +4,8 @@
 #include "test.h"
 
 /* テスト対象のモジュール */
-#include "../mj_shanten.c"
-#include "../mj_shanten_use_table.c"
+#include "../../core/src/mj_shanten.c"
+#include "../../core/src/mj_shanten_use_table.c"
 
 /* 有効牌取得関数型 */
 typedef MJEffectiveTileApiResult (*effective_tiles_getter)(const struct MJTileCount *count, struct MJEffectiveTiles *effective_tiles);
