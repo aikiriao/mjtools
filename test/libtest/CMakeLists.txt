@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 
 # プロジェクト名
-project(test C)
+project(mytest C)
 
 # ライブラリ名
-set(LIB_NAME test)
+set(LIB_NAME mytest)
 
 # 静的ライブラリ指定
 add_library(${LIB_NAME} STATIC)

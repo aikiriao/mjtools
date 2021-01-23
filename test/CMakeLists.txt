@@ -6,8 +6,8 @@ project(mjlibtest C)
 # アプリケーション名
 set(APP_NAME mjlibtest)
 
-# 外部ライブラリ
-find_package(curses REQUIRED)
+# 必須外部ライブラリ
+find_package(Curses REQUIRED)
 
 # 実行ファイル
 add_executable(${APP_NAME} test_main.c)
@@ -25,10 +25,11 @@ add_subdirectory(libtest)
 add_subdirectory(test_src)
 
 # リンクする内部ライブラリ
-target_link_libraries(${APP_NAME} test)
+target_link_libraries(${APP_NAME} mytest)
 
 # リンクする外部ライブラリ
-target_link_libraries(${APP_NAME} curses)
+target_link_libraries(${APP_NAME} m) # math
+target_link_libraries(${APP_NAME} ${CURSES_LIBRARIES})
 
 # コンパイルオプション
 set(CMAKE_C_STANDARD 99)
